@@ -1,0 +1,24 @@
+name: Build Hash Page
+
+on:
+  workflow_dispatch:   # manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Build Hash Page
+        run: python generate_hashpage.py docs/hashes.md docs/hash.html
+
+      - name: Upload hash.html artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hash-page
+          path: docs/hash.html

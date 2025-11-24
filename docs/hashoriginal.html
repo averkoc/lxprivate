@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hash Comparisons</title>
+  <style>
+    .hash-input {
+      font-size: 1.5rem;
+      width: 70%;
+      text-transform: lowercase;
+    }
+
+    label {
+      font-size: 1.5rem;
+      text-transform: lowercase;
+    }
+
+    button {
+      background-color: orange;
+      f border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
+
+    #result {
+      font-size: 1.5rem;
+    }
+  </style>
+  <script>
+    function compareHashes() {
+      const hash1 = document.getElementById("hash1").value;
+      const hash2 = document.getElementById("hash2").value;
+      if (hash1 === "" || hash2 === "") {
+        document.getElementById("result").innerHTML = "Please enter both hashes to compare.";
+        return;
+      }
+      if (hash1.toLowerCase() === hash2.toLowerCase()) {
+        document.getElementById("check").innerHTML = "Hashes match!";
+        document.getElementById("check").style.background = "green";
+      } else {
+        document.getElementById("check").innerHTML = "Hashes don't match!";
+        document.getElementById("check").style.background = "red";
+      }
+    }
+    function selectHash(hash) {
+      document.getElementById("hash1").value = hash;
+    }
+  </script>
+</head>
+
+<body>
+  <h1>Hash Comparisons</h1>
+  <p>This page offers SHA-256 values for several large files used in the Linux Essentials course.
+     You can also verify other files by entering the correct SHA-256 values into the “hash1” field and the SHA-256 value you calculated from your downloaded file into the “hash2” field. 
+     Links to the correct hash values are available on their respective download sites.
+
+  </p>
+  <h3>Pick the correct SHA-256 value to hash1 by clicking a proper filename below:</h3>
+  <nav>
+    <ul>
+      <li><a href="#"
+          onclick="selectHash('e363cae0f1f22ed73363d0bde50b4ca582cb2816185cf6eac28e93d9bb9e1504')">debian-13.0.0-amd64-netinst.iso (Debian)</a></li>
+      <li><a href="#"
+          onclick="selectHash('f95f35f41850a33f2ab72803600131544a7b4edaa8b63e3553a9cd5364931079')">ddebian-13.0.0-arm64-netinst.iso (Mac M1-M3)</a>
+      </li>
+	  <li><a href="#"
+	  	 onclick="selectHash('d55669b9ccdaf64b40c7cdce5d6cf9ed6c6dea7807cc75e10d86010b7f774903')">alpineDT.ova (Alpine Desktop)</a>
+	  </li>
+	  <li><a href="#"
+	  	 onclick="selectHash('95452b8e7b9c9d78ad2d3b828255f505b32bc5f8857b6eaf60d163d84b6e2830')">debian.ova (Debian Server)</a>
+	  </li>
+    </ul>
+  </nav>
+  <section>
+    <label for="hash1">Hash 1:</label>
+    <input type="text" class="hash-input" id="hash1" />
+    <br />
+    <br />
+    <p>Calculate the sha-256 checksum of your downloaded file by issuing command:<br />
+      <b>certutil -hashfile filename sha256</b> in windows command prompt or <b>shasum -a 256 filename</b> in mac-terminal in the directory where you downloaded the files.<br>
+      Copy and paste the hash value to the field below.
+    </p>
+    <label for="hash2">Hash 2:</label>
+    <input type="text" class="hash-input" id="hash2" />
+    <br />
+     <br />
+    <button id="check" onclick="compareHashes()">Click to compare Hashes</button>
+    <p id="result"></p>
+  </section>
+  <section>
+    
+    <h3> Why checksum comparisons are important? </h3></p>
+    <ul>
+      <li>Your downloaded file may get corrupted during download. Finding that before use saves you from a lot of harm.</li>
+      <li>Sometimes a file may be compromised by some third party. Wrong checksum reveals this.</li>
+    </ul>
+    
+    
+
+    
+  </section>
+</body>
+
+</html>
+
+
+

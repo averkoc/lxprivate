@@ -1,0 +1,14 @@
+title: "Centria Linux Essentials"
+theme: minima
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter_opts:
+    line_numbers: false
+permalink: pretty
+github:
+  username: averkoc
+  repository_name: lx
+

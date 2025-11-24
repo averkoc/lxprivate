@@ -1,0 +1,188 @@
+/* Base reset */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  background: #fdfdfd;
+  color: #333;
+}
+
+
+
+/* Layout */
+main {
+  width: 70%;          /* always take 80% of the viewport */
+  max-width: 1200px;   /* optional cap for very large screens */
+  margin: 1rem auto;   /* center horizontally */
+  padding: 0;          /* no extra side padding */
+}
+
+  
+.site-title {
+  margin-left: 0%;       /* gentle indentation */
+  color: #b66969;             /* soft gray tone */
+  font-size: 1rem;         /* normal readable size */
+  font-weight: normal;     /* no bold emphasis */
+  margin-left: -2rem;       /* pull header slightly left of paragraph block */
+}
+
+h1 { margin-left: clamp(-2rem, -4vw, 0rem); }
+h2 { margin-left: clamp(-2rem, -4vw, 0rem); }
+h3 { margin-left: clamp(-2rem, -4vw, 0rem); }
+h4 { margin-left: clamp(-2rem, -4vw, 0rem); }
+h5 { margin-left: clamp(-2rem, -1vw, 0rem); }
+h6 { margin-left: clamp(-2rem, -0.5vw, 0rem); }
+
+h1, h2, h3, h4, h5, h6 {
+  padding-left: 0;   /* no inward push */
+  text-indent: 0;    /* avoid clipping */
+}
+
+/* Paragraphs remain flush left for contrast */
+p {
+  margin-left: 0;
+}
+
+
+  
+
+
+/* Links */
+a {
+  color: #0366d6;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Code blocks container */
+pre {
+  background: #f6f8fa;
+  border: 1px solid #d1d5da;
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  position: relative; /* needed for copy button positioning */
+}
+
+code {
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.95em;
+}
+
+/* Inline code */
+p code, li code {
+  background: #f6f8fa;
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+  border: 1px solid #e1e4e8;
+}
+
+/* Copy button */
+.copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 2px 8px;
+  font-size: 0.8em;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;              /* hidden by default */
+  transition: opacity 0.2s;
+}
+
+pre:hover .copy-btn {
+  opacity: 1;              /* show on hover */
+}
+
+.copy-btn:hover {
+  background: #ddd;
+}
+
+/* Flush blockquote with left margin and visible bar */
+blockquote {
+  margin: 1rem 0;
+  padding: 0.6rem 1rem;
+  background: #f6f8fa;
+  border-left: 4px solid #d1d5da;
+  border-radius: 4px;
+  color: #555;
+
+  /* Force it to align with surrounding text */
+  margin-left: 0 !important;
+  padding-left: 1rem !important;
+}
+
+/* Add "Note:" prefix */
+blockquote::before {
+  content: "Note: ";
+  font-weight: bold;
+  color: #333;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  font-size: 0.95em;
+  background: #fff;
+  border: 1px solid #d1d5da;
+}
+
+th, td {
+  border: 1px solid #d1d5da;
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background-color: #f6f8fa;
+  font-weight: 600;
+  color: #24292f;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+
+
+/* Rouge syntax highlighting (GitHub-style light theme) */
+.highlight .c { color: #6a737d; font-style: italic } /* Comment */
+.highlight .k { color: #d73a49 } /* Keyword */
+.highlight .o { color: #d73a49 } /* Operator */
+.highlight .cm { color: #6a737d; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #6a737d } /* Comment.Preproc */
+.highlight .c1 { color: #6a737d; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #6a737d; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #b31d28; background-color: #ffeef0 } /* Generic.Deleted */
+.highlight .gi { color: #22863a; background-color: #f0fff4 } /* Generic.Inserted */
+.highlight .gu { color: #6f42c1; font-weight: bold } /* Generic.Subheading */
+.highlight .nb { color: #005cc5 } /* Name.Builtin */
+.highlight .nc { color: #6f42c1 } /* Name.Class */
+.highlight .no { color: #005cc5 } /* Name.Constant */
+.highlight .nd { color: #6f42c1 } /* Name.Decorator */
+.highlight .ni { color: #005cc5 } /* Name.Entity */
+.highlight .ne { color: #d73a49 } /* Name.Exception */
+.highlight .nf { color: #6f42c1 } /* Name.Function */
+.highlight .nt { color: #22863a } /* Name.Tag */
+.highlight .nv { color: #005cc5 } /* Name.Variable */
+.highlight .s { color: #032f62 } /* Literal.String */
+.highlight .s1 { color: #032f62 } /* Literal.String.Single */
+.highlight .s2 { color: #032f62 } /* Literal.String.Double */
+.highlight .se { color: #032f62 } /* Literal.String.Escape */
+.highlight .sr { color: #032f62 } /* Literal.String.Regex */
+.highlight .ss { color: #032f62 } /* Literal.String.Symbol */
+.highlight .m { color: #005cc5 } /* Literal.Number */
+.highlight .mi { color: #005cc5 } /* Literal.Number.Integer */
+.highlight .mf { color: #005cc5 } /* Literal.Number.Float */
+.highlight .mh { color: #005cc5 } /* Literal.Number.Hex */
+.highlight .bp { color: #005cc5 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #005cc5 } /* Variable.Class */
+.highlight .vg { color: #005cc5 } /* Variable.Global */
+.highlight .vi { color: #005cc5 } /* Variable.Instance */
+.highlight .il { color: #005cc5 } /* Literal.Number.Integer.Long */

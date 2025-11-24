@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centria Linux MQTT</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .temperature {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Centria Linux - MQTT Demo</h1>
+    <div class="temperature" id="indoorTemp">Indoor Temperature: </div>
+    <div class="temperature" id="outdoorTemp">Outdoor Temperature: </div>
+
+    <script>
+        <!-- If hivemq broker then: 'wss://broker.hivemq.com:8884/mqtt' --> 
+        <!-- If emqx broker then:'wss://broker.emqx.io:8084/mqtt' --> 
+        const client = mqtt.connect('wss://broker.emqx.io:8084/mqtt');
+        const topics = [
+            '/centrialinux/studentfirstname/indoors',
+            '/centrialinux/studentfirstname/outdoors'
+        ];
+
+        client.on('connect', () => {
+            console.log('Connected to broker');
+            topics.forEach(topic => client.subscribe(topic));
+        });
+
+        client.on('message', (topic, message) => {
+            const temp = message.toString();
+            if (topic.endsWith('/indoors')) {
+                document.getElementById('indoorTemp').textContent = `Indoor Temperature: ${temp}°C`;
+            } else if (topic.endsWith('/outdoors')) {
+                document.getElementById('outdoorTemp').textContent = `Outdoor Temperature: ${temp}°C`;
+            }
+        });
+
+        client.on('error', (err) => {
+            console.error('Connection error: ', err);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Station</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        .value { font-size: 2em; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <script>
+        const client = new Paho.MQTT.Client("broker.emqx.io", Number(8084), "clientId");
+
+        client.onConnectionLost = function (responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+                reconnect();
+            }
+        };
+
+        client.onMessageArrived = function (message) {
+            if (message.destinationName === "/lxweather/temperature") {
+                document.getElementById("temperature").innerText = message.payloadString;
+            } else if (message.destinationName === "/lxweather/pressure") {
+                document.getElementById("pressure").innerText = message.payloadString;
+            }
+        };
+
+        function onConnect() {
+            console.log("Connected");
+            client.subscribe("/lxweather/temperature");
+            client.subscribe("/lxweather/pressure");
+            startKeepAlive();
+        }
+
+        function reconnect() {
+            setTimeout(() => {
+                client.connect({ onSuccess: onConnect, useSSL: true });
+            }, 5000); // Reconnect after 5 seconds
+        }
+
+        function startKeepAlive() {
+            setInterval(() => {
+                if (client.isConnected()) {
+                    client.send("/keepalive", "ping", 0);
+                }
+            }, 60000); // Send keep-alive message every 60 seconds
+        }
+
+        client.connect({ onSuccess: onConnect, useSSL: true });
+    </script>
+</head>
+<body>
+    <h1>Current Indoor Weather (SM)</h1>
+    <div>
+        <p>Temperature: <span class="value" id="temperature">--</span> °C</p>
+        <p>Pressure: <span class="value" id="pressure">--</span> hPa</p>
+    </div>
+</body>
+</html>

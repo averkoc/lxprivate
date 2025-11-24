@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT All Topics Subscriber</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <script>
+        function onConnect() {
+            console.log("Connected to broker");
+            client.subscribe("/linuxessentials/+/temperaturevalue");
+        }
+
+        function onFailure(message) {
+            console.log("Connection failed: " + message.errorMessage);
+        }
+
+        function onMessageArrived(message) {
+            const topic = message.destinationName;
+            const payload = message.payloadString;
+            const display = document.getElementById("messages");
+            const newMessage = document.createElement("p");
+            newMessage.textContent = `Topic: ${topic}, Message: ${payload}`;
+            display.appendChild(newMessage);
+        }
+
+        const client = new Paho.MQTT.Client("test.mosquitto.org", Number(8081), "clientId");
+        client.onMessageArrived = onMessageArrived;
+        client.connect({ 
+            onSuccess: onConnect,
+            onFailure: onFailure,
+            useSSL: true
+        });
+    </script>
+</head>
+<body>
+    <h1>MQTT All Topics Subscriber</h1>
+    <div id="messages">Waiting for messages...</div>
+</body>
+</html>

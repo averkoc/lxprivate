@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html> 
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true });</script>
+</head>
+<body>
+  <div class="mermaid">
+  sequenceDiagram
+    participant Client as Client (john)
+    participant Server as SSH Server
+    Client->>Server: Sends name john and key ID for authentication
+    Server->>Server: Looks up public key ID in john's authorized_keys
+    Server->>Server: Encrypts random number with john's public key
+    Server-->>Client: Sends encrypted challenge
+    Client->>Client: Decrypts challenge with private key
+    Client->>Client: Combines decrypted number + session id
+    Client->>Client: Computes MD5 hash
+    Client-->>Server: Signs the MD5 hash with its private key as proof
+    Server->>Server: Computes MD5 using original number + session id
+    Server->>Server: Compares hashes
+    Server-->>Client: ✅ Authentication successful
+   </div>
+  <div>
+    Note: before the authentication starts the session is already automatically secured using symmetric encryption.
+  </div>
+</body>
+</html>

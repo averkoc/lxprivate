@@ -1,0 +1,27 @@
+name: Generate Offline TOC
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-toc:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
+
+    - name: Generate TOC files
+      run: python generate_offline_toc.py
+
+    - name: Commit TOC files
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add TOC.md TOC_offline.md TOC_offline.html
+        git diff --cached --quiet || git commit -m "Update TOCs [skip ci]"
+        git push

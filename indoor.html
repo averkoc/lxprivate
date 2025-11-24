@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Station</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        .value { font-size: 2em; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <script>
+        const client = new Paho.MQTT.Client("test.mosquitto.org", Number(8081), "clientId");
+
+        client.onConnectionLost = function (responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+            }
+        };
+
+        client.onMessageArrived = function (message) {
+            if (message.destinationName === "/lxweather/temperature") {
+                document.getElementById("temperature").innerText = message.payloadString;
+            } else if (message.destinationName === "/lxweather/pressure") {
+                document.getElementById("pressure").innerText = message.payloadString;
+            }
+        };
+
+        client.connect({ onSuccess: onConnect, useSSL: true });
+
+        function onConnect() {
+            console.log("Connected");
+            client.subscribe("/lxweather/temperature");
+            client.subscribe("/lxweather/pressure");
+        }
+    </script>
+</head>
+<body>
+    <h1>Current Indoor Weather (SM)</h1>
+    <div>
+        <p>Temperature: <span class="value" id="temperature">--</span> °C</p>
+        <p>Pressure: <span class="value" id="pressure">--</span> hPa</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Station</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        .value { font-size: 2em; }
+        #diagnostics { margin-top: 30px; padding: 10px; border-radius: 8px; }
+        #status { color: green; }
+        #errors { color: red; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <script>
+        // Generate unique client ID
+        const clientId = "clientId_" + Math.random().toString(16).substr(2, 8);
+        const client = new Paho.MQTT.Client("broker.emqx.io", Number(8084), clientId);
+
+        // Connection lost handler
+        client.onConnectionLost = function (responseObject) {
+            if (responseObject.errorCode !== 0) {
+                document.getElementById("status").innerText = "Disconnected";
+                document.getElementById("errors").innerText = "Connection lost: " + responseObject.errorMessage;
+                reconnect();
+            }
+        };
+
+        // Message arrived handler
+        client.onMessageArrived = function (message) {
+            if (message.destinationName === "/lxweather/temperature") {
+                document.getElementById("temperature").innerText = message.payloadString;
+            } else if (message.destinationName === "/lxweather/pressure") {
+                document.getElementById("pressure").innerText = message.payloadString;
+            }
+        };
+
+        // Successful connection handler
+        function onConnect() {
+            console.log("Connected");
+            document.getElementById("status").innerText = "Connected";
+            document.getElementById("errors").innerText = "";
+            client.subscribe("/lxweather/temperature");
+            client.subscribe("/lxweather/pressure");
+        }
+
+        // Reconnect function
+        function reconnect() {
+            setTimeout(() => {
+                client.connect({
+                    onSuccess: onConnect,
+                    useSSL: true,
+                    keepAliveInterval: 60,
+                    onFailure: (error) => {
+                        document.getElementById("status").innerText = "Reconnection Failed";
+                        document.getElementById("errors").innerText = error.errorMessage;
+                    }
+                });
+            }, 5000); // Reconnect after 5 seconds
+        }
+
+        // Connect to the broker
+        client.connect({
+            onSuccess: onConnect,
+            useSSL: true,
+            keepAliveInterval: 60,
+            onFailure: (error) => {
+                document.getElementById("status").innerText = "Connection Failed";
+                document.getElementById("errors").innerText = error.errorMessage;
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Current Indoor Weather (SM)</h1>
+    <div>
+        <p>Temperature: <span class="value" id="temperature">--</span> °C</p>
+        <p>Pressure: <span class="value" id="pressure">--</span> hPa</p>
+    </div>
+    <div id="diagnostics">
+        <p><strong>Status:</strong> <span id="status">Connecting...</span></p>
+        <p><strong>Errors:</strong> <span id="errors">None</span></p>
+    </div>
+</body>
+</html>

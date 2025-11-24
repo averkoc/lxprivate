@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relay Control</title>
+  <style>
+  body {
+    background: #ede7e3; /* Soft warm gray-beige */
+    color: #333;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  h2 {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+  .accordion-container {
+    width: 340px;
+    max-width: 95vw;
+    margin: 24px auto 0 auto;
+    background: #f5e9da; /* Light beige */
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    padding: 18px 0 18px 0;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  /* Accordion Header Styles */
+  .accordion {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f5e9da;   /* Light beige, matches button.off */
+    border: 1px solid #bcaaa4;   /* Muted brown border */
+    border-radius: 5px;
+    text-align: center;
+    outline: none;
+    font-size: 15px;
+    transition: background 0.4s;
+    width: 100%;
+    box-sizing: border-box;
+    color: #8a7169;              /* Dark brown text */
+    font-weight: bold;
+  }
+  .accordion.active {
+    background-color: #c8b5ae;   /* Medium brown, matches button.on */
+    color: #fff;
+    border-color: #80635b;       /* Dark brown border */
+  }
+  /* Panel (content) initially shown */
+  .panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+    display: block;
+  }
+  .accordion.active + .panel {
+    max-height: 500px; /* Adjust as needed for your content */
+  }
+  .button-group {
+    width: 300px;
+    max-width: 90vw;
+    margin: 0 auto;
+    padding: 12px 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .button {
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    width: 45%;
+    display: inline-block;
+    border-radius: 8px;
+    background-color: #f9f6f2; /* Slightly lighter than panel */
+    color: #6d4c41;
+    border: 2px solid #bcaaa4;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(109,76,65,0.18), 0 1.5px 0 #fff inset;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .button.off {
+    background-color: #f9f6f2;   /* Lighter than panel */
+    color: #6d4c41;
+    border: 2px solid #bcaaa4;
+    box-shadow: 0 4px 12px rgba(109,76,65,0.18), 0 1.5px 0 #fff inset;
+  }
+  .button.on {
+    background-color: #8d6e63;   /* Medium brown */
+    color: #fff;
+    border: 2px solid #5d4037;
+    box-shadow: 0 2px 6px rgba(93,64,55,0.18), 0 1.5px 0 #fff2 inset;
+  }
+  .button:active {
+    background-color: #bcaaa4;
+    box-shadow: 0 1px 2px rgba(109,76,65,0.18) inset;
+  }
+  .status-line {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #6d4c41;
+  }
+  @media (max-width: 600px) {
+    .accordion-container {
+      width: 90%;
+    }
+    .button {
+      width: 45%;
+      font-size: 1.4em; /* Make button text bigger on mobile */
+    }
+  }
+  </style>
+</head>
+<body>
+  <h2>IHC Remote Control</h2>
+  <div class="accordion-container">
+
+    <!-- Relay Module Group 1 -->
+    <div class="accordion active">Group A</div>
+    <div class="panel">
+      <div class="button-group" id="1">
+        <button class="button off" data-relay="1">Relay 1</button>
+        <button class="button off" data-relay="2">Relay 2</button>
+        <button class="button off" data-relay="3">Relay 3</button>
+        <button class="button off" data-relay="4">Relay 4</button>
+        <button class="button off" data-relay="5">Relay 5</button>
+        <button class="button off" data-relay="6">Relay 6</button>
+        <button class="button off" data-relay="7">Relay 7</button>
+        <button class="button off" data-relay="8">Relay 8</button>
+      </div>
+    </div>
+
+    <!-- Relay Module Group 2 -->
+    <div class="accordion">Group B</div>
+    <div class="panel">
+      <div class="button-group" id="2">
+        <button class="button off" data-relay="1">Relay 1</button>
+        <button class="button off" data-relay="2">Relay 2</button>
+        <button class="button off" data-relay="3">Relay 3</button>
+        <button class="button off" data-relay="4">Relay 4</button>
+        <button class="button off" data-relay="5">Relay 5</button>
+        <button class="button off" data-relay="6">Relay 6</button>
+        <button class="button off" data-relay="7">Relay 7</button>
+        <button class="button off" data-relay="8">Relay 8</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="status-line" id="status-line">
+    Connection status: <span id="connection-status">Disconnected</span>
+  </div>
+
+  <script>
+    var ws;
+    var reconnectInterval = 5000; // milliseconds
+    var activeButton = null; // currently pressed button
+
+    // Establish the WebSocket connection
+    function connectWebSocket() {
+      ws = new WebSocket('ws://' + window.location.hostname + '/ws');
+      
+      ws.onopen = function() {
+        logMessage('WebSocket connection opened');
+        updateStatus('Connected');
+      };
+
+      ws.onclose = function() {
+        logMessage('WebSocket connection closed');
+        updateStatus('Disconnected');
+        setTimeout(connectWebSocket, reconnectInterval);
+      };
+
+      ws.onmessage = function(event) {
+        logMessage('WebSocket message received: ' + event.data);
+      };
+
+      ws.onerror = function(error) {
+        logMessage('WebSocket error: ' + error);
+        updateStatus('Error');
+      };
+    }
+
+    // Helper: log messages
+    function logMessage(message) {
+      console.log(message);
+    }
+
+    // Helper: update connection status on the page
+    function updateStatus(status) {
+      document.getElementById('connection-status').innerText = status;
+    }
+
+    // Send a command using the module id, relay number, and state (true for on, false for off)
+    function sendCommand(module, relay, state) {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        var command = module + ':' + relay + ':' + (state ? '1' : '0');
+        ws.send(command);
+        logMessage('Sent command: ' + command);
+      } else {
+        logMessage('WebSocket is not connected. Cannot send command.');
+      }
+    }
+
+    // Button press event handler
+    function handleButtonPress(event) {
+      // Allow only one active button at a time.
+      if (activeButton !== null) return;
+
+      event.preventDefault();
+      activeButton = this;
+      this.classList.remove('off');
+      this.classList.add('on');
+
+      var relayModule = this.closest('.button-group');
+      var moduleId = relayModule ? relayModule.id : null;
+      var relayNumber = this.getAttribute('data-relay');
+      sendCommand(moduleId, relayNumber, true);
+    }
+
+    // Button release event handler
+    function handleButtonRelease(event) {
+      if (activeButton !== this) return; // Only process if this button is currently active
+
+      event.preventDefault();
+      this.classList.remove('on');
+      this.classList.add('off');
+
+      var relayModule = this.closest('.button-group');
+      var moduleId = relayModule ? relayModule.id : null;
+      var relayNumber = this.getAttribute('data-relay');
+      sendCommand(moduleId, relayNumber, false);
+      activeButton = null;
+    }
+
+    // Attach press & release events to a button element
+    function addEventListeners(button) {
+      button.addEventListener('mousedown', handleButtonPress);
+      button.addEventListener('touchstart', handleButtonPress);
+      button.addEventListener('mouseup', handleButtonRelease);
+      button.addEventListener('touchend', handleButtonRelease);
+      button.addEventListener('mouseleave', handleButtonRelease);
+      button.addEventListener('touchcancel', handleButtonRelease);
+    }
+
+    // Initialize event listeners for all buttons
+    document.querySelectorAll('.button').forEach(addEventListeners);
+
+    // Accordion functionality for toggling relay module panels.
+    // Use pointer events if supported to avoid duplicate events on mobile.
+    var accordionEvent = window.PointerEvent ? "pointerdown" : "click";
+    var acc = document.getElementsByClassName("accordion");
+    for (var i = 0; i < acc.length; i++) {
+      acc[i].addEventListener(accordionEvent, function(e) {
+        e.preventDefault();
+        this.classList.toggle("active");
+        // No need to set panel.style.display; CSS handles max-height transition.
+      });
+    }
+
+    // Initialize the WebSocket connection
+    connectWebSocket();
+  </script>
+</body>
+</html>
