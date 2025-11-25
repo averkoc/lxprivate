@@ -95,21 +95,37 @@ Description=MQTT Sensor Publisher
 After=network-online.target
 Wants=network-online.target
 
+# Prevent rapid restarts
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
 [Service]
 User=weatheruser
+Group=weatheruser
 WorkingDirectory=/home/weatheruser/station
+
+# Python inside the virtual environment
 ExecStart=/home/weatheruser/station/bin/python /home/weatheruser/station/emqdemo.py
+
+# Restart if it crashes
 Restart=always
 RestartSec=5
-StandardOutput=inherit
-StandardError=inherit
 
-StartLimitBurst=5
-StartLimitIntervalSec=60
+# Logging
+StandardOutput=journal
+StandardError=journal
+
+# Minimal hardening that doesn’t break venv execution
+PrivateTmp=yes          # separate /tmp
+ProtectHome=yes          # prevents access to other users’ home directories
+
+# Avoid ProtectSystem=full / NoNewPrivileges=true for now — these break the Python venv
+# Can be added later if a more complex venv setup is used
 
 [Install]
-WantedBy=multi-user.target  
+WantedBy=multi-user.target
 ````
+
 ### systemctl commands   
 ```bash
 sudo systemctl daemon-reload # When there is need to reread service files
