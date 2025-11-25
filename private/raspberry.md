@@ -117,3 +117,26 @@ sudo systemctl status mqtt-sensor.service
 sudo systemctl enable mqtt-sensor.service 
 sudo systemctl start mqtt-sensor.service
 ````
+
+### Hardening suggestions  
+```bash
+[Service]
+User=weatheruser
+Group=weatheruser
+WorkingDirectory=/home/weatheruser/station
+ExecStart=/home/weatheruser/station/bin/python /home/weatheruser/station/emqdemo.py
+
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Harden the service
+NoNewPrivileges=true          # prevents gaining new privileges
+ProtectSystem=full            # makes /usr and /boot read-only
+ProtectHome=yes               # limits access to other users' home dirs
+PrivateTmp=yes                # gives a private /tmp
+StartLimitBurst=5
+StartLimitIntervalSec=60
+````
+
