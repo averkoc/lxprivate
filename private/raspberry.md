@@ -87,3 +87,33 @@ finally:
     GPIO.cleanup()
     print("Cleanup done. Exit.")
 ````
+
+## service definition file - /etc/systemd/system/mqtt-sensor.service
+```bash
+[Unit]
+Description=MQTT Sensor Publisher
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=sakari
+WorkingDirectory=/home/sakari/mqttsensors
+ExecStart=/home/sakari/mqttsensors/bin/python /home/sakari/mqttsensors/emqdemo.py
+Restart=always
+RestartSec=5
+StandardOutput=inherit
+StandardError=inherit
+
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+[Install]
+WantedBy=multi-user.target
+````
+### systemctl commands   
+```bash
+sudo systemctl daemon-reload # When there is need to reread service files
+sudo systemctl status mqtt-sensor.service
+sudo systemctl enable mqtt-sensor.service 
+sudo systemctl start mqtt-sensor.service
+````
