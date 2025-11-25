@@ -96,9 +96,9 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-User=sakari
-WorkingDirectory=/home/sakari/mqttsensors
-ExecStart=/home/sakari/mqttsensors/bin/python /home/sakari/mqttsensors/emqdemo.py
+User=weatheruser
+WorkingDirectory=/home/weatheruser/station
+ExecStart=/home/weatheruser/station/bin/python /home/weatheruser/station/emqdemo.py
 Restart=always
 RestartSec=5
 StandardOutput=inherit
@@ -108,7 +108,7 @@ StartLimitBurst=5
 StartLimitIntervalSec=60
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user.target  
 ````
 ### systemctl commands   
 ```bash
