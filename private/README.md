@@ -259,7 +259,7 @@ Pull requests are welcome! Please ensure:
 
 ## Author
 
-Your Name - [your@email.com](mailto:your@email.com)
+SM 
 
 ## Acknowledgments
 
