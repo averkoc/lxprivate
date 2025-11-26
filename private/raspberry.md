@@ -1,4 +1,4 @@
-### emqdemo.py
+### emqdemo.py - this is the current version runnin in raspberry (like all other defs in this page)
 ````python
 import time
 import paho.mqtt.client as mqtt
