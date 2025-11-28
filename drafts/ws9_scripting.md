@@ -8,6 +8,17 @@ Motivation: difficult to remember the steps if used seldom.
 * python3 demo.py
 * deactivate
 
+**Make a script startdemo.sh**  
+```bash
+#!/bin/bash
+cd ~/mydemo
+source bin/activate
+python3 demo.py # demo2.py to handle ctrl-c nicely
+````
+> Q: Why deactivate is not needed? Q: Why not instead of `cd ~/mydemo` `cd mydemo` Q: Where to place the script ?
+
+
+
 ### Linux course mgmt-scripts 
 * accounts creation
 * emailing accounts/passwords
