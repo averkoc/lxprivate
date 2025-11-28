@@ -143,7 +143,8 @@ if [ "$MODE" = "--conf" ]; then
     echo "⚠ CONFIDENTIAL directory - only group members can access."
 else
     echo "Students in group '$GROUPNAME' can collaborate. Others can view contents."
-fi````
+fi
+````
 
 
 
