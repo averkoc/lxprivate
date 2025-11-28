@@ -56,6 +56,74 @@ client.connect(broker, port)
 publish_temperature()
 ````
 
+### Create shared directory for a student project group 
+```bash
+#!/bin/bash
+# Script: createteamdir
+# Purpose: Create shared directories for student projects under /var/projects/
+
+set -e  # Exit on any error
+set -u  # Exit on undefined variables
+
+# Check if team name argument is provided
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <teamname>" >&2
+    exit 1
+fi
+
+TEAMNAME="$1"
+GROUPNAME="$TEAMNAME"
+BASE_DIR="/var/projects"
+PROJECT_DIR="${BASE_DIR}/team${TEAMNAME}files"
+
+# Validate team name (alphanumeric, underscore, hyphen only)
+if ! [[ "$TEAMNAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    echo "Error: Team name must contain only letters, numbers, underscores, and hyphens" >&2
+    exit 1
+fi
+
+# Check if running as root or with sudo
+if [ "$EUID" -ne 0 ]; then
+    echo "Error: This script must be run as root or with sudo" >&2
+    exit 1
+fi
+
+# Check if directory already exists
+if [ -d "$PROJECT_DIR" ]; then
+    echo "Error: Directory '$PROJECT_DIR' already exists" >&2
+    exit 1
+fi
+
+# Check if group exists, if not prompt to create
+if ! getent group "$GROUPNAME" >/dev/null 2>&1; then
+    read -p "Group '$GROUPNAME' does not exist. Create it? (y/n): " -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        groupadd "$GROUPNAME"
+        echo "Group '$GROUPNAME' created."
+    else
+        echo "Aborted: Group must exist to proceed" >&2
+        exit 1
+    fi
+fi
+
+# Create the directory (with parents)
+mkdir -p "$PROJECT_DIR"
+
+# Set group ownership
+chown :"$GROUPNAME" "$PROJECT_DIR"
+
+# Set permissions: rwxrwsr-x → numeric 2775
+chmod 2775 "$PROJECT_DIR"
+
+echo "✓ Directory created: $PROJECT_DIR"
+echo "✓ Group owner: $GROUPNAME"
+echo "✓ Permissions: rwxrwsr-x (2775)"
+echo ""
+echo "Students in group '$GROUPNAME' can now collaborate in this directory."
+````
+
+
+
 
 
 ### Linux course mgmt-scripts 
