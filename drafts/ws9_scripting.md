@@ -15,7 +15,7 @@ cd ~/mydemo
 source bin/activate
 python3 demo.py # demo2.py to handle ctrl-c nicely
 ````
-> Q: Why deactivate is not needed? Q: Why not instead of `cd ~/mydemo` `cd mydemo` Q: Where to place the script ?
+> Q1: Why is deactivate not needed? Q2: Why should I use `cd ~/mydemo` instead of `cd mydemo` Q3: Where to place the script ?
 
 
 
