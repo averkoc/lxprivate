@@ -17,6 +17,44 @@ python3 demo.py # demo2.py to handle ctrl-c nicely
 ````
 > Q1: Why is deactivate not needed? Q2: Why should I use `cd ~/mydemo` instead of `cd mydemo` Q3: Where to place the script ?
 
+Add signal handling to demopy -> demo2.py to interrupt nicely 
+```python
+import time
+import random
+import signal
+import sys
+import paho.mqtt.client as mqtt
+
+#broker = "test.mosquitto.org"
+#port = 1883
+broker = "broker.emqx.io"
+port = 1883
+topictemp = f"/lx/sakari/temperature"
+topicpressure = f"/lx/sakari/pressure"
+
+client = mqtt.Client()
+
+def signal_handler(sig, frame):
+    print('\nShutting down gracefully...')
+    client.disconnect()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+def publish_temperature():
+    while True:
+        temperature = random.uniform(20.0, 30.0)
+        client.publish(topictemp, f"{temperature:.2f}")
+        print(f"Published: {temperature:.2f} to topic {topictemp}")
+        pressure = random.uniform(1020.0, 1030.0)
+        client.publish(topicpressure, f"{pressure:.2f}")
+        print(f"Published: {pressure:.2f} to topic {topicpressure}")
+        time.sleep(5)
+
+client.connect(broker, port)
+publish_temperature()
+````
+
 
 
 ### Linux course mgmt-scripts 
