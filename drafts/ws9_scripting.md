@@ -17,7 +17,8 @@ python3 demo.py # demo2.py to handle ctrl-c nicely
 ````
 > Q1: Why is deactivate not needed? Q2: Why should I use `cd ~/mydemo` instead of `cd mydemo` Q3: Where to place the script ?
 
-Add signal handling to demopy -> demo2.py to interrupt nicely 
+**Add signal handling to demo.py -> demo2.py to interrupt nicely **  
+
 ```python
 import time
 import random
