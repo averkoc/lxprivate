@@ -65,16 +65,36 @@ publish_temperature()
 set -e  # Exit on any error
 set -u  # Exit on undefined variables
 
-# Check if team name argument is provided
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <teamname>" >&2
+# Check if we have exactly 2 arguments
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <--default|--conf> <teamname>" >&2
+    echo "  --default  Standard permissions (rwxrwsr-x / 2775)" >&2
+    echo "  --conf     Confidential permissions (rwxrws--- / 2770)" >&2
     exit 1
 fi
 
-TEAMNAME="$1"
+MODE="$1"
+TEAMNAME="$2"
 GROUPNAME="$TEAMNAME"
 BASE_DIR="/var/projects"
 PROJECT_DIR="${BASE_DIR}/team${TEAMNAME}files"
+
+# Validate mode and set permissions
+case "$MODE" in
+    --default)
+        PERMS="2775"
+        PERMS_DESC="rwxrwsr-x (standard - others can read/list)"
+        ;;
+    --conf)
+        PERMS="2770"
+        PERMS_DESC="rwxrws--- (confidential - group only)"
+        ;;
+    *)
+        echo "Error: Invalid mode '$MODE'" >&2
+        echo "Must be either --default or --conf" >&2
+        exit 1
+        ;;
+esac
 
 # Validate team name (alphanumeric, underscore, hyphen only)
 if ! [[ "$TEAMNAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
@@ -112,15 +132,18 @@ mkdir -p "$PROJECT_DIR"
 # Set group ownership
 chown :"$GROUPNAME" "$PROJECT_DIR"
 
-# Set permissions: rwxrwsr-x → numeric 2775
-chmod 2775 "$PROJECT_DIR"
+# Set permissions
+chmod "$PERMS" "$PROJECT_DIR"
 
 echo "✓ Directory created: $PROJECT_DIR"
 echo "✓ Group owner: $GROUPNAME"
-echo "✓ Permissions: rwxrwsr-x (2775)"
+echo "✓ Permissions: $PERMS_DESC"
 echo ""
-echo "Students in group '$GROUPNAME' can now collaborate in this directory."
-````
+if [ "$MODE" = "--conf" ]; then
+    echo "⚠ CONFIDENTIAL directory - only group members can access."
+else
+    echo "Students in group '$GROUPNAME' can collaborate. Others can view contents."
+fi````
 
 
 
