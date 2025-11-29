@@ -8,7 +8,7 @@ In this workshop we only touch the surface: you’ll observe short, safe example
 
 ## Examples 
 
-#### Automate mqtt-demo demo.py execution  
+#### Example 1 - Automate mqtt-demo demo.py execution  
 To run our simulated weather station we needed to issue the following commands:
 * cd ~/mydemo
 * source bin/activate
@@ -68,7 +68,9 @@ publish_temperature()
 > In video we handle questions: Q1: Why is deactivate not needed? Q2: Why should I use `cd ~/mydemo` instead of `cd mydemo` Q3: Where to place the script ?  
 
 
-### Create shared directory for a student project group 
+### Example 2 - Create a shared directory for a project group 
+In our "files and directories ownership and permissions" workshop, we created shared directories for project groups. If that need arises often, it is a good candidate for automation. It is not difficult to write a quick-and-dirty script to do the work, but let’s try using an AI tool to generate interactive versions that accomplish the same task. Below is one version that we walk through in the video. 
+
 ```bash
 
 #!/bin/bash
@@ -160,7 +162,9 @@ fi
 
 ````
 
-### Team cleaning with safety features  
+### Example 3 - Safe Cleaning of a Project Directory with Backup Option  
+This example shows how to safely clean out the contents of a given project directory while optionally creating a backup. It avoids accidental data loss by checking for the directory’s existence and backing up important files before removal.  
+
 ```bash
 #!/bin/bash
 # Script: deleteteamdir
