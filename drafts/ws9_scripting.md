@@ -1,4 +1,4 @@
-## Scripting  
+## Scripting - this page supports the related video
 
 ### Motivation for Learning 
 
@@ -6,25 +6,29 @@ Scripting is a powerful way to turn repetitive tasks into reliable, repeatable w
 
 In this workshop we only touch the surface: you’ll observe short, safe examples and experiment with small scripts to gain insight into what scripting can do.
 
-### Activity - Automate mqtt-demo demo.py execution  
-Motivation: difficult to remember the steps if used seldom.  
+## Examples 
 
+#### Automate mqtt-demo demo.py execution  
+To run our simulated weather station we needed to issue the following commands:
 * cd ~/mydemo
 * source bin/activate
 * python3 demo.py
 * deactivate
 
-**Make a script startdemo.sh**  
+If you are not familiar with Python  that command sequence maybe difficult to remember but putting them in a script makes the demos much easier to start. 
+
 ```bash
 #!/bin/bash
 cd ~/mydemo
 source bin/activate
-python3 demo.py # demo2.py to handle ctrl-c nicely
+python3 demo.py # demo2.py adds signal handling to shutdown nicely
 ````
-> Q1: Why is deactivate not needed? Q2: Why should I use `cd ~/mydemo` instead of `cd mydemo` Q3: Where to place the script ?
+In video we handle these questsions: Q1: Why is deactivate not needed? Q2: Why should I use `cd ~/mydemo` instead of `cd mydemo` Q3: Where to place the script ?  
 
-**Add signal handling to demo.py -> demo2.py to interrupt nicely**  
 
+<details> 
+    <summary>Here is a version of demo.py that handles ctrl-c properly</summary>  
+    
 ```python
 import time
 import random
@@ -61,6 +65,7 @@ def publish_temperature():
 client.connect(broker, port)
 publish_temperature()
 ````
+</details>  
 
 ### Create shared directory for a student project group 
 ```bash
