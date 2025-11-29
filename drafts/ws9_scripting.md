@@ -69,7 +69,32 @@ publish_temperature()
 
 
 ### Example 2 - Create a shared directory for a project group 
-In our "files and directories ownership and permissions" workshop, we created shared directories for project groups. If that need arises often, it is a good candidate for automation. It is not difficult to write a quick-and-dirty script to do the work, but let’s try using an AI tool to generate interactive versions that accomplish the same task. Below is one version that we walk through in the video. 
+In our 'files and directories ownership and permissions' workshop, we created shared directories for project groups. If that need arises often, it is a good candidate for automation. It is not difficult to write a quick-and-dirty script to do the work, but let’s try using an AI tool to generate interactive versions that accomplish the same task. Our primary goal is to have a reliable, maintainable script, createteamdir --options teamname, that creates a shared directory for a student team named teamname. Depending on the option --default or --confidential, the directory will be either world-readable or restricted
+
+
+<details>
+<summary>"Quick and Dirty" version by Claude</summary> 
+   
+````bash
+    #!/bin/bash
+set -eu
+[ $# -ne 2 ] && { echo "Usage: $0 <--default|--conf> <teamname>" >&2; exit 1; }
+[ "$EUID" -ne 0 ] && { echo "Run as root" >&2; exit 1; }
+
+MODE=$1 TEAM=$2 DIR="/var/projects/team${TEAM}files"
+[[ $MODE == --default ]] && PERM=2775 || [[ $MODE == --conf ]] && PERM=2770 || { echo "Invalid mode" >&2; exit 1; }
+[[ $TEAM =~ ^[a-zA-Z0-9_-]+$ ]] || { echo "Invalid team name" >&2; exit 1; }
+[ -d "$DIR" ] && { echo "Directory exists" >&2; exit 1; }
+
+getent group "$TEAM" >/dev/null || { read -p "Create group $TEAM? (y/n): " && [[ $REPLY =~ ^[Yy]$ ]] && groupadd "$TEAM" || exit 1; }
+
+mkdir -p "$DIR"
+chown :"$TEAM" "$DIR"
+chmod "$PERM" "$DIR"
+echo "✓ Created $DIR with permissions $PERM" 
+````
+    
+</details>
 
 ```bash
 
