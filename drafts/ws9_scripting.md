@@ -25,7 +25,7 @@ python3 demo.py # below is a version of demo.py that contains signal handling
 ````
 
 <details> 
-    <summary>Here is a version of demo.py that handles ctrl-c properly</summary>  
+    <summary>Click to see a version of demo.py that handles ctrl-c properly</summary>  
     
 ```python
 import time
