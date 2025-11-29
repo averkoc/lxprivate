@@ -21,7 +21,7 @@ If you are not familiar with Python  that command sequence maybe difficult to re
 #!/bin/bash
 cd ~/mydemo
 source bin/activate
-python3 demo.py # demo2.py adds signal handling to shutdown nicely
+python3 demo.py # below is a version of demo.py that contains signal handling
 ````
 
 <details> 
