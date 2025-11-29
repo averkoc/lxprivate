@@ -23,8 +23,6 @@ cd ~/mydemo
 source bin/activate
 python3 demo.py # demo2.py adds signal handling to shutdown nicely
 ````
-In video we handle these questsions: Q1: Why is deactivate not needed? Q2: Why should I use `cd ~/mydemo` instead of `cd mydemo` Q3: Where to place the script ?  
-
 
 <details> 
     <summary>Here is a version of demo.py that handles ctrl-c properly</summary>  
@@ -66,6 +64,9 @@ client.connect(broker, port)
 publish_temperature()
 ````
 </details>  
+
+> In video we handle questions: Q1: Why is deactivate not needed? Q2: Why should I use `cd ~/mydemo` instead of `cd mydemo` Q3: Where to place the script ?  
+
 
 ### Create shared directory for a student project group 
 ```bash
