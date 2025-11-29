@@ -2,8 +2,9 @@
 
 ### Motivation for Learning 
 
-Many different IT roles rely on scripting because it turns routine tasks into reliable, automated workflows. System administrators use scripts to automate management operations such as backups, user management, monitoring, and log rotation—saving time and reducing mistakes. Software developers, DevOps engineers, and data analysts use scripting to speed up testing, build processes, data preparation, and other repetitive tasks that would be slow or error-prone by hand.  
+Scripting is a powerful way to turn repetitive tasks into reliable, repeatable workflows: system administrators use scripts for backups, user and service management, and monitoring; developers and analysts automate builds, tests, and data preparation; and power users speed up everyday tasks. That power comes with risk — a script run with administrative rights can change or destroy large parts of a system in seconds, so always review and test scripts, especially those using sudo, even when working on a server used only by you.
 
+In this workshop we only touch the surface: you’ll observe short, safe examples and experiment with small scripts to gain insight into what scripting can do.
 
 ### Activity - Automate mqtt-demo demo.py execution  
 Motivation: difficult to remember the steps if used seldom.  
