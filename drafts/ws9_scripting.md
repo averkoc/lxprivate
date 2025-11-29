@@ -73,7 +73,11 @@ In our 'files and directories ownership and permissions' workshop, we created sh
 
 
 <details>
-<summary>"Prompt to Claude: Write "Quick and Dirty" version to accomplish the described task - Click to see result</summary> 
+<summary> 
+    
+**Prompt to Claude AI** : Write "a Quick and Dirty" version to do the described task - Click to see result
+
+</summary> 
    
 ````bash
     #!/bin/bash
