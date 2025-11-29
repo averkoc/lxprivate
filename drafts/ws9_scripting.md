@@ -15,7 +15,7 @@ To run our simulated weather station we needed to issue the following commands:
 * python3 demo.py
 * deactivate
 
-If you are not familiar with Python  that command sequence maybe difficult to remember but putting them in a script makes the demos much easier to start. 
+If you are not familiar with Python  that command sequence maybe difficult to remember but putting them in a script makes it much easier to start. 
 
 ```bash
 #!/bin/bash
