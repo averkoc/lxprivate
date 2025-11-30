@@ -14,7 +14,7 @@ You get full workshop scores by submitting a correct and complete report in your
 | Status | Required Action | Your Benefit | Maximum Grade Awarded |
 | :--- | :--- | :--- | :--- |
 | **Initial Submission** | **Complete** and submitted on time. | Maximum score achieved immediately! | **100%** |
-| **Re-submission (1st Attempt)** | Corrected to **Complete** (within 7 days of receiving the 'INC' grade). | The opportunity to pass, despite initial errors. | **80%** (Max) |
+| **Re-submission (1st Attempt)** | Corrected to **Complete** (within 7 days of receiving the 'incomplete' grade). | The opportunity to pass, despite initial errors. | **80%** (Max) |
 | **Re-submission (2nd Attempt)** | Still Incomplete or Non-Compliant. | Time is better spent on the next assignment. | **0% (Final Grade)** |
 
 ### 2. ⚙️ Technical Support: Proactive Problem Solving
