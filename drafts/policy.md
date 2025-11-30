@@ -8,7 +8,7 @@ This policy is designed to ensure a fair, efficient, and timely feedback process
 
 ### 1. 🎯 Submission Standards: Getting It Right the First Time
 
-You get full workshop scores by submitting correct and complete report in your first submisson before deadline. 
+You get full workshop scores by submitting a correct and complete report in your first submisson before each deadline. 
 > Please note: The provided instructional videos and steps contain all the information required to produce a fully complete and compliant report.
 
 | Status | Required Action | Your Benefit | Maximum Grade Awarded |
