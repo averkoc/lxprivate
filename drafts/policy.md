@@ -19,7 +19,7 @@ You get full workshop scores by submitting a correct and complete report in your
 
 ### 2. ⚙️ Technical Support: Proactive Problem Solving
 
-We want to help you overcome technical hurdles *before* the deadline. This process ensures we can provide timely support when you need it most. Don't report assignment related things that are instructed on video or supporting pages except when something doesn't work due an unexpected reason not handled in the instrucions.
+We want to help you overcome technical hurdles *before* the deadline. This process ensures we can provide timely support when you need it most. Don't ask questions that are already answered in workshop instructions video or video supporting pages.
 
 | Rule | Your Action | Purpose (How it Helps You) |
 | :--- | :--- | :--- |
