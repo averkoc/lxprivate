@@ -1,12 +1,15 @@
 ##  Workshop Report Policy: Partnering for Success
 
-This policy is designed to ensure a fair, efficient, and timely feedback process for **all** students. By setting clear standards, we can focus less on administrative corrections and more on your learning.
+This policy is designed to ensure a fair, efficient, and timely feedback process for **all** students. By setting clear standards, we can focus less on administrative corrections and more on your learning.  
+
+
 
 ---
 
 ### 1. 🎯 Submission Standards: Getting It Right the First Time
 
-Achieving a high score starts with a complete submission. **Completeness** means providing **ALL** specified screenclips as proof of successful activity completion.
+You get full workshop scores by submitting correct and complete report in your first submisson before deadline. 
+> Please note: The provided instructional videos and steps contain all the information required to produce a fully complete and compliant report.
 
 | Status | Required Action | Your Benefit | Maximum Grade Awarded |
 | :--- | :--- | :--- | :--- |
