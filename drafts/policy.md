@@ -17,9 +17,9 @@ You get full workshop scores by submitting a correct and complete report in your
 | **Re-submission (1st Attempt)** | Corrected to **Complete** (within 7 days of receiving the 'incomplete' grade). | The opportunity to pass, despite initial errors. | **80%** (Max) |
 | **Re-submission (2nd Attempt)** | Still Incomplete or Non-Compliant. | Time is better spent on the next assignment. | **0% (Final Grade)** |
 
-### 2. ⚙️ Technical Support: Proactive Problem Solving
+### 2. ⚙️ Technical Support: Proactive Problem Solving 
 
-We want to help you overcome technical hurdles *before* the deadline. This process ensures we can provide timely support when you need it most. Don't ask questions that are already answered in workshop instructions video or video supporting pages.
+We want to help you overcome technical hurdles *before* the deadline. This process ensures we can provide timely support when you need it most. The support is for those unexpected issues that are not handled in workshop instructions video or workshop support pages. 
 
 | Rule | Your Action | Purpose (How it Helps You) |
 | :--- | :--- | :--- |
