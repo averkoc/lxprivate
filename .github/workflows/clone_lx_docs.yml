@@ -1,0 +1,27 @@
+name: Sync docs from lx repo
+
+on:
+  workflow_dispatch:   # run manually
+  schedule:
+    - cron: "0 0 * * *"   # daily
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout private repo
+        uses: actions/checkout@v3
+
+      - name: Clone source repo
+        run: git clone https://github.com/averkoc/lx.git source
+
+      - name: Copy folder
+        run: cp -r source/docs/* foldername/
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add foldername
+          git commit -m "Sync folder from source repo" || echo "No changes"
+          git push
