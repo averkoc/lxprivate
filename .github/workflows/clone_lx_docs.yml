@@ -22,6 +22,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add foldername
+          git add docs
           git commit -m "Sync folder from source repo" || echo "No changes"
           git push
