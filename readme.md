@@ -6,6 +6,6 @@
 * [github.com/averkoc/linux](https://github.com/averkoc/linux) is an older Linux Essentials course related directory. E.g. it's logistics.md may be useful
 
 ### Some useful direct links
-  * How users sees that they have passed the practical exam [passed.md](passed.md)
+  * How users see that they have passed the practical exam [passed.md](passed.md)
   * Embedded Linux - Wheter station service in Raspberry  [Whether station service in Raspberr](https://github.com/averkoc/lxprivate/blob/main/private/raspberry.md)
  
