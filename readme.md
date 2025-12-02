@@ -14,4 +14,8 @@
 * Debian installation guide and working configuration: student creatated during installation, add: sudo, avahi-daemon, root:usermod -aG student, /etc/network/interfaces enp0s8,
 
 
+### Misc
+* [make console font bigger](consolefont.md) 
+
+
  
