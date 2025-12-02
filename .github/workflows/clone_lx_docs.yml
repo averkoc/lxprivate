@@ -13,7 +13,6 @@ jobs:
       - name: Checkout private repo
         uses: actions/checkout@v3
         with:
-          repository: averkoc/lxprivate
           token: ${{ secrets.PAT_PUSH }}
           ref: main   # or master, adjust to your branch
 
