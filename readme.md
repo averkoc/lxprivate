@@ -15,7 +15,8 @@
 
 
 ### Misc
-* [make console font bigger](consolefont.md) 
+* [make console font bigger](consolefont.md)
+* [screenclips](screenclips)
 
 
  
