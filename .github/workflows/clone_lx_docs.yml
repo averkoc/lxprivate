@@ -1,13 +1,14 @@
-name: Sync docs from lx repo
+name: Sync docs from lx
 
 on:
-  workflow_dispatch:   # run manually
+  workflow_dispatch:   # Manual trigger
   schedule:
-    - cron: "0 0 * * *"   # daily
+    - cron: "0 6 * * *"   # Daily at 06:00 UTC
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout private repo
         uses: actions/checkout@v3
@@ -15,13 +16,21 @@ jobs:
       - name: Clone source repo
         run: git clone https://github.com/averkoc/lx.git source
 
-      - name: Copy folder
-        run: cp -r source/docs/* docs/
+      - name: Copy folder contents
+        run: |
+          mkdir -p docs
+          cp -r source/docs/* docs/
 
       - name: Commit changes
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add docs
-          git commit -m "Sync folder from source repo" || echo "No changes"
-          git push
+          git commit -m "Sync docs folder from source repo" || echo "No changes"
+
+      - name: Push with PAT
+        env:
+          TOKEN: ${{ secrets.PAT_PUSH }}
+        run: |
+          git remote set-url origin https://x-access-token:${TOKEN}@github.com/averkoc/lxprivate.git
+          git push origin main
