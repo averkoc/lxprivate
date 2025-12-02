@@ -1,9 +1,9 @@
 name: Sync docs from lx
 
 on:
-  workflow_dispatch:   # Manual trigger
+  workflow_dispatch:
   schedule:
-    - cron: "0 6 * * *"   # Daily at 06:00 UTC
+    - cron: "0 6 * * *"
 
 jobs:
   sync:
@@ -13,8 +13,7 @@ jobs:
       - name: Checkout lxprivate
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.PAT_PUSH }}
-          ref: main   # adjust if your default branch is master
+          ref: main   # adjust if your branch is master
 
       - name: Clone source repo lx
         run: git clone https://github.com/averkoc/lx.git source
