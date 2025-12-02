@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: "0 6 * * *"
 
+permissions:
+  contents: write   # allow pushing commits
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -13,7 +16,7 @@ jobs:
       - name: Checkout lxprivate
         uses: actions/checkout@v3
         with:
-          ref: main   # adjust if your branch is master
+          ref: main   # or master
 
       - name: Clone source repo lx
         run: git clone https://github.com/averkoc/lx.git source
