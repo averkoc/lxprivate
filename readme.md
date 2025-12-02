@@ -16,7 +16,7 @@
 
 ### Misc
 * [make console font bigger](consolefont.md)
-* [Workshops report screenclips](screenclips)
+* [Workshops report screen clips](screenclips)
 
 
  
