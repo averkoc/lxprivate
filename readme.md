@@ -7,5 +7,5 @@
 
 ### Some useful direct links
   * How users sees that they have passed the practical exam [passed.md](passed.md)
-  * Embedded Linux - Wheter station service in Raspberry  [https://github.com/averkoc/lxprivate/private/raspberry.md](https://github.com/averkoc/lxprivate/blob/main/private/raspberry.md)
+  * Embedded Linux - Wheter station service in Raspberry  [Whether station service in Raspberr](https://github.com/averkoc/lxprivate/blob/main/private/raspberry.md)
  
