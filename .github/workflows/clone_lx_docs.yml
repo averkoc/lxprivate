@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout private repo
+      - name: Checkout lxprivate
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.PAT_PUSH }}
-          ref: main   # or master, adjust to your branch
+          ref: main   # adjust if your default branch is master
 
-      - name: Clone source repo
+      - name: Clone source repo lx
         run: git clone https://github.com/averkoc/lx.git source
 
-      - name: Copy folder contents
+      - name: Copy docs folder
         run: |
           mkdir -p docs
           cp -r source/docs/* docs/
@@ -29,7 +29,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add docs
-          git commit -m "Sync docs folder from source repo" || echo "No changes"
+          git commit -m "Sync docs folder from lx" || echo "No changes"
 
       - name: Push changes
         run: git push origin HEAD:main
