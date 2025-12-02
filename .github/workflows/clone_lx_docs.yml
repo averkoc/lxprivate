@@ -32,5 +32,5 @@ jobs:
         env:
           TOKEN: ${{ secrets.PAT_PUSH }}
         run: |
-          git remote set-url origin https://x-access-token:${PUSH_PAT}@github.com/averkoc/lxprivate.git
+          git remote set-url origin https://x-access-token:${TOKEN}@github.com/averkoc/lxprivate.git
           git push origin main
