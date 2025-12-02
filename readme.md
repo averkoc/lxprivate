@@ -10,4 +10,8 @@
   * Embedded Linux - Wheter station service in Raspberry  [Whether station service in Raspberr](https://github.com/averkoc/lxprivate/blob/main/private/raspberry.md)
   * [FAQ for students](https://github.com/averkoc/lx/blob/main/docs/faq.md)
 
+### Check-list
+* Debian installation guide and working configuration: student creatated during installation, add: sudo, avahi-daemon, root:usermod -aG student, /etc/network/interfaces enp0s8,
+
+
  
