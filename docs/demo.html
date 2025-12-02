@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Station</title>
+<style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; max-width: 480px; margin: auto; }
+    h1 { font-size: 1.5em; margin-bottom: 10px; }
+    label { font-weight: bold; }
+    input { padding: 5px; margin-left: 5px; width: 100px; }
+    .value { font-size: 2em; }
+    .reading { margin: 10px 0; }
+    #log { 
+        margin: 20px auto; 
+        text-align: center; 
+        background: #f5f5f5; 
+        padding: 10px; 
+        border-radius: 8px; 
+        border: 1px solid #ccc; 
+        max-height: 150px; 
+        overflow-y: auto; 
+        font-size: 0.9em; 
+        width: 90%;
+    }
+    #status { 
+        position: fixed; 
+        bottom: 0; 
+        left: 0; 
+        width: 100%; 
+        padding: 8px; 
+        font-weight: bold; 
+        text-align: center; 
+    }
+    #status.connected { color: white; background-color: green; }
+    #status.disconnected { color: white; background-color: red; }
+    #status.connecting { color: white; background-color: orange; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+<script>
+let client;
+let stationId = "sakari";
+let clientId = "webclient-" + Math.random().toString(16).substr(2, 8);
+
+const lastValues = []; // Stores last 5 readings
+
+function updateStatus(status) {
+    const el = document.getElementById("status");
+    el.innerText = status;
+    el.className = status.toLowerCase();
+}
+
+function updateLog(type, value) {
+    const timestamp = new Date().toLocaleTimeString();
+    const icon = type === "Temperature" ? "🌡️" : "🧭";
+    lastValues.unshift(`${timestamp} ${icon} ${type}: ${value}`);
+    if (lastValues.length > 5) lastValues.pop();
+    document.getElementById("log").innerHTML = lastValues.join("<br>");
+}
+
+function connectMQTT() {
+    updateStatus("Connecting");
+    client = new Paho.MQTT.Client("broker.emqx.io", 8084, clientId);
+
+    client.onConnectionLost = function(responseObject) {
+        if (responseObject.errorCode !== 0) {
+            console.log("Connection lost: " + responseObject.errorMessage);
+            updateStatus("Disconnected");
+            reconnect();
+        }
+    };
+
+    client.onMessageArrived = function(message) {
+        const value = message.payloadString;
+        if (message.destinationName === `/lx/${stationId}/temperature`) {
+            document.getElementById("temperature").innerText = value;
+            updateLog("Temperature", value + " °C");
+        } else if (message.destinationName === `/lx/${stationId}/pressure`) {
+            document.getElementById("pressure").innerText = value;
+            updateLog("Pressure", value + " hPa");
+        }
+    };
+
+    client.connect({
+        onSuccess: onConnect,
+        onFailure: function(err) {
+            console.log("Connect failed:", err.errorMessage);
+            updateStatus("Disconnected");
+            reconnect();
+        },
+        useSSL: true,
+        keepAliveInterval: 60
+    });
+}
+
+function onConnect() {
+    console.log("Connected");
+    updateStatus("Connected");
+    subscribeTopics();
+}
+
+function reconnect() {
+    setTimeout(() => {
+        if (!client.isConnected()) {
+            console.log("Reconnecting...");
+            connectMQTT();
+        }
+    }, 5000);
+}
+
+function subscribeTopics() {
+    if (client.isConnected()) {
+        client.subscribe(`/lx/${stationId}/temperature`);
+        client.subscribe(`/lx/${stationId}/pressure`);
+    }
+}
+
+function updateStationId() {
+    const oldStationId = stationId;
+    stationId = document.getElementById("stationId").value;
+
+    if (client.isConnected()) {
+        client.unsubscribe(`/lx/${oldStationId}/temperature`);
+        client.unsubscribe(`/lx/${oldStationId}/pressure`);
+        client.subscribe(`/lx/${stationId}/temperature`);
+        client.subscribe(`/lx/${stationId}/pressure`);
+    }
+}
+
+window.onload = function() {
+    connectMQTT();
+};
+</script>
+</head>
+<body>
+<h1>Indoor Weather Station</h1>
+<div>
+    <label for="stationId">Station ID:</label>
+    <input type="text" id="stationId" value="sakari" oninput="updateStationId()">
+</div>
+
+<div class="reading">
+    <p>Temperature: <span class="value" id="temperature">--</span> °C</p>
+    <p>Pressure: <span class="value" id="pressure">--</span> hPa</p>
+</div>
+
+<div id="log">No readings yet.</div>
+
+<div id="status" class="connecting">Connecting</div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<div class="accordion">
+  <input type="checkbox" id="{{ include.id }}" class="accordion-toggle">
+  <label for="{{ include.id }}" class="accordion-header">
+    {{ include.title }}
+  </label>
+
+  <div class="accordion-content">
+    {{ include.content | markdownify }}
+  </div>
+</div>

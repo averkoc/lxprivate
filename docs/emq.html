@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Station</title>
+<style>
+    /* Reset body margin/padding */
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f9f9f9;
+    }
+
+    /* Container for content */
+    .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+
+    .value {
+        font-size: 2em;
+    }
+
+    p {
+        margin: 10px 0;
+    }
+
+    /* Status bar */
+    #status { 
+        position: fixed; 
+        bottom: 0; 
+        left: 0;
+        width: 100%; 
+        padding: 10px; 
+        font-weight: bold; 
+        border-top: 1px solid #ccc; 
+        box-sizing: border-box; /* ensure full width */
+        text-align: center;
+    }
+
+    /* Status colors */
+    .connected { color: white; background-color: green; }
+    .disconnected { color: white; background-color: red; }
+    .reconnecting { color: black; background-color: yellow; animation: flash 1s infinite; }
+
+    @keyframes flash {
+        0%, 50%, 100% { opacity: 1; }
+        25%, 75% { opacity: 0.5; }
+    }
+
+    /* Responsive text scaling */
+    @media (max-width: 600px) {
+        h1 { font-size: 1.5em; }
+        .value { font-size: 1.5em; }
+        #status { font-size: 0.9em; padding: 8px; }
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Current Indoor Weather (SM)</h1>
+    <div>
+        <p>Temperature: <span class="value" id="temperature">--</span> °C</p>
+        <p>Pressure: <span class="value" id="pressure">--</span> hPa</p>
+    </div>
+</div>
+<div id="status">Broker Status: Disconnected</div>
+
+<script>
+window.addEventListener("load", () => {
+    const statusEl = document.getElementById("status");
+
+    const clientId = "client-" + Math.floor(Math.random() * 10000);
+    const client = new Paho.MQTT.Client("broker.emqx.io", 8084, clientId);
+
+    function updateStatus(state) {
+        if (state === "connected") {
+            statusEl.innerText = "Broker Status: Connected";
+            statusEl.className = "connected";
+        } else if (state === "disconnected") {
+            statusEl.innerText = "Broker Status: Disconnected";
+            statusEl.className = "disconnected";
+        } else if (state === "reconnecting") {
+            statusEl.innerText = "Broker Status: Reconnecting...";
+            statusEl.className = "reconnecting";
+        }
+    }
+
+    client.onConnectionLost = function(responseObject) {
+        if (responseObject.errorCode !== 0) {
+            console.log("Connection lost: " + responseObject.errorMessage);
+            updateStatus("reconnecting");
+            setTimeout(() => client.connect({ onSuccess: onConnect, useSSL: true }), 5000);
+        }
+    };
+
+    client.onMessageArrived = function(message) {
+        if (message.destinationName === "/lxweather/temperature") {
+            document.getElementById("temperature").innerText = message.payloadString;
+        } else if (message.destinationName === "/lxweather/pressure") {
+            document.getElementById("pressure").innerText = message.payloadString;
+        }
+    };
+
+    function onConnect() {
+        console.log("Connected to broker with client ID:", clientId);
+        updateStatus("connected");
+        client.subscribe("/lxweather/temperature");
+        client.subscribe("/lxweather/pressure");
+        startKeepAlive();
+    }
+
+    function startKeepAlive() {
+        setInterval(() => {
+            if (client.isConnected()) {
+                client.send("/keepalive", "ping", 0);
+            }
+        }, 60000);
+    }
+
+    updateStatus("disconnected");
+    client.connect({ onSuccess: onConnect, useSSL: true });
+});
+</script>
+</body>
+</html>
