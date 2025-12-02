@@ -16,7 +16,7 @@ jobs:
         run: git clone https://github.com/averkoc/lx.git source
 
       - name: Copy folder
-        run: cp -r source/docs/* foldername/
+        run: cp -r source/docs/* docs/
 
       - name: Commit changes
         run: |
