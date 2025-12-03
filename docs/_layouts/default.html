@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page.title | default: site.title }}</title>
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐧</text></svg>">
+
+  <!-- Optional: mobile theme color -->
+  <meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
@@ -12,15 +18,15 @@
     <div class="site-title">{{ site.title }}</div>
     {{ content }}
   </main>
+
   <script src="{{ '/assets/js/copy.js' | relative_url }}"></script>
-<footer>
-  <p>© 2025 SM  - 
 
-  <a href="https://github.com/{{ site.github.username }}/{{ site.github.repository_name }}/edit/main/docs/{{ page.path }}">
-  ✏️ Edit this page
-</a>
-  </p>
-
-</footer>  
+  <footer>
+    <p>© 2025 SM –
+      <a href="https://github.com/{{ site.github.username }}/{{ site.github.repository_name }}/edit/main/docs/{{ page.path }}">
+        ✏️ Edit this page
+      </a>
+    </p>
+  </footer>
 </body>
 </html>
