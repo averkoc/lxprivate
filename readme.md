@@ -18,6 +18,6 @@
 * [make console font bigger](consolefont.md)
 * [Workshops report screen clips](screenclips)
 * [Screen Clip Studio by Lovable](https://crispclip-fixer.lovable.app/)
-* [Clipper](docs/clipper.md)
+* [Clipper](https://averkoc.github.io/lx/clipper)
 
  
