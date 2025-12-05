@@ -9,7 +9,7 @@ You need first to generate key-pair in your local computer using `keygen` comman
 Both of these command you execyte in your local computer. The `ssh-copy-id` program connects to server asking your password and copies the public key to ~/.ssh/authorized_keys file in the server. 
 
 ### File permissions an ownerships  
-"I have created" a [file permission simulator](perms.md) that you can use to observe how file ownerships (user,group) affects whether different users can do witht the file.
+"I have created" a [file permission simulator](perms.html) that you can use to observe how file ownerships (user,group) affects whether different users can do witht the file.
 
 
 
