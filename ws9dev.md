@@ -11,9 +11,9 @@ if [ -d "$HOME/.local/bin" ] ; then
 fi
 ````
 **Extra**
-# Bash Login Shell Initialization on Debian
+### Bash Login Shell Initialization on Debian
 
-## 1. System-wide login initialization
+#### 1. System-wide login initialization
 When Bash is started as a **login shell**, it first reads:
 
 1. `/etc/profile`
@@ -22,7 +22,7 @@ When Bash is started as a **login shell**, it first reads:
 
 ---
 
-## 2. User login initialization
+#### 2. User login initialization
 Bash then reads **the first existing and readable file** in the user's home directory:
 
 1. `~/.bash_profile`
@@ -34,18 +34,7 @@ Bash then reads **the first existing and readable file** in the user's home dire
 
 ---
 
-## 3. `.bashrc` and `.bash_aliases`
+#### 3. `.bashrc` and `.bash_aliases`
 - Bash **does not automatically read `~/.bashrc`** for login shells.  
 - On Debian/Ubuntu, `~/.bashrc` is typically sourced from the login file (`~/.bash_profile` or `~/.profile`):
 
-```sh
-if [ -f "$HOME/.bashrc" ]; then
-    . "$HOME/.bashrc"
-
-
-
-**Interactive non-login shell**
-
-Bash reads (in this exact order):  
-/etc/bash.bashrc  
-~/.bashrc 
