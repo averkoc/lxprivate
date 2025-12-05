@@ -13,6 +13,8 @@
 ### Check-list
 * Debian installation guide and working configuration: student creatated during installation, add: sudo, avahi-daemon, root:usermod -aG student, /etc/network/interfaces enp0s8,
 
+### Workshop development ideas  
+* [Scripting WS9](ws9dev.md) (startup scripts could be referred also earlier)
 
 ### Misc
 * [make console font bigger](consolefont.md)
