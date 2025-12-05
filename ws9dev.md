@@ -1,5 +1,5 @@
 ## Scripting workshop update  
-* screen clip where the script is started just by issuing `startdemo.sh` instead of `./startdemo.sh` in home directory. 
+* in place of the current screen clip a clip where the script is started just by issuing `startdemo.sh` instead of `./startdemo.sh` in home directory. 
 * possible: screen clip that shows the execution of some of the example scripts
 
 ### How ~./bin was added automatically to PATH  
