@@ -3,418 +3,629 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Pasteboard with Readable Clips</title>
-   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✂️</text></svg>">
+<title>Clipboard Win</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✂️</text></svg>">
 <style>
-body {
-  font-family: system-ui, Segoe UI, Arial;
-  margin: 20px;
-  color: #222;
+* { box-sizing: border-box; }
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #f3f4f6;
+  min-height: 100vh;
+  color: #1a1a2e;
 }
-h1 { font-size: 22px; margin-bottom: 8px; }
-#instructions {
-  font-size: 1.2em;
-  color: #666;
-  margin-bottom: 12px;
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
 }
-#output {
-  margin-top: 14px;
+header {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 24px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+h1 { 
+  font-size: 28px;
+  margin: 0 0 12px 0;
+  font-weight: 600;
+  color: #1f2937;
+}
+#instructions { 
+  font-size: 15px;
+  color: #4a5568;
+  line-height: 1.6;
+  margin: 0;
+}
+#instructions strong {
+  color: #2d3748;
+  font-weight: 600;
+}
+#toolbar { 
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+button { 
+  padding: 10px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  background: white;
+  color: #374151;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+button:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+button:active {
+  transform: translateY(0);
+  background: #f3f4f6;
+}
+#clearBtn {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+#clearBtn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+#status { 
+  margin-top: 12px;
+  font-size: 14px;
+  color: #2d3748;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 8px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+#output { 
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  margin-top: 24px;
 }
-.img-wrap {
+.img-wrap { 
   position: relative;
-  display: inline-block;
+  background: white;
   border-radius: 8px;
-  padding: 4px;
-  border: 1px solid #ddd;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.15s ease;
+  cursor: pointer;
 }
-.img-wrap:focus {
-  outline: 3px solid #4a90e280;
+.img-wrap:hover {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-color: #d1d5db;
 }
-/* Description */
-.desc {
-  font-size: 1.2em;
-  margin-bottom: 4px;
-  padding: 2px 4px;
-  min-height: 20px;
-  border-radius: 4px;
+.img-wrap:focus { 
   outline: none;
-  background: #f9f9f9;
-  border: 1px solid #e0e0e0;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
-.desc:focus {
-  border-color: #4a90e2;
-  background: #f0f6ff;
+.img-wrap.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+.desc { 
+  font-size: 14px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  min-height: 36px;
+  border-radius: 6px;
+  outline: none;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  transition: all 0.15s ease;
+  color: #374151;
+}
+.desc:focus { 
+  border-color: #3b82f6;
+  background: white;
   cursor: text;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
-/* Drag handle */
-.drag-handle {
+.desc:empty:before {
+  content: "Add description...";
+  color: #a0aec0;
+}
+.drag-handle { 
   cursor: grab;
   user-select: none;
-  display: inline-block;
-  padding: 2px 6px;
-  font-weight: bold;
-  color: #666;
-  margin-bottom: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 8px;
+  font-size: 16px;
+  border-radius: 4px;
+  background: #f3f4f6;
+  transition: all 0.15s ease;
 }
-.drag-handle:active { cursor: grabbing; }
-/* Resize handles */
-.resize-handle {
+.drag-handle:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+.drag-handle:active { 
+  cursor: grabbing;
+  transform: scale(0.95);
+}
+.img-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f7fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.img-container img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.resize-handle { 
   position: absolute;
-  width: 12px;
-  height: 12px;
-  background: #4a90e2;
+  width: 14px;
+  height: 14px;
+  background: #3b82f6;
   border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 5;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
-.resize-se {
-  right: 2px;
-  bottom: 2px;
+.img-wrap:hover .resize-handle {
+  opacity: 1;
+}
+.resize-se { 
+  right: 4px;
+  bottom: 4px;
   cursor: se-resize;
 }
-.resize-sw {
-  left: 2px;
-  bottom: 2px;
+.resize-sw { 
+  left: 4px;
+  bottom: 4px;
   cursor: sw-resize;
 }
-/* Hover delete button */
-.delete-btn {
+.delete-btn { 
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.65);
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: #dc2626;
   color: white;
   border: none;
   cursor: pointer;
-  font-size: 16px;
-  display: none;
+  font-size: 18px;
+  font-weight: bold;
+  opacity: 0;
+  transition: all 0.15s ease;
   z-index: 10;
-}
-.img-wrap:hover .delete-btn {
-  display: block;
-}
-/* Drag indicators */
-.insert-before { border-top: 3px solid #4a90e2; }
-.insert-after  { border-bottom: 3px solid #4a90e2; }
-/* Toolbar */
-#toolbar {
-  margin-top: 14px;
   display: flex;
-  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
-button {
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #fff;
+.img-wrap:hover .delete-btn { 
+  opacity: 1;
 }
-#status {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #555;
+.delete-btn:hover {
+  background: #b91c1c;
+  transform: scale(1.05);
+}
+.insert-before { 
+  border-top: 2px solid #3b82f6;
+}
+.insert-after { 
+  border-bottom: 2px solid #3b82f6;
+}
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6b7280;
+  font-size: 16px;
+}
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+@media (max-width: 768px) {
+  #output {
+    grid-template-columns: 1fr;
+  }
+  
+  header {
+    padding: 20px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
 }
 </style>
 </head>
 <body>
-<h1>Pasteboard with Readable Clips</h1>
-<div id="instructions">
-Press <strong>Ctrl+V</strong> anywhere to paste screenshots. <strong>Clips are pasted at a default size for readability; only use resizing handles for very large images.</strong> Click an image to focus → type a description above it. Use the drag handle ☰ to reorder. Use the resize handles at the bottom corners to adjust size (right corner = enlarge, left corner = shrink). Press <strong>Delete</strong> to remove.
+<div class="container">
+  <header>
+    <h1>✂️ Clipboard Win</h1>
+    <div id="instructions">
+      Press <strong>Ctrl+V</strong> anywhere to paste screenshots. Click an image to add a description. 
+      Use the <strong>☰ handle</strong> to reorder clips. Use corner handles to resize (right = larger, left = smaller). <strong> Use resizing only</strong> for really wide clips.   
+      Press <strong>Delete</strong> to remove focused clips.
+    </div>
+    <div id="toolbar">
+      <button id="copyAllBtn">📋 Copy All as PNG</button>
+      <button id="saveBtn">💾 Save as PNG File</button>
+      <button id="clearBtn">🗑️ Clear All</button>
+    </div>
+    <div id="status">Ready — Paste images to begin</div>
+  </header>
+  
+  <div id="output">
+    <div class="empty-state">
+      <div class="empty-state-icon">📸</div>
+      <div>Paste your first screenshot to get started</div>
+    </div>
+  </div>
 </div>
-<div id="toolbar">
-  <button id="copyAllBtn">Copy All (stacked PNG)</button>
-  <button id="saveBtn">Save as PNG File</button>
-  <button id="clearBtn">Clear All</button>
-</div>
-<div id="status"></div>
-<div id="output"></div>
 <script>
 (() => {
 const output = document.getElementById("output");
 const status = document.getElementById("status");
 let dragSrcEl = null;
 let saveTimeout = null;
-function log(msg, err=false){
-  status.textContent = msg;
-  status.style.color = err ? "#b22" : "#555";
+function log(msg, err=false){ 
+  status.textContent = msg; 
+  status.style.color = err ? "#e53e3e" : "#2d3748";
+  status.style.background = err ? "rgba(254, 215, 215, 0.8)" : "rgba(255,255,255,0.5)";
 }
-function saveCollection(){
-  try {
-    const wraps = [...document.querySelectorAll(".img-wrap")];
-    const items = wraps.map(wrap => {
-      const img = wrap.querySelector("img");
-      const desc = wrap.querySelector(".desc");
-      return {
-        src: img.src,
-        width: img.style.width || 'auto',
-        height: img.style.height || 'auto',
-        desc: desc.textContent
-      };
-    });
-    localStorage.setItem('clipboard-collection', JSON.stringify(items));
-    console.log('✓ Collection saved:', items.length, 'items');
-  } catch(e) {
-    console.error('✗ Save failed:', e);
+function saveCollection(){ 
+  try { 
+    const wraps = [...document.querySelectorAll(".img-wrap")]; 
+    const items = wraps.map(wrap => { 
+      const img = wrap.querySelector("img"); 
+      const desc = wrap.querySelector(".desc"); 
+      return { 
+        src: img.src, 
+        width: img.style.width || 'auto', 
+        height: img.style.height || 'auto', 
+        desc: desc.textContent 
+      }; 
+    }); 
+    localStorage.setItem('clipboard-collection', JSON.stringify(items)); 
+    console.log('✓ Collection saved:', items.length, 'items'); 
+  } catch(e) { 
+    console.error('✗ Save failed:', e); 
   }
 }
-function scheduleSave(){
-  clearTimeout(saveTimeout);
+function scheduleSave(){ 
+  clearTimeout(saveTimeout); 
   saveTimeout = setTimeout(saveCollection, 500);
 }
-/* Add image and return the wrap element */
-function addImage(dataURL, props={}) {
-  const wrap = document.createElement("div");
-  wrap.className = "img-wrap";
-  wrap.setAttribute("tabindex", "0");
-  // Description
-  const desc = document.createElement("div");
-  desc.className = "desc";
-  desc.setAttribute("contenteditable","true");
-  desc.textContent = props.desc || "";
-  desc.addEventListener('mousedown', e => e.stopPropagation());
-  desc.addEventListener('click', e => e.stopPropagation());
-  desc.addEventListener('pointerdown', e => e.stopPropagation());
-  desc.addEventListener('input', scheduleSave);
-  // Drag handle
-  const handle = document.createElement("div");
-  handle.className = "drag-handle";
-  handle.setAttribute("draggable","true");
-  handle.textContent = "☰";
-  // Image
-  const img = document.createElement("img");
-  img.src = dataURL;
-  img.style.width = props.width || "auto";
-  img.style.height = props.height || "auto";
-  img.style.maxWidth = "90vw";
-  // Delete button
-  const del = document.createElement("button");
-  del.className = "delete-btn";
-  del.textContent = "×";
-  del.onclick = e => { e.stopPropagation(); wrap.remove(); scheduleSave(); };
-  // Resize handles
-  const resizeSE = document.createElement("div");
-  resizeSE.className = "resize-handle resize-se";
-  const resizeSW = document.createElement("div");
-  resizeSW.className = "resize-handle resize-sw";
-  // Resize logic
-  function resizeHandler(e, isSE){
-    e.preventDefault();
-    e.stopPropagation();
-    const startX = e.clientX;
-    const startWidth = img.offsetWidth;
-    const startHeight = img.offsetHeight;
-    function onMouseMove(ev){
-      let newWidth = isSE ? startWidth + (ev.clientX - startX) : startWidth - (ev.clientX - startX);
-      newWidth = Math.max(50,newWidth);
-      const newHeight = startHeight * (newWidth/startWidth);
-      img.style.width = newWidth + 'px';
-      img.style.height = newHeight + 'px';
-    }
-    function onMouseUp(){
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-      scheduleSave();
-    }
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+function updateEmptyState() {
+  const emptyState = output.querySelector('.empty-state');
+  const hasClips = output.querySelectorAll('.img-wrap').length > 0;
+  
+  if (hasClips && emptyState) {
+    emptyState.remove();
+  } else if (!hasClips && !emptyState) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.innerHTML = `
+      <div class="empty-state-icon">📸</div>
+      <div>Paste your first screenshot to get started</div>
+    `;
+    output.appendChild(empty);
   }
-  resizeSE.addEventListener('mousedown', e=>resizeHandler(e,true));
-  resizeSW.addEventListener('mousedown', e=>resizeHandler(e,false));
-  wrap.append(desc, handle, img, resizeSE, resizeSW, del);
-  output.appendChild(wrap);
-  wrap.onclick = () => wrap.focus();
-  /* Dragging via handle only */
-  handle.addEventListener("dragstart", e => {
-    dragSrcEl = wrap;
-    e.dataTransfer.effectAllowed = "move";
-  });
-  wrap.addEventListener("dragover", e => {
-    e.preventDefault();
-    const rect = wrap.getBoundingClientRect();
-    const y = e.clientY - rect.top;
-    wrap.classList.remove("insert-before","insert-after");
-    if(y < rect.height/2) wrap.classList.add("insert-before");
-    else wrap.classList.add("insert-after");
-  });
-  wrap.addEventListener("dragleave", ()=>wrap.classList.remove("insert-before","insert-after"));
-  wrap.addEventListener("drop", e=>{
-    e.preventDefault();
-    wrap.classList.remove("insert-before","insert-after");
-    if(!dragSrcEl || dragSrcEl===wrap) return;
-    const rect = wrap.getBoundingClientRect();
-    const y = e.clientY - rect.top;
-    if(y<rect.height/2) output.insertBefore(dragSrcEl,wrap);
-    else output.insertBefore(dragSrcEl,wrap.nextSibling);
+}
+function addImage(dataURL, props={}) { 
+  const wrap = document.createElement("div"); 
+  wrap.className = "img-wrap"; 
+  wrap.setAttribute("tabindex", "0");
+  
+  const desc = document.createElement("div"); 
+  desc.className = "desc"; 
+  desc.setAttribute("contenteditable","true"); 
+  desc.textContent = props.desc || ""; 
+  desc.addEventListener('mousedown', e => e.stopPropagation()); 
+  desc.addEventListener('click', e => e.stopPropagation()); 
+  desc.addEventListener('pointerdown', e => e.stopPropagation()); 
+  desc.addEventListener('input', scheduleSave);
+  
+  const handle = document.createElement("div"); 
+  handle.className = "drag-handle"; 
+  handle.setAttribute("draggable","true"); 
+  handle.textContent = "☰";
+  
+  const imgContainer = document.createElement("div");
+  imgContainer.className = "img-container";
+  
+  const img = document.createElement("img"); 
+  img.src = dataURL; 
+  img.style.width = props.width || "auto"; 
+  img.style.height = props.height || "auto"; 
+  img.style.maxWidth = "100%";
+  
+  imgContainer.appendChild(img);
+  
+  const del = document.createElement("button"); 
+  del.className = "delete-btn"; 
+  del.textContent = "×"; 
+  del.onclick = e => { 
+    e.stopPropagation(); 
+    wrap.remove(); 
     scheduleSave();
+    updateEmptyState();
+  };
+  
+  const resizeSE = document.createElement("div"); 
+  resizeSE.className = "resize-handle resize-se"; 
+  const resizeSW = document.createElement("div"); 
+  resizeSW.className = "resize-handle resize-sw";
+  
+  imgContainer.appendChild(resizeSE);
+  imgContainer.appendChild(resizeSW);
+  
+  function resizeHandler(e, isSE){ 
+    e.preventDefault(); 
+    e.stopPropagation(); 
+    const startX = e.clientX; 
+    const startWidth = img.offsetWidth; 
+    const startHeight = img.offsetHeight; 
+    const aspectRatio = startWidth / startHeight;
+    const containerMaxWidth = imgContainer.offsetWidth;
+    
+    function onMouseMove(ev){ 
+      let newWidth = isSE ? startWidth + (ev.clientX - startX) : startWidth - (ev.clientX - startX); 
+      newWidth = Math.max(50, Math.min(newWidth, containerMaxWidth)); 
+      const newHeight = newWidth / aspectRatio;
+      img.style.width = newWidth + 'px'; 
+      img.style.height = newHeight + 'px'; 
+    } 
+    
+    function onMouseUp(){ 
+      document.removeEventListener('mousemove', onMouseMove); 
+      document.removeEventListener('mouseup', onMouseUp); 
+      scheduleSave(); 
+    } 
+    
+    document.addEventListener('mousemove', onMouseMove); 
+    document.addEventListener('mouseup', onMouseUp); 
+  } 
+  
+  resizeSE.addEventListener('mousedown', e=>resizeHandler(e,true)); 
+  resizeSW.addEventListener('mousedown', e=>resizeHandler(e,false));
+  
+  wrap.append(desc, handle, imgContainer, del); 
+  output.appendChild(wrap); 
+  
+  wrap.onclick = () => wrap.focus();
+  
+  handle.addEventListener("dragstart", e => { 
+    dragSrcEl = wrap; 
+    wrap.classList.add('dragging');
+    e.dataTransfer.effectAllowed = "move"; 
   });
-  log("Image added.");
+  
+  handle.addEventListener("dragend", () => {
+    wrap.classList.remove('dragging');
+  });
+  
+  wrap.addEventListener("dragover", e => { 
+    e.preventDefault(); 
+    const rect = wrap.getBoundingClientRect(); 
+    const y = e.clientY - rect.top; 
+    wrap.classList.remove("insert-before","insert-after"); 
+    if(y < rect.height/2) wrap.classList.add("insert-before"); 
+    else wrap.classList.add("insert-after"); 
+  });
+  
+  wrap.addEventListener("dragleave", ()=>wrap.classList.remove("insert-before","insert-after"));
+  
+  wrap.addEventListener("drop", e=>{ 
+    e.preventDefault(); 
+    wrap.classList.remove("insert-before","insert-after"); 
+    if(!dragSrcEl || dragSrcEl===wrap) return; 
+    const rect = wrap.getBoundingClientRect(); 
+    const y = e.clientY - rect.top; 
+    if(y<rect.height/2) output.insertBefore(dragSrcEl,wrap); 
+    else output.insertBefore(dragSrcEl,wrap.nextSibling); 
+    scheduleSave(); 
+  });
+  
+  log("Image added — click to add description");
+  updateEmptyState();
   return wrap;
 }
-/* Handle clipboard blob */
-function handleBlob(blob){
-  const reader = new FileReader();
-  reader.onload = ev => { addImage(ev.target.result); scheduleSave(); };
+function handleBlob(blob){ 
+  const reader = new FileReader(); 
+  reader.onload = ev => { 
+    addImage(ev.target.result); 
+    scheduleSave(); 
+  }; 
   reader.readAsDataURL(blob);
 }
-/* Paste images */
-document.addEventListener("paste", e=>{
-  const items = e.clipboardData.items;
-  for(const it of items){
-    if(it.type.startsWith("image")){
-      const file = it.getAsFile();
-      if(file) handleBlob(file);
-      e.preventDefault();
-      return;
-    }
-  }
-  log("Clipboard contains no image.", true);
+document.addEventListener("paste", e=>{ 
+  const items = e.clipboardData.items; 
+  for(const it of items){ 
+    if(it.type.startsWith("image")){ 
+      const file = it.getAsFile(); 
+      if(file) handleBlob(file); 
+      e.preventDefault(); 
+      return; 
+    } 
+  } 
+  log("Clipboard contains no image", true);
 });
-/* Delete via Delete key */
-document.addEventListener("keydown", e=>{
-  if(e.key==="Delete"){
-    const focused = document.activeElement;
-    if(focused && focused.classList.contains("img-wrap")){
-      focused.remove();
-      scheduleSave();
-      log("Image deleted.");
-    }
+document.addEventListener("keydown", e=>{ 
+  if(e.key==="Delete"){ 
+    const focused = document.activeElement; 
+    if(focused && focused.classList.contains("img-wrap")){ 
+      focused.remove(); 
+      scheduleSave(); 
+      log("Image deleted"); 
+      updateEmptyState();
+    } 
   }
 });
-/* Toolbar buttons */
-document.getElementById("clearBtn").onclick = ()=>{ output.innerHTML=""; scheduleSave(); log("All cleared."); };
-/* Copy all stacked PNG */
-document.getElementById("copyAllBtn").onclick = async ()=>{
-  const canvas = await generateStackedCanvas();
-  if(!canvas) return;
-  try{
-    let blob = await new Promise(r=>canvas.toBlob(r,"image/png"));
-    await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);
-    log("Copied all images with descriptions as one PNG.");
-  }catch(e){
-    log("Copy failed — browser blocked image clipboard write.", true);
+document.getElementById("clearBtn").onclick = ()=>{ 
+  output.innerHTML=""; 
+  scheduleSave(); 
+  log("All clips cleared");
+  updateEmptyState();
+};
+document.getElementById("copyAllBtn").onclick = async ()=>{ 
+  const canvas = await generateStackedCanvas(); 
+  if(!canvas) return; 
+  try{ 
+    let blob = await new Promise(r=>canvas.toBlob(r,"image/png")); 
+    await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]); 
+    log("✓ Copied all clips as single PNG"); 
+  }catch(e){ 
+    log("Copy failed — browser blocked clipboard access", true); 
   }
 };
-/* Save as PNG file */
-document.getElementById("saveBtn").onclick = async ()=>{
-  const canvas = await generateStackedCanvas();
-  if(!canvas) return;
+document.getElementById("saveBtn").onclick = async ()=>{ 
+  const canvas = await generateStackedCanvas(); 
+  if(!canvas) return; 
   
-  // Use File System Access API if available (Chrome/Edge)
-  if('showSaveFilePicker' in window){
-    try{
-      const handle = await window.showSaveFilePicker({
-        suggestedName: `pasteboard-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`,
-        types: [{
-          description: 'PNG Image',
-          accept: {'image/png': ['.png']}
-        }]
-      });
-      const writable = await handle.createWritable();
-      canvas.toBlob(async blob=>{
-        await writable.write(blob);
-        await writable.close();
-        log("PNG file saved.");
-      },"image/png");
-    }catch(e){
-      if(e.name !== 'AbortError') log("Save cancelled or failed.", true);
-    }
-  } else {
-    // Fallback for browsers without File System Access API
-    canvas.toBlob(blob=>{
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `pasteboard-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-      log("PNG file saved.");
-    },"image/png");
+  if('showSaveFilePicker' in window){ 
+    try{ 
+      const handle = await window.showSaveFilePicker({ 
+        suggestedName: `Clipboard-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`, 
+        types: [{ description: 'PNG Image', accept: {'image/png': ['.png']} }] 
+      }); 
+      const writable = await handle.createWritable(); 
+      canvas.toBlob(async blob=>{ 
+        await writable.write(blob); 
+        await writable.close(); 
+        log("✓ PNG file saved"); 
+      },"image/png"); 
+    }catch(e){ 
+      if(e.name !== 'AbortError') log("Save cancelled", true); 
+    } 
+  } else { 
+    canvas.toBlob(blob=>{ 
+      const url = URL.createObjectURL(blob); 
+      const a = document.createElement('a'); 
+      a.href = url; 
+      a.download = `Clipboard-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.png`; 
+      a.click(); 
+      URL.revokeObjectURL(url); 
+      log("✓ PNG file saved"); 
+    },"image/png"); 
   }
 };
-/* Generate stacked canvas (shared by copy and save) */
-async function generateStackedCanvas(){
-  const wraps = [...document.querySelectorAll(".img-wrap")];
-  if(wraps.length===0){ log("Nothing to save."); return null; }
-  let blocks = await Promise.all(wraps.map(wrap=>{
-    return new Promise(res=>{
-      const img = wrap.querySelector("img");
-      const desc = wrap.querySelector(".desc");
-      const displayWidth = img.offsetWidth;
-      const displayHeight = img.offsetHeight;
-      const descText = desc.textContent.trim();
-      const im = new Image();
-      im.onload = ()=>res({img: im, desc: descText, width: displayWidth, height: displayHeight});
-      im.src = img.src;
-    });
-  }));
-  const padding = 20;
-  const fontSize = 16;
-  const lineHeight = 22;
-  let totalHeight = 0;
-  let maxWidth = 0;
-  const tempCanvas = document.createElement("canvas");
-  const tempCtx = tempCanvas.getContext("2d");
-  tempCtx.font = `${fontSize}px system-ui, sans-serif`;
-  blocks.forEach(block=>{
-    if(block.desc){
-      const words = block.desc.split(' ');
-      const lines = [];
-      let currentLine='';
-      words.forEach(word=>{
-        const testLine = currentLine ? currentLine+' '+word : word;
-        const metrics = tempCtx.measureText(testLine);
-        if(metrics.width > block.width - padding*2 && currentLine){
-          lines.push(currentLine);
-          currentLine = word;
-        } else currentLine = testLine;
-      });
-      if(currentLine) lines.push(currentLine);
-      block.textLines = lines;
-      block.textHeight = lines.length*lineHeight + padding;
-    } else { block.textLines=[]; block.textHeight=0; }
-    totalHeight += block.textHeight + block.height + padding;
-    maxWidth = Math.max(maxWidth, block.width);
-  });
-  totalHeight += padding;
-  const canvas = document.createElement("canvas");
-  canvas.width = maxWidth;
-  canvas.height = totalHeight;
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.font = `${fontSize}px system-ui, sans-serif`;
-  ctx.fillStyle = "#000000";
-  let y = padding;
-  blocks.forEach(block=>{
-    if(block.textLines.length>0) block.textLines.forEach((line,i)=>ctx.fillText(line,0,y+(i+1)*lineHeight));
-    y += block.textHeight;
-    ctx.drawImage(block.img,0,y,block.width,block.height);
-    y += block.height + padding;
-  });
+async function generateStackedCanvas(){ 
+  const wraps = [...document.querySelectorAll(".img-wrap")]; 
+  if(wraps.length===0){ 
+    log("Nothing to save"); 
+    return null; 
+  } 
+  
+  let blocks = await Promise.all(wraps.map(wrap=>{ 
+    return new Promise(res=>{ 
+      const img = wrap.querySelector("img"); 
+      const desc = wrap.querySelector(".desc"); 
+      const displayWidth = img.offsetWidth; 
+      const displayHeight = img.offsetHeight; 
+      const descText = desc.textContent.trim(); 
+      const im = new Image(); 
+      im.onload = ()=>res({img: im, desc: descText, width: displayWidth, height: displayHeight}); 
+      im.src = img.src; 
+    }); 
+  })); 
+  
+  const padding = 20; 
+  const fontSize = 16; 
+  const lineHeight = 22; 
+  let totalHeight = 0; 
+  let maxWidth = 0; 
+  
+  const tempCanvas = document.createElement("canvas"); 
+  const tempCtx = tempCanvas.getContext("2d"); 
+  tempCtx.font = `${fontSize}px system-ui, sans-serif`; 
+  
+  blocks.forEach(block=>{ 
+    if(block.desc){ 
+      const words = block.desc.split(' '); 
+      const lines = []; 
+      let currentLine=''; 
+      words.forEach(word=>{ 
+        const testLine = currentLine ? currentLine+' '+word : word; 
+        const metrics = tempCtx.measureText(testLine); 
+        if(metrics.width > block.width - padding*2 && currentLine){ 
+          lines.push(currentLine); 
+          currentLine = word; 
+        } else currentLine = testLine; 
+      }); 
+      if(currentLine) lines.push(currentLine); 
+      block.textLines = lines; 
+      block.textHeight = lines.length*lineHeight + padding; 
+    } else { 
+      block.textLines=[]; 
+      block.textHeight=0; 
+    } 
+    totalHeight += block.textHeight + block.height + padding; 
+    maxWidth = Math.max(maxWidth, block.width); 
+  }); 
+  
+  totalHeight += padding; 
+  const canvas = document.createElement("canvas"); 
+  canvas.width = maxWidth; 
+  canvas.height = totalHeight; 
+  const ctx = canvas.getContext("2d"); 
+  
+  ctx.fillStyle = "#ffffff"; 
+  ctx.fillRect(0,0,canvas.width,canvas.height); 
+  ctx.font = `${fontSize}px system-ui, sans-serif`; 
+  ctx.fillStyle = "#000000"; 
+  
+  let y = padding; 
+  blocks.forEach(block=>{ 
+    if(block.textLines.length>0) block.textLines.forEach((line,i)=>ctx.fillText(line,0,y+(i+1)*lineHeight)); 
+    y += block.textHeight; 
+    ctx.drawImage(block.img,0,y,block.width,block.height); 
+    y += block.height + padding; 
+  }); 
+  
   return canvas;
 }
-/* Load saved collection synchronously */
-function loadCollection(){
-  try {
-    const saved = localStorage.getItem('clipboard-collection');
-    if(saved){
-      const items = JSON.parse(saved);
-      console.log('Loading', items.length, 'items');
-      items.forEach(item => addImage(item.src, {width:item.width, height:item.height, desc:item.desc}));
-      log(`Restored ${items.length} saved clip(s).`);
-    } else {
-      log("Ready — paste images with Ctrl+V, add descriptions, resize, and reorder.");
-    }
-  } catch(e){
-    console.error('Load failed:', e);
-    log("Ready — paste images with Ctrl+V, add descriptions, resize, and reorder.");
+function loadCollection(){ 
+  try { 
+    const saved = localStorage.getItem('clipboard-collection'); 
+    if(saved){ 
+      const items = JSON.parse(saved); 
+      console.log('Loading', items.length, 'items'); 
+      items.forEach(item => addImage(item.src, {width:item.width, height:item.height, desc:item.desc})); 
+      log(`Restored ${items.length} saved clip(s)`); 
+    } else { 
+      log("Ready — Paste images to begin"); 
+    } 
+  } catch(e){ 
+    console.error('Load failed:', e); 
+    log("Ready — Paste images to begin"); 
   }
+  updateEmptyState();
 }
-if(document.readyState==='loading'){
+if(document.readyState==='loading'){ 
   document.addEventListener('DOMContentLoaded', loadCollection);
 } else loadCollection();
 })();

@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux File Permissions Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #4ec9b0;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .info-section {
+            background-color: #2d2d2d;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #4ec9b0;
+        }
+
+        .user-select {
+            margin-bottom: 20px;
+        }
+
+        .user-select label {
+            color: #569cd6;
+            margin-right: 10px;
+        }
+
+        select {
+            background-color: #3c3c3c;
+            color: #d4d4d4;
+            border: 1px solid #555;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .terminal {
+            background-color: #0c0c0c;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .terminal-header {
+            color: #4ec9b0;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .file-list {
+            margin-bottom: 20px;
+        }
+
+        .file-entry {
+            display: grid;
+            grid-template-columns: 120px 60px 100px 100px 80px 120px auto;
+            gap: 10px;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        }
+
+        .file-entry:hover {
+            background-color: #2d2d2d;
+        }
+
+        .file-entry.selected {
+            background-color: #264f78;
+        }
+
+        .file-entry.header {
+            color: #569cd6;
+            font-weight: bold;
+            cursor: default;
+        }
+
+        .file-entry.header:hover {
+            background-color: transparent;
+        }
+
+        .permissions { color: #dcdcaa; }
+        .links { color: #b5cea8; }
+        .owner { color: #4ec9b0; }
+        .group { color: #4ec9b0; }
+        .size { color: #b5cea8; text-align: right; }
+        .date { color: #808080; }
+        .filename { color: #9cdcfe; }
+        .directory { color: #569cd6; font-weight: bold; }
+
+        .action-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chmod-section, .action-test {
+            background-color: #2d2d2d;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .chmod-controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .permission-group {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 5px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .permission-group h3 {
+            color: #569cd6;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        button {
+            background-color: #0e639c;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            transition: background-color 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #1177bb;
+        }
+
+        button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .result-box {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 100px;
+            margin-top: 15px;
+        }
+
+        .result-success {
+            color: #4ec9b0;
+        }
+
+        .result-error {
+            color: #f48771;
+        }
+
+        .result-info {
+            color: #569cd6;
+        }
+
+        .numeric-mode {
+            color: #dcdcaa;
+            font-size: 18px;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #1e1e1e;
+            border-radius: 3px;
+        }
+
+        .effects-section {
+            background-color: #2d2d2d;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .effect-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+            border-left: 4px solid #555;
+        }
+
+        .effect-item.allowed {
+            background-color: #1e3a1e;
+            border-left-color: #4ec9b0;
+        }
+
+        .effect-item.denied {
+            background-color: #3a1e1e;
+            border-left-color: #f48771;
+        }
+
+        .effect-item.current-user {
+            background-color: #2d3a4a;
+            border-left-color: #569cd6;
+        }
+
+        @media (max-width: 1200px) {
+            .action-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>$ Linux File Permissions Simulator</h1>
+        
+        <div class="info-section">
+            <strong>Scenario:</strong> You are working in a lab environment with two groups: <span style="color: #4ec9b0;">labgroup1</span> and <span style="color: #4ec9b0;">labgroup2</span>.<br>
+            Each group has shared directories: <span style="color: #569cd6;">/var/labs/labgroup1files</span> and <span style="color: #569cd6;">/var/labs/labgroup2files</span>
+        </div>
+
+        <div class="user-select">
+            <label for="currentUser">Current User:</label>
+            <select id="currentUser">
+                <option value="alice:labgroup1">alice (member of labgroup1)</option>
+                <option value="bob:labgroup1">bob (member of labgroup1)</option>
+                <option value="charlie:labgroup2">charlie (member of labgroup2)</option>
+                <option value="diana:labgroup2">diana (member of labgroup2)</option>
+                <option value="eve:none">eve (no group membership)</option>
+                <option value="frank:none">frank (no group membership)</option>
+            </select>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">$ ls -l /var/labs/labgroup1files</div>
+            <div class="file-list" id="labgroup1files"></div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">$ ls -l /var/labs/labgroup2files</div>
+            <div class="file-list" id="labgroup2files"></div>
+        </div>
+
+        <div class="action-section">
+            <div class="chmod-section">
+                <h2 style="color: #569cd6; margin-bottom: 15px;">Change Permissions (chmod)</h2>
+                <p style="margin-bottom: 15px; color: #808080;">Select a file above, then modify its permissions:</p>
+                
+                <div class="chmod-controls">
+                    <div class="permission-group">
+                        <h3>Owner (u)</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="owner-r"> Read (r)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="owner-w"> Write (w)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="owner-x"> Execute (x)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="permission-group">
+                        <h3>Group (g)</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="group-r"> Read (r)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="group-w"> Write (w)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="group-x"> Execute (x)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="permission-group">
+                        <h3>Others (o)</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="other-r"> Read (r)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="other-w"> Write (w)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="other-x"> Execute (x)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="numeric-mode" id="numericMode">Numeric mode: ---</div>
+                
+                <button id="applyChmod" disabled>Apply chmod</button>
+            </div>
+
+            <div class="action-test">
+                <h2 style="color: #569cd6; margin-bottom: 15px;">Test File Actions</h2>
+                <p style="margin-bottom: 15px; color: #808080;">Select a file and try these operations:</p>
+                
+                <div class="action-buttons">
+                    <button id="testRead" disabled>cat (read file)</button>
+                    <button id="testWrite" disabled>echo > (write file)</button>
+                    <button id="testExecute" disabled>./ (execute file)</button>
+                    <button id="testDelete" disabled>rm (delete file)</button>
+                </div>
+
+                <div class="result-box" id="actionResult">
+                    <span class="result-info">Try an action to see the result...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="effects-section">
+            <h2 style="color: #569cd6; margin-bottom: 15px;">Permission Analysis</h2>
+            <div id="effectsDisplay">
+                <p style="color: #808080;">Select a file to see detailed permission analysis...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const files = {
+    labgroup1files: [
+        { perms: '-rw-rw-r--', links: '1', owner: 'alice', group: 'labgroup1', size: '2048', date: 'Dec 02 14:22', name: 'experiment1.txt' },
+        { perms: '-rw-rw----', links: '1', owner: 'bob', group: 'labgroup1', size: '1536', date: 'Dec 03 09:15', name: 'results.csv' },
+        { perms: '-rwxr-x---', links: '1', owner: 'alice', group: 'labgroup1', size: '8192', date: 'Nov 30 16:45', name: 'analyze.sh' },
+        { perms: '-rw-r--r--', links: '1', owner: 'alice', group: 'labgroup1', size: '512', date: 'Dec 01 11:00', name: 'README.md' },
+        { perms: '-rw-rw----', links: '1', owner: 'bob', group: 'labgroup1', size: '3072', date: 'Dec 03 13:20', name: 'data.log' }
+    ],
+
+    labgroup2files: [
+        { perms: '-rw-rw-r--', links: '1', owner: 'charlie', group: 'labgroup2', size: '4096', date: 'Dec 02 10:30', name: 'protocol.txt' },
+        { perms: '-rwxrwx---', links: '1', owner: 'diana', group: 'labgroup2', size: '16384', date: 'Dec 01 15:20', name: 'simulation' },
+        { perms: '-rw-r-----', links: '1', owner: 'charlie', group: 'labgroup2', size: '2560', date: 'Dec 03 08:45', name: 'notes.txt' },
+        { perms: '-rw-rw-rw-', links: '1', owner: 'diana', group: 'labgroup2', size: '1024', date: 'Dec 02 12:00', name: 'shared.txt' },
+        { perms: '-r--r--r--', links: '1', owner: 'charlie', group: 'labgroup2', size: '768', date: 'Nov 29 14:30', name: 'public_info.txt' }
+    ]
+};
+
+
+        let selectedFile = null;
+        let selectedDir = null;
+
+        function renderFiles() {
+            for (const dir in files) {
+                const container = document.getElementById(dir);
+                container.innerHTML = '';
+                
+                files[dir].forEach((file, index) => {
+                    const entry = document.createElement('div');
+                    entry.className = 'file-entry';
+                    if (selectedDir === dir && selectedFile === index) {
+                        entry.classList.add('selected');
+                    }
+                    
+                    entry.innerHTML = `
+                        <span class="permissions">${file.perms}</span>
+                        <span class="links">${file.links}</span>
+                        <span class="owner">${file.owner}</span>
+                        <span class="group">${file.group}</span>
+                        <span class="size">${file.size}</span>
+                        <span class="date">${file.date}</span>
+                        <span class="filename ${file.isDir ? 'directory' : ''}">${file.name}</span>
+                    `;
+                    
+                 entry.addEventListener('click', () => selectFile(dir, index));
+
+                    container.appendChild(entry);
+                });
+            }
+        }
+
+        function selectFile(dir, index) {
+            selectedFile = index;
+            selectedDir = dir;
+            renderFiles();
+            updateChmodControls();
+            updateEffects();
+            document.getElementById('applyChmod').disabled = false;
+            document.getElementById('testRead').disabled = false;
+            document.getElementById('testWrite').disabled = false;
+            document.getElementById('testExecute').disabled = false;
+            document.getElementById('testDelete').disabled = false;
+            document.getElementById('actionResult').innerHTML = '<span class="result-info">Try an action to see the result...</span>';
+        }
+
+        function updateChmodControls() {
+            if (selectedFile === null) return;
+            
+            const file = files[selectedDir][selectedFile];
+            const perms = file.perms.substring(1);
+            
+            document.getElementById('owner-r').checked = perms[0] === 'r';
+            document.getElementById('owner-w').checked = perms[1] === 'w';
+            document.getElementById('owner-x').checked = perms[2] === 'x';
+            
+            document.getElementById('group-r').checked = perms[3] === 'r';
+            document.getElementById('group-w').checked = perms[4] === 'w';
+            document.getElementById('group-x').checked = perms[5] === 'x';
+            
+            document.getElementById('other-r').checked = perms[6] === 'r';
+            document.getElementById('other-w').checked = perms[7] === 'w';
+            document.getElementById('other-x').checked = perms[8] === 'x';
+            
+            updateNumericMode();
+        }
+
+        function updateNumericMode() {
+            const owner = (document.getElementById('owner-r').checked ? 4 : 0) +
+                         (document.getElementById('owner-w').checked ? 2 : 0) +
+                         (document.getElementById('owner-x').checked ? 1 : 0);
+            const group = (document.getElementById('group-r').checked ? 4 : 0) +
+                         (document.getElementById('group-w').checked ? 2 : 0) +
+                         (document.getElementById('group-x').checked ? 1 : 0);
+            const other = (document.getElementById('other-r').checked ? 4 : 0) +
+                         (document.getElementById('other-w').checked ? 2 : 0) +
+                         (document.getElementById('other-x').checked ? 1 : 0);
+            
+            document.getElementById('numericMode').textContent = `Numeric mode: ${owner}${group}${other}`;
+        }
+
+        function applyChmod() {
+            if (selectedFile === null) return;
+            
+            const file = files[selectedDir][selectedFile];
+            const type = file.perms[0];
+            
+            let perms = type;
+            perms += document.getElementById('owner-r').checked ? 'r' : '-';
+            perms += document.getElementById('owner-w').checked ? 'w' : '-';
+            perms += document.getElementById('owner-x').checked ? 'x' : '-';
+            perms += document.getElementById('group-r').checked ? 'r' : '-';
+            perms += document.getElementById('group-w').checked ? 'w' : '-';
+            perms += document.getElementById('group-x').checked ? 'x' : '-';
+            perms += document.getElementById('other-r').checked ? 'r' : '-';
+            perms += document.getElementById('other-w').checked ? 'w' : '-';
+            perms += document.getElementById('other-x').checked ? 'x' : '-';
+            
+            file.perms = perms;
+            renderFiles();
+            updateEffects();
+        }
+
+        function checkPermission(action) {
+            if (selectedFile === null) return { allowed: false, reason: 'No file selected' };
+            
+            const file = files[selectedDir][selectedFile];
+            const [currentUser, currentGroup] = document.getElementById('currentUser').value.split(':');
+            const perms = file.perms.substring(1);
+            
+            const isOwner = file.owner === currentUser;
+            const isGroupMember = file.group === currentGroup;
+            
+            let permIndex;
+            let userType;
+            
+            if (isOwner) {
+                permIndex = action === 'read' ? 0 : action === 'write' ? 1 : 2;
+                userType = 'owner';
+            } else if (isGroupMember) {
+                permIndex = action === 'read' ? 3 : action === 'write' ? 4 : 5;
+                userType = 'group member';
+            } else {
+                permIndex = action === 'read' ? 6 : action === 'write' ? 7 : 8;
+                userType = 'other user';
+            }
+            
+            const actionChar = action === 'read' ? 'r' : action === 'write' ? 'w' : 'x';
+            const allowed = perms[permIndex] === actionChar;
+            
+            return {
+                allowed: allowed,
+                userType: userType,
+                file: file,
+                action: action
+            };
+        }
+
+        function testRead() {
+            const result = checkPermission('read');
+            const resultBox = document.getElementById('actionResult');
+            
+            if (result.allowed) {
+                resultBox.innerHTML = `
+                    <span class="result-success">✓ SUCCESS: Read permission granted</span><br><br>
+                    $ cat ${result.file.name}<br>
+                    <span style="color: #808080;">[File contents displayed here...]</span><br><br>
+                    You can read this file as ${result.userType} of '${result.file.name}'.
+                `;
+            } else {
+                resultBox.innerHTML = `
+                    <span class="result-error">✗ PERMISSION DENIED</span><br><br>
+                    $ cat ${result.file.name}<br>
+                    cat: ${result.file.name}: Permission denied<br><br>
+                    You are ${result.userType} and do not have read permission.
+                `;
+            }
+        }
+
+        function testWrite() {
+            const result = checkPermission('write');
+            const resultBox = document.getElementById('actionResult');
+            
+            if (result.allowed) {
+                resultBox.innerHTML = `
+                    <span class="result-success">✓ SUCCESS: Write permission granted</span><br><br>
+                    $ echo "new data" >> ${result.file.name}<br>
+                    <span style="color: #808080;">[Data written successfully]</span><br><br>
+                    You can modify this file as ${result.userType} of '${result.file.name}'.
+                `;
+            } else {
+                resultBox.innerHTML = `
+                    <span class="result-error">✗ PERMISSION DENIED</span><br><br>
+                    $ echo "new data" >> ${result.file.name}<br>
+                    bash: ${result.file.name}: Permission denied<br><br>
+                    You are ${result.userType} and do not have write permission.
+                `;
+            }
+        }
+
+        function testExecute() {
+            const result = checkPermission('execute');
+            const resultBox = document.getElementById('actionResult');
+            
+            if (result.file.isDir) {
+                resultBox.innerHTML = `
+                    <span class="result-info">ℹ INFO: This is a directory</span><br><br>
+                    Execute permission on directories means you can 'cd' into them and access files within.
+                `;
+                return;
+            }
+            
+            if (result.allowed) {
+                resultBox.innerHTML = `
+                    <span class="result-success">✓ SUCCESS: Execute permission granted</span><br><br>
+                    $ ./${result.file.name}<br>
+                    <span style="color: #808080;">[Program executing...]</span><br><br>
+                    You can execute this file as ${result.userType} of '${result.file.name}'.
+                `;
+            } else {
+                resultBox.innerHTML = `
+                    <span class="result-error">✗ PERMISSION DENIED</span><br><br>
+                    $ ./${result.file.name}<br>
+                    bash: ./${result.file.name}: Permission denied<br><br>
+                    You are ${result.userType} and do not have execute permission.
+                `;
+            }
+        }
+
+        function testDelete() {
+            const file = files[selectedDir][selectedFile];
+            const [currentUser, currentGroup] = document.getElementById('currentUser').value.split(':');
+            const resultBox = document.getElementById('actionResult');
+            
+            // To delete a file, you need write permission on the DIRECTORY
+            const dirFile = files[selectedDir][0]; // The '.' directory
+            const dirPerms = dirFile.perms.substring(1);
+            
+            const isOwner = dirFile.owner === currentUser;
+            const isGroupMember = dirFile.group === currentGroup;
+            
+            let canWrite = false;
+            let userType;
+            
+            if (isOwner) {
+                canWrite = dirPerms[1] === 'w';
+                userType = 'directory owner';
+            } else if (isGroupMember) {
+                canWrite = dirPerms[4] === 'w';
+                userType = 'directory group member';
+            } else {
+                canWrite = dirPerms[7] === 'w';
+                userType = 'other user';
+            }
+            
+            if (canWrite) {
+                resultBox.innerHTML = `
+                    <span class="result-success">✓ SUCCESS: Delete allowed</span><br><br>
+                    $ rm ${file.name}<br>
+                    <span style="color: #808080;">[File deleted]</span><br><br>
+                    You can delete files in this directory as ${userType}.<br>
+                    <em style="color: #808080;">Note: Deletion depends on directory write permission, not file permission.</em>
+                `;
+            } else {
+                resultBox.innerHTML = `
+                    <span class="result-error">✗ PERMISSION DENIED</span><br><br>
+                    $ rm ${file.name}<br>
+                    rm: cannot remove '${file.name}': Permission denied<br><br>
+                    You are ${userType} without write permission on the parent directory.<br>
+                    <em style="color: #808080;">Note: Deletion requires write permission on the directory, not the file.</em>
+                `;
+            }
+        }
+
+        function updateEffects() {
+            if (selectedFile === null) return;
+            
+            const file = files[selectedDir][selectedFile];
+            const [currentUser, currentGroup] = document.getElementById('currentUser').value.split(':');
+            const perms = file.perms.substring(1);
+            
+            const isOwner = file.owner === currentUser;
+            const isGroupMember = file.group === currentGroup;
+            
+            let canRead, canWrite, canExecute;
+            let userCategory;
+            
+            if (isOwner) {
+                canRead = perms[0] === 'r';
+                canWrite = perms[1] === 'w';
+                canExecute = perms[2] === 'x';
+                userCategory = 'owner';
+            } else if (isGroupMember) {
+                canRead = perms[3] === 'r';
+                canWrite = perms[4] === 'w';
+                canExecute = perms[5] === 'x';
+                userCategory = 'group member';
+            } else {
+                canRead = perms[6] === 'r';
+                canWrite = perms[7] === 'w';
+                canExecute = perms[8] === 'x';
+                userCategory = 'other';
+            }
+            
+            const effectsHtml = `
+                <div class="effect-item current-user">
+                    <strong>Current Context:</strong> You are logged in as <strong>${currentUser}</strong><br>
+                    File '${file.name}' is owned by <strong>${file.owner}</strong> (group: <strong>${file.group}</strong>)<br>
+                    Your relationship: <strong>${userCategory}</strong>
+                </div>
+                <div class="effect-item ${canRead ? 'allowed' : 'denied'}">
+                    <strong>Read Permission (r):</strong> ${canRead ? '✓ Allowed' : '✗ Denied'}<br>
+                    <span style="font-size: 13px; color: #808080;">
+                        ${canRead ? 'You can view the file contents (cat, less, more)' : 'You cannot view the file contents'}
+                    </span>
+                </div>
+                <div class="effect-item ${canWrite ? 'allowed' : 'denied'}">
+                    <strong>Write Permission (w):</strong> ${canWrite ? '✓ Allowed' : '✗ Denied'}<br>
+                    <span style="font-size: 13px; color: #808080;">
+                        ${canWrite ? 'You can modify the file contents (echo, vi, nano)' : 'You cannot modify the file contents'}
+                    </span>
+                </div>
+                <div class="effect-item ${canExecute ? 'allowed' : 'denied'}">
+                    <strong>Execute Permission (x):</strong> ${canExecute ? '✓ Allowed' : '✗ Denied'}<br>
+                    <span style="font-size: 13px; color: #808080;">
+                        ${file.isDir ? 
+                            (canExecute ? 'You can access this directory (cd)' : 'You cannot access this directory') :
+                            (canExecute ? 'You can run this file as a program (./)' : 'You cannot run this file as a program')}
+                    </span>
+                </div>
+                <div class="effect-item" style="background-color: #2d2d2d; border-left-color: #808080;">
+                    <strong>Permission Breakdown:</strong><br>
+                    <span style="font-size: 13px;">
+                        • Owner (${file.owner}): ${perms[0]}${perms[1]}${perms[2]} - 
+                        ${perms[0] === 'r' ? 'read ' : ''}${perms[1] === 'w' ? 'write ' : ''}${perms[2] === 'x' ? 'execute' : ''}<br>
+                        • Group (${file.group}): ${perms[3]}${perms[4]}${perms[5]} - 
+                        ${perms[3] === 'r' ? 'read ' : ''}${perms[4] === 'w' ? 'write ' : ''}${perms[5] === 'x' ? 'execute' : ''}<br>
+                        • Others (everyone else): ${perms[6]}${perms[7]}${perms[8]} - 
+                        ${perms[6] === 'r' ? 'read ' : ''}${perms[7] === 'w' ? 'write ' : ''}${perms[8] === 'x' ? 'execute' : ''}
+                    </span>
+                </div>
+            `;
+            
+            document.getElementById('effectsDisplay').innerHTML = effectsHtml;
+        }
+
+        document.getElementById('applyChmod').addEventListener('click', applyChmod);
+        document.getElementById('testRead').addEventListener('click', testRead);
+        document.getElementById('testWrite').addEventListener('click', testWrite);
+        document.getElementById('testExecute').addEventListener('click', testExecute);
+        document.getElementById('testDelete').addEventListener('click', testDelete);
+        
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', updateNumericMode);
+        });
+        
+        document.getElementById('currentUser').addEventListener('change', () => {
+            if (selectedFile !== null) {
+                updateEffects();
+            }
+        });
+
+        renderFiles();
+    </script>
+</body>
+</html>

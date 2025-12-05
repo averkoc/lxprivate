@@ -3,7 +3,7 @@ title: ""
 layout: default
 ---
 
-# Scripting Workshop in lxprivate repository
+# Scripting Workshop
 **📹 This page supports the workshop video** - Use it to follow along and reference code examples.
 
 ---
