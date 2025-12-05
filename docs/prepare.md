@@ -1,18 +1,16 @@
 
-## Preparing to practical exam
+## Preparing for the Practical Exam
 
-The exam tests your understanding and practice skills about ssh key-based authentication and file permissions. Besides these you need basic command shell skills. 
-Instructions interpreting are also needed like in all exams :)
+The practical exam tests your understanding and hands-on skills with SSH key-based authentication and file permissions. You will also need basic command-line skills. As with all exams, the ability to correctly interpret instructions is important.
 
-### Setting up key-based configuration to remote server  
-You need first to generate key-pair in your local computer using `keygen` command. Then you copy the generated public key to server using `ssh-copy-id` command.
-Both of these command you execyte in your local computer. The `ssh-copy-id` program connects to server asking your password and copies the public key to ~/.ssh/authorized_keys file in the server. 
+### Setting up Key-Based Authentication on a Remote Server
+First, generate an SSH key pair on your local computer using the `ssh-keygen` command.  
+Next, copy the generated public key to the server using the `ssh-copy-id` command.
 
-### File permissions an ownerships  
-"I have created" a [file permission simulator](perms.html) that you can use to explore and experiment how file ownerships (user,group) affects whether different users can do witht the file. You can select the user as whom you are logged in and then check what permissions you have to different files. If your selected account is the file owner you can also change file permissions with `chmod` command.
+Both commands are executed on your local machine.  
+The `ssh-copy-id` program connects to the server, prompts you for your password, and copies your public key into the server’s `~/.ssh/authorized_keys` file.
 
+### File Permissions and Ownership
+"I have created" a [file permission simulator](perms.html) that you can use to explore and experiment with how file ownership (user and group) affects what different users can do with a file.
 
-
-
-
- 
+You can select which user you are logged in as and then check what permissions you have for various files. If the selected account is the file owner, you can also change file permissions using the `chmod` command.
