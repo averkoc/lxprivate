@@ -4,8 +4,8 @@
 * Pros: Functionality doesn't depend whether students have wired or wireless adapter in their pc
 * Cons: If VirtualBox host-only adapter gets failed - difficult to clear
   * **Cons-resolve: Change host-only adapter to bridged** - no need to edit interfaces file.
-
-VM /etc/network/interfaces 
+  * 
+Edit VM /etc/network/interfaces 
 ```bash
 # part omitted
 # The secondary network interface
@@ -16,8 +16,8 @@ The change in  interfaces file come into effect on next boot. You can also issue
 
 
 ## NAT + Bridged with static IP 
-issue command `print route -4` in Windows cmd. Check the first row: Interface column contains your PC IP-address.  
-VM /etc/network/interfaces 
+issue command `print route -4` in Windows cmd. Check the first row: Interface column contains your PC IP-address.   
+Edit VM /etc/network/interfaces 
 ```bash
 # part omitted
 # The secondary network interface
