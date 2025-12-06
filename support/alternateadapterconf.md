@@ -3,7 +3,7 @@
 ## NAT + host-only 
 * Pros: Functionality doesn't depend whether students have wired or wireless adapter in their pc
 * Cons: If VirtualBox host-only adapter gets failed - difficult to clear
-  * ***Cons-resolve: Change host-only adapter to bridged**
+  * **Cons-resolve: Change host-only adapter to bridged**
 
 VM /etc/network/interfaces 
 ```bash
