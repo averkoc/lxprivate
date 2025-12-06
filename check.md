@@ -1,6 +1,7 @@
 
 ````yaml
-# This is check definitions for "ws3 shared directories for project groups "sudo .\check account" uses this  
+# This is check definitions for "ws3 shared directories for project groups "sudo .\check account" uses this
+# with hardcoded name expected_projects.yaml  
 projects:
   teampubfiles:
     group: "teampub"
