@@ -5,6 +5,8 @@
 * Cons: If VirtualBox host-only adapter gets failed - difficult to clear
   * **Cons-resolve: Change host-only adapter to bridged** - no need to edit interfaces file.
   * 
+
+**Configuring**  
 Edit VM /etc/network/interfaces 
 ```bash
 # part omitted
@@ -15,7 +17,11 @@ iface enp0s8 inet dhcp
 The change in  interfaces file come into effect on next boot. You can also issue command sudo `systemctl restart networking.service` to apply it immediately.
 
 
-## NAT + Bridged with static IP 
+## NAT + Bridged with static IP without gateway  
+* Pros: Due static IP settings the adapter doesn't try to get IP from router. In rare cases the DHCP mayt be a problem depening on AP or VPN or WiFi card or their combination.
+* Cons: VM not isolated like in NAT,host-only combination - not a real problem in course.
+  
+**Configuring:**
 issue command `print route -4` in Windows cmd. Check the first row: Interface column contains your PC IP-address.   
 Edit VM /etc/network/interfaces 
 ```bash
