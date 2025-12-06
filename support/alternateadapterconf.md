@@ -12,6 +12,7 @@ VM /etc/network/interfaces
 allow-hotplug enp0s8
 iface enp0s8 inet dhcp
 ````
+The change in  interfaces file come into effect on next boot. You can also issue command sudo `systemctl restart networking.service` to apply it immediately.
 
 
 ## NAT + Bridged with static IP 
@@ -22,8 +23,9 @@ VM /etc/network/interfaces
 # The secondary network interface
 allow-hotplug enp0s8
 iface enp0s8 inet static
-   ipad
+   address x.x.x.y # where the first x's are the same as in your PC's IP-address and the y e.g. 200
 ````
+The change in  interfaces file come into effect on next boot. You can also issue command sudo `systemctl restart networking.service` to apply it immediately. 
 
 
 
