@@ -37,8 +37,10 @@ ping -c1 192.168.56.1    # VM → host
 ping -c1 8.8.8.8         # Internet connectivity
 ````
 
+--- 
+<br>
 
-## ❗ If Something Breaks later (or in the beginning)
+# ❗ If Something Breaks later (or in the beginning)
 
 Sometimes VirtualBox “Host-Only” networking fails on laptops.  
 Do not reinstall VirtualBox.  
@@ -51,17 +53,15 @@ Do NOT change Adapter 1 (NAT).
 
 Reboot the VM and try again.
 
-## 
-
----
+##  
 
 
-# Quick Troubleshooting Guide
+## Quick Troubleshooting Guide
 
 Use this only if things stop working.
 
 
-## ❗ Problem: I cannot reach the VM from my host
+### ❗ Problem: I cannot reach the VM from my host
 
 Try this in order:
 
@@ -74,7 +74,7 @@ This fixes almost all problems.
 
 ---
 
-## ❗ Problem: My VM has no Internet
+### ❗ Problem: My VM has no Internet
 
 Check:
 
