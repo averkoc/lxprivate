@@ -83,5 +83,10 @@ This fixes almost all problems.
 Check:
 
 1. Adapter 1 *must* be **NAT**
-2. Test:
+2. Test:  
+`ping -c1 8.8.8.8`
+3. If ping works but DNS fails:  
+`sudo nano /etc/resolv.conf`
+Add:  
+nameserver 8.8.8.8
 
