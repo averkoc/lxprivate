@@ -18,7 +18,9 @@ The change in  interfaces file come into effect on next boot. You can also issue
 
 
 ## NAT + Bridged with static IP without gateway  
-* Pros: Due static IP settings the adapter doesn't try to get IP from router. In rare cases the DHCP mayt be a problem depening on AP or VPN or WiFi card or their combination. All outband traffic goes through NAT.  
+* Pros:
+  *  Due static IP settings the adapter doesn't try to get IP from router. In rare cases the DHCP mayt be a problem depening on AP or VPN or WiFi card or their combination. All outband traffic goes through NAT.
+  *  Easy to remember VM IP address  
 * Cons: VM not isolated like in NAT,host-only combination - not a real problem in course.
   
 **Configuring:**
