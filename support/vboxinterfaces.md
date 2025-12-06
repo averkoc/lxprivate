@@ -55,16 +55,10 @@ Reboot the VM and try again.
 
 ---
 
-Put this into separet md-page and give link in faq to it  
-# 🧩 **2. One-Page Troubleshooting Guide**
 
-```markdown
 # Quick Troubleshooting Guide
 
 Use this only if things stop working.
-
----
-````
 
 
 ## ❗ Problem: I cannot reach the VM from my host
