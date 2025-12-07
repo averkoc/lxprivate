@@ -301,18 +301,26 @@ checks:
     path: "/tmp/workshop_temp.txt"
     must_not_exist: true           # Check passes if file does NOT exist
 
- # Check 11: Stings in same line
+ # Check 11: Regex based contains
  - name: "apache access log"
   type: file
   path: "/var/log/apache2/access.log"
-  contains:                        # Anywhere in file
+  
+  # Simple string search (still supported for ease of use)
+  contains:
     - "GET"
     - "POST"
-  contains_line:                   # On same line
-    - "200"
-    - "/api/login"
-    - "Mozilla"
-  # Matches log line: "192.168.1.1 - - [date] "GET /api/login HTTP/1.1" 200 1234 Mozilla/5.0..."
+  
+  # Regex patterns (more powerful)
+  matches:
+    - "200.*GET /api/login"              # 200 followed by GET /api/login on same line
+    - "ERROR.*database.*connection"       # All three on same line, in order
+    - "\\b(started|stopped)\\b"          # Word boundary match
+    - "^Port \\d+"                        # Line starts with "Port" followed by numbers
+  
+  not_matches:
+    - "FATAL"                             # Must not contain this pattern
+    - "password\\s*=\\s*['\"].*['\"]"   # No plaintext passwords # Matches log line: "192.168.1.1 - - [date] "GET /api/login HTTP/1.1" 200 1234 Mozilla/5.0..."
 
 # Example of a complete workshop check file
 # This covers typical Linux Essentials scenarios:
