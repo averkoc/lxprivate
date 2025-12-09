@@ -13,8 +13,9 @@ First, generate an SSH key pair on your local computer using the `ssh-keygen` co
 Next, copy the generated public key to the server using the `ssh-copy-id` command.
 
 Both commands are executed on your local machine.  
-The `ssh-copy-id` program connects to the server, prompts you for your password, and copies your public key into the server’s `~/.ssh/authorized_keys` file. <br><br> 
-"aI" did an ssh-keybased authentication [simulator](sshsimu.html) that may help you to refresh your skills.
+The `ssh-copy-id` program connects to the server, prompts you for your password, and copies your public key into the server’s `~/.ssh/authorized_keys` file. <br>
+"aI" did ssh keybased-authentication [simulator](sshsimu.html) that may help you to refresh your skills. 
+
 
 ### File Permissions and Ownership
 "aI" have created a [file permission simulator](perms.html) that you can use to explore how file ownership (user and group) affects what different users can do with a file.

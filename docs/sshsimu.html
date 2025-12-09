@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SSH Key Training Simulator</title>
+<style>
+  :root{--bg:#f5f7fa;--card:#fff;--muted:#6b7280;--accent:#0f172a}
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Arial,sans-serif;background:var(--bg);color:var(--accent)}
+  .wrap{max-width:1100px;margin:28px auto;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  h1{font-size:20px;margin:0}
+  p.lead{margin:6px 0 18px;color:var(--muted)}
+  .mode-selector{display:flex;gap:6px;background:#e6eef6;padding:4px;border-radius:8px}
+  .mode-btn{background:transparent;color:var(--accent);border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px;transition:background .15s}
+  .mode-btn.active{background:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+  .boards{display:flex;gap:18px}
+  .card{flex:1;background:var(--card);padding:14px;border-radius:10px;box-shadow:0 6px 18px rgba(17,24,39,0.06)}
+  .title{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .term{background:#021018;color:#a7f3d0;padding:12px;border-radius:8px;height:260px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;white-space:pre-wrap;position:relative}
+  .term-input{display:none;margin-top:4px}
+  .term-input input{width:calc(100% - 8px);background:#032028;color:#a7f3d0;border:1px solid #0a4a5a;padding:6px;border-radius:4px;font-family:inherit;font-size:13px}
+  .fs{background:#fbfdff;border:1px dashed #e6eef6;padding:10px;border-radius:6px;margin-top:10px;font-family:ui-monospace,monospace;font-size:13px}
+  .controls{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  button{background:#0b69ff;color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+  button.secondary{background:#e6eef6;color:var(--accent)}
+  button:disabled{opacity:0.5;cursor:not-allowed}
+  .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.45);visibility:hidden;opacity:0;transition:opacity .12s;z-index:100}
+  .modal.show{visibility:visible;opacity:1}
+  .dialog{background:var(--card);padding:18px;border-radius:8px;min-width:320px;max-width:500px}
+  label{display:block;margin-bottom:6px;font-size:13px}
+  input[type=password],input[type=text]{width:100%;padding:8px;border-radius:6px;border:1px solid #e6eef6;margin-bottom:10px;font-family:inherit;box-sizing:border-box}
+  .note{margin-top:10px;color:var(--muted);font-size:13px}
+  .explanation-box{background:#fffbeb;border-left:4px solid #f59e0b;padding:12px;margin-top:10px;border-radius:4px;font-size:13px;line-height:1.5}
+  .explanation-box strong{color:#92400e}
+  .step-indicator{color:#0b69ff;font-weight:600;margin-top:8px}
+  footer{margin-top:18px;color:var(--muted);font-size:13px}
+  @media(max-width:800px){.boards{flex-direction:column}.term{height:220px}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>SSH Key Generation & <code>ssh-copy-id</code> Simulator</h1>
+      <div class="user">User: <strong>you@client</strong> &nbsp; • &nbsp; Server: <strong>your@server</strong></div>
+    </header>
+    
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+      <span style="font-size:13px;color:var(--muted)">Mode:</span>
+      <div class="mode-selector">
+        <button class="mode-btn active" data-mode="simple">Simple</button>
+        <button class="mode-btn" data-mode="interactive">Interactive</button>
+        <button class="mode-btn" data-mode="explanation">Explanation</button>
+      </div>
+    </div>
+
+    <p class="lead" id="modeDescription">Click buttons to simulate SSH key generation and copying. Uses default options (simple ssh-keygen).</p>
+
+    <div class="boards">
+      <section class="card" id="userCard">
+        <div class="title"><strong>User Computer</strong><span class="muted">~</span></div>
+        <div class="term" id="userTerm">$</div>
+        <div class="term-input" id="termInput">
+          <input type="text" id="cmdInput" placeholder="Type a command (ssh-keygen or ssh-copy-id your@server)" />
+        </div>
+
+        <div class="controls" id="buttonControls">
+          <button id="genKeyBtn">Generate SSH Key (ssh-keygen)</button>
+          <button id="copyIdBtn" class="secondary">ssh-copy-id your@server</button>
+          <button id="resetBtn" class="secondary">Reset</button>
+        </div>
+
+        <div class="fs" id="userFS"><strong>~/.ssh/</strong>
+          <div style="margin-top:6px;color:var(--muted)">(empty)</div>
+        </div>
+        
+        <div class="explanation-box" id="userExplanation" style="display:none"></div>
+      </section>
+
+      <section class="card" id="serverCard">
+        <div class="title"><strong>Server</strong><span class="muted">/home/your</span></div>
+        <div class="term" id="serverTerm">Server ready...</div>
+
+        <div class="fs" id="serverFS"><strong>~/.ssh/authorized_keys</strong>
+          <div style="margin-top:6px;color:var(--muted)">(empty)</div>
+        </div>
+        
+        <div class="explanation-box" id="serverExplanation" style="display:none"></div>
+      </section>
+    </div>
+
+    <footer id="footerTip">
+      Tip: Click <strong>Generate SSH Key</strong> first, then <strong>ssh-copy-id</strong>. The simulator will prompt for the server password.
+    </footer>
+  </div>
+
+  <!-- Password modal -->
+  <div class="modal" id="pwModal" role="dialog" aria-hidden="true">
+    <div class="dialog">
+      <div style="font-weight:600;margin-bottom:8px">Enter server password</div>
+      <label for="pwInput">Password for your@server:</label>
+      <input id="pwInput" type="password" placeholder="Type 'password' to simulate success" />
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button id="pwCancel">Cancel</button>
+        <button id="pwSubmit">Connect</button>
+      </div>
+      <div class="note">This is a simulation. Entering <code>password</code> will simulate a successful authentication; any other value will simulate a failed attempt.</div>
+    </div>
+  </div>
+
+<script>
+// State
+let state = { 
+  keyGenerated:false, 
+  keyString:null, 
+  keyCopied:false,
+  mode: 'simple',
+  currentStep: 0
+};
+
+// Elements
+const userTerm = document.getElementById('userTerm');
+const serverTerm = document.getElementById('serverTerm');
+const userFS = document.getElementById('userFS');
+const serverFS = document.getElementById('serverFS');
+const genKeyBtn = document.getElementById('genKeyBtn');
+const copyIdBtn = document.getElementById('copyIdBtn');
+const resetBtn = document.getElementById('resetBtn');
+const pwModal = document.getElementById('pwModal');
+const pwInput = document.getElementById('pwInput');
+const pwSubmit = document.getElementById('pwSubmit');
+const pwCancel = document.getElementById('pwCancel');
+const termInput = document.getElementById('termInput');
+const cmdInput = document.getElementById('cmdInput');
+const buttonControls = document.getElementById('buttonControls');
+const modeDescription = document.getElementById('modeDescription');
+const footerTip = document.getElementById('footerTip');
+const userExplanation = document.getElementById('userExplanation');
+const serverExplanation = document.getElementById('serverExplanation');
+
+// Helper functions
+function appendUser(msg){ userTerm.textContent += "\n"+msg; userTerm.scrollTop = userTerm.scrollHeight; }
+function appendServer(msg){ serverTerm.textContent += "\n"+msg; serverTerm.scrollTop = serverTerm.scrollHeight; }
+
+function rndKey(){ 
+  // short fake ssh-ed25519 key for display
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  let s=''; for(let i=0;i<48;i++) s+=chars[Math.floor(Math.random()*chars.length)];
+  return 'ssh-ed25519 AAAA'+s+' your@client';
+}
+
+function showExplanation(location, message) {
+  const box = location === 'user' ? userExplanation : serverExplanation;
+  box.innerHTML = message;
+  box.style.display = 'block';
+}
+
+function hideExplanations() {
+  userExplanation.style.display = 'none';
+  serverExplanation.style.display = 'none';
+}
+
+// Mode switching
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.mode = btn.dataset.mode;
+    resetSimulator();
+    updateModeUI();
+  });
+});
+
+function updateModeUI() {
+  hideExplanations();
+  
+  if (state.mode === 'simple') {
+    buttonControls.style.display = 'flex';
+    termInput.style.display = 'none';
+    modeDescription.textContent = 'Click buttons to simulate SSH key generation and copying. Uses default options (simple ssh-keygen).';
+    footerTip.innerHTML = 'Tip: Click <strong>Generate SSH Key</strong> first, then <strong>ssh-copy-id</strong>. The simulator will prompt for the server password.';
+  } else if (state.mode === 'interactive') {
+    buttonControls.style.display = 'none';
+    termInput.style.display = 'block';
+    cmdInput.focus();
+    modeDescription.textContent = 'Type commands yourself: ssh-keygen or ssh-copy-id your@server';
+    footerTip.innerHTML = 'Type <code>ssh-keygen</code> to generate a key, then <code>ssh-copy-id your@server</code> to copy it. Press Enter to execute.';
+  } else if (state.mode === 'explanation') {
+    buttonControls.style.display = 'flex';
+    termInput.style.display = 'none';
+    modeDescription.textContent = 'Guided learning mode with step-by-step explanations of what happens during SSH key authentication setup.';
+    footerTip.innerHTML = 'Follow the step-by-step guide. Each action includes detailed explanations of what\'s happening.';
+    showNextExplanationStep();
+  }
+}
+
+// Explanation mode steps
+function showNextExplanationStep() {
+  if (state.currentStep === 0) {
+    showExplanation('user', '<strong>Step 1: Generate SSH Keys</strong><br>SSH uses a pair of keys: a <strong>private key</strong> (stays on your computer) and a <strong>public key</strong> (can be shared). The private key proves your identity, the public key verifies it.<br><br>Click <strong>Generate SSH Key</strong> to create your key pair.');
+    genKeyBtn.disabled = false;
+    copyIdBtn.disabled = true;
+  } else if (state.currentStep === 1) {
+    showExplanation('user', '<strong>Step 2: Copy Public Key to Server</strong><br>To enable password-less login, your public key must be added to the server\'s <code>~/.ssh/authorized_keys</code> file. The <code>ssh-copy-id</code> command does this automatically.<br><br>Click <strong>ssh-copy-id</strong> to copy your public key to the server.');
+    copyIdBtn.disabled = false;
+  } else if (state.currentStep === 2) {
+    showExplanation('server', '<strong>Step 3: Authentication Complete!</strong><br>Your public key is now in the server\'s <code>authorized_keys</code> file. Next time you connect from your local computer with <code>ssh your@server</code> to your server, the server will use your public key to verify your private key, allowing login without a password.<br><br>Click <strong>Reset</strong> to try again.');
+  }
+}
+
+// Generate key function
+function generateKey() {
+  if(state.keyGenerated){ 
+    appendUser('$ ssh-keygen'); 
+    appendUser('You already have a key. Overwrite? (simulation will overwrite)'); 
+  }
+  
+  const cmd = state.mode === 'simple' ? '$ ssh-keygen' : '$ ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519';
+  appendUser(cmd);
+  appendUser('Generating public/private ed25519 key pair.');
+  appendUser('+++');
+  
+  setTimeout(()=>{
+    state.keyString = rndKey();
+    state.keyGenerated = true;
+    appendUser('Your identification has been saved in ~/.ssh/id_ed25519');
+    appendUser('Your public key has been saved in ~/.ssh/id_ed25519.pub');
+    userFS.innerHTML = '<strong>~/.ssh/</strong><div style="margin-top:6px">id_ed25519<br>id_ed25519.pub</div>';
+    
+    if (state.mode === 'explanation') {
+      state.currentStep = 1;
+      showNextExplanationStep();
+    }
+  },700);
+}
+
+// Generate key button
+genKeyBtn.addEventListener('click', generateKey);
+
+// ssh-copy-id function
+function sshCopyId() {
+  appendUser('$ ssh-copy-id your@server');
+  if(!state.keyGenerated){ 
+    appendUser('ERROR: No identity found. Run ssh-keygen first.'); 
+    return; 
+  }
+  pwInput.value='';
+  pwModal.classList.add('show');
+  pwModal.setAttribute('aria-hidden','false');
+  pwInput.focus();
+}
+
+// ssh-copy-id button
+copyIdBtn.addEventListener('click', sshCopyId);
+
+pwCancel.addEventListener('click', ()=>{ pwModal.classList.remove('show'); pwModal.setAttribute('aria-hidden','true'); appendUser('ssh-copy-id cancelled.'); });
+
+pwSubmit.addEventListener('click', ()=>{ 
+  const pw = pwInput.value;
+  pwModal.classList.remove('show'); pwModal.setAttribute('aria-hidden','true');
+  appendUser("your@server's password: " + (pw ? '********' : ''));
+
+  appendUser('Authenticating...');
+  setTimeout(()=>{
+    if(pw === 'password'){
+      appendUser('Password accepted. Copying public key to your@server');
+      appendServer('Accepted public key from your@client');
+      appendServer('Appending to /home/your/.ssh/authorized_keys');
+      serverFS.innerHTML = '<strong>~/.ssh/authorized_keys</strong><div style="margin-top:6px;white-space:pre-wrap">'+state.keyString+'</div>';
+      state.keyCopied = true;
+      appendUser('Number of key(s) added: 1');
+      appendUser('Now try: ssh your@server');
+      
+      if (state.mode === 'explanation') {
+        state.currentStep = 2;
+        showNextExplanationStep();
+      }
+    } else {
+      appendUser('Permission denied, please try again.');
+      appendUser('ssh-copy-id: failed to connect');
+    }
+  },900);
+});
+
+// allow Enter key in modal
+pwInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') pwSubmit.click(); });
+
+// Interactive mode command handling
+cmdInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const cmd = cmdInput.value.trim();
+    cmdInput.value = '';
+    
+    if (!cmd) return;
+    
+    if (cmd === 'ssh-keygen' || cmd.startsWith('ssh-keygen')) {
+      generateKey();
+    } else if (cmd === 'ssh-copy-id your@server' || cmd === 'ssh-copy-id your@server') {
+      sshCopyId();
+    } else if (cmd.startsWith('ssh-copy-id')) {
+      appendUser('$ ' + cmd);
+      appendUser('ERROR: Please specify the server: ssh-copy-id your@server');
+    } else if (cmd === 'reset') {
+      resetSimulator();
+    } else {
+      appendUser('$ ' + cmd);
+      appendUser('Command not recognized. Try: ssh-keygen or ssh-copy-id your@server');
+    }
+  }
+});
+
+// Reset function
+function resetSimulator() {
+  const currentMode = state.mode;
+  state = { keyGenerated:false, keyString:null, keyCopied:false, mode: currentMode, currentStep: 0 };
+  userTerm.textContent = '$';
+  serverTerm.textContent = 'Server ready...';
+  userFS.innerHTML = '<strong>~/.ssh/</strong><div style="margin-top:6px;color:var(--muted)">(empty)</div>';
+  serverFS.innerHTML = '<strong>~/.ssh/authorized_keys</strong><div style="margin-top:6px;color:var(--muted)">(empty)</div>';
+  hideExplanations();
+  
+  if (state.mode === 'explanation') {
+    showNextExplanationStep();
+  }
+}
+
+resetBtn.addEventListener('click', resetSimulator);
+
+// Accessibility: close modal on Escape
+document.addEventListener('keydown', (e)=>{ 
+  if(e.key==='Escape'){ 
+    if(pwModal.classList.contains('show')){ 
+      pwModal.classList.remove('show'); 
+      pwModal.setAttribute('aria-hidden','true'); 
+    } 
+  } 
+});
+
+// Initialize UI based on mode
+updateModeUI();
+
+</script>
+</body>
+</html>
