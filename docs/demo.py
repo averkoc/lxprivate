@@ -1,28 +1,61 @@
-
 import time
 import random
+import signal
+import sys
 import paho.mqtt.client as mqtt
 
-#broker = "test.mosquitto.org"
-#port = 1883
-broker = "broker.emqx.io"
-port = 1883
+# ---------------------------------------------------------------------------
+# MQTT configuration
+# ---------------------------------------------------------------------------
 
-topictemp = f"/lx/sakari/temperature"
-topicpressure = f"/lx/sakari/pressure"
+BROKER = "broker.emqx.io"
+PORT = 1883
+TOPIC_TEMP = "/lx/sakari/temperature"
+TOPIC_PRESSURE = "/lx/sakari/pressure"
 
+# Fixed log file
+LOG_FILE = "demo.log"
+
+# ---------------------------------------------------------------------------
+# MQTT client setup
+# ---------------------------------------------------------------------------
 
 client = mqtt.Client()
+client.connect(BROKER, PORT)
+client.loop_start()
 
-def publish_temperature():
+# ---------------------------------------------------------------------------
+# Signal handling
+# ---------------------------------------------------------------------------
+
+def handle_signal(signum, frame):
+    print(f"\nReceived signal {signum}, shutting down gracefully...")
+    client.disconnect()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, handle_signal)
+signal.signal(signal.SIGTERM, handle_signal)
+
+# ---------------------------------------------------------------------------
+# Publish loop
+# ---------------------------------------------------------------------------
+
+try:
     while True:
         temperature = random.uniform(20.0, 30.0)
-        client.publish(topictemp, f"{temperature:.2f}")
-        print(f"Published: {temperature:.2f} to topic {topictemp}")
         pressure = random.uniform(1020.0, 1030.0)
-        client.publish(topicpressure, f"{pressure:.2f}")
-        print(f"Published: {pressure:.2f} to topic {topicpressure}")
+
+        client.publish(TOPIC_TEMP, f"{temperature:.2f}")
+        client.publish(TOPIC_PRESSURE, f"{pressure:.2f}")
+
+        # Append message to demo.log
+        with open(LOG_FILE, "a") as f:
+            f.write(f"Published temperature={temperature:.2f} to {TOPIC_TEMP}, "
+                    f"pressure={pressure:.2f} to {TOPIC_PRESSURE}\n")
+
+        print(f"Published temperature={temperature:.2f}, pressure={pressure:.2f}")
         time.sleep(5)
 
-client.connect(broker, port)
-publish_temperature()
+except KeyboardInterrupt:
+    # Fallback in case signal is missed
+    handle_signal(signal.SIGINT, None)

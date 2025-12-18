@@ -14,7 +14,7 @@ Next, copy the generated public key to the server using the `ssh-copy-id` comman
 
 Both commands are executed on your local machine.  
 The `ssh-copy-id` program connects to the server, prompts you for your password, and copies your public key into the server’s `~/.ssh/authorized_keys` file. <br>
-"aI" did ssh keybased-authentication [simulator](sshsimu.html) that may help you to refresh your skills. 
+Read [this](https://averkoc.github.io/lx/error1/) to avoid one typical error that students do in the exam.
 
 
 ### File Permissions and Ownership
