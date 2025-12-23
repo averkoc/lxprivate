@@ -22,5 +22,6 @@
 * [Screen Clip Studio by Lovable](https://crispclip-fixer.lovable.app/)
 * [Clipper](https://averkoc.github.io/lx/clipper)
 * [checking](check.md)
+* [Write commands immediately to .bash_history](history.md)
 
  
