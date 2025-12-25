@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows SSH Key Deployer</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; padding: 20px; max-width: 700px; margin: auto; background-color: #f0f2f5; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e1e4e8; }
+        h2 { margin-top: 0; color: #1a73e8; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
+        h3 { color: #202124; font-size: 1.15em; margin-top: 0; display: flex; align-items: center; }
+        .step-num { background: #1a73e8; color: white; border-radius: 50%; width: 28px; height: 28px; display: inline-flex; justify-content: center; align-items: center; margin-right: 12px; font-size: 0.9em; font-weight: bold; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; color: #3c4043; margin-top: 15px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
+        .output-box { background: #202124; color: #e8eaed; padding: 18px; border-radius: 8px; position: relative; word-break: break-all; font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 13.5px; margin-top: 12px; border-left: 6px solid #1a73e8; }
+        .test-box { border-left-color: #34a853; }
+        .cleanup-box { border-left-color: #f9ab00; }
+        button.copy-btn { background: #1a73e8; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; float: right; font-weight: 600; transition: background 0.2s; }
+        button.copy-btn:hover { background: #1765cc; }
+        .hint { font-size: 0.9em; color: #5f6368; margin-top: 6px; }
+        #custom-key-wrapper { display: none; margin-top: 12px; }
+        .info-icon { 
+            cursor: pointer; 
+            margin-left: 10px; 
+            color: #1a73e8; 
+            font-size: 0.9em; 
+            background: #e8f0fe; 
+            border-radius: 50%; 
+            width: 20px; 
+            height: 20px; 
+            display: inline-flex; 
+            justify-content: center; 
+            align-items: center;
+            font-weight: bold;
+            border: 1px solid #1a73e8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>SSH Key Setup (Windows PowerShell)</h2>
+    <p class="hint">Fill in your details to generate the deployment commands.</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+            <label for="username">Remote Username</label>
+            <input type="text" id="username" placeholder="e.g. student" oninput="updateAll()">
+        </div>
+        <div>
+            <label for="hostname">Server Address</label>
+            <input type="text" id="hostname" placeholder="e.g. server.school.edu" oninput="updateAll()">
+        </div>
+    </div>
+    <label for="keyfile">Public Key File</label>
+    <select id="keyfile" onchange="toggleCustomInput()">
+        <option value="id_ed25519.pub">id_ed25519.pub (Modern Default)</option>
+        <option value="id_rsa.pub">id_rsa.pub (Classic Default)</option>
+        <option value="CUSTOM">-- Use a custom filename --</option>
+    </select>
+    <div id="custom-key-wrapper">
+        <label for="custom_key">Enter Custom Public Key Filename</label>
+        <input type="text" id="custom_key" placeholder="id_rsa_work.pub" oninput="updateAll()">
+    </div>
+</div>
+
+<div class="card">
+    <h3><span class="step-num">1</span> Deploy the Key <span class="info-icon" onclick="showHelp(1)">i</span></h3>
+    <p class="hint">Run this in your local PowerShell. <b>Note:</b> You will be asked for your password one last time.</p>
+    <div class="output-box">
+        <button class="copy-btn" onclick="copyText('result', this)">Copy</button>
+        <code id="result">Waiting for details...</code>
+    </div>
+</div>
+
+<div class="card test-box">
+    <h3><span class="step-num">2</span> Log in to Server <span class="info-icon" onclick="showHelp(2)">i</span></h3>
+    <p class="hint">Now try logging in. If Step 1 worked, you won't be asked for a password!</p>
+    <div class="output-box" style="background: #1d2b1f;">
+        <button class="copy-btn" style="background:#34a853" onclick="copyText('login', this)">Copy</button>
+        <code id="login">Waiting...</code>
+    </div>
+</div>
+
+<div class="card cleanup-box">
+    <h3><span class="step-num">3</span> Cleanup (Only if needed) <span class="info-icon" onclick="showHelp(3)">i</span></h3>
+    <p class="hint">If you accidentally ran Step 1 multiple times, run this <b>on the server</b> to remove duplicate keys:</p>
+    <div class="output-box" style="background: #2b261d;">
+        <button class="copy-btn" style="background:#f9ab00" onclick="copyText('cleanup', this)">Copy</button>
+        <code id="cleanup">sort -u ~/.ssh/authorized_keys -o ~/.ssh/authorized_keys</code>
+    </div>
+</div>
+
+<script>
+    function toggleCustomInput() {
+        const select = document.getElementById('keyfile');
+        const wrapper = document.getElementById('custom-key-wrapper');
+        wrapper.style.display = (select.value === 'CUSTOM') ? 'block' : 'none';
+        updateAll();
+    }
+
+    function updateAll() {
+        const user = document.getElementById('username').value || "[user]";
+        const host = document.getElementById('hostname').value || "[host]";
+        const keySelect = document.getElementById('keyfile').value;
+        const customKey = document.getElementById('custom_key').value;
+        const finalKeyName = (keySelect === 'CUSTOM') ? (customKey || "key.pub") : keySelect;
+        
+        document.getElementById('result').innerText = `type ~\\.ssh\\${finalKeyName} | ssh ${user}@${host} "umask 077; test -d .ssh || mkdir .ssh ; cat >> .ssh/authorized_keys"`;
+        document.getElementById('login').innerText = `ssh ${user}@${host}`;
+    }
+
+    function copyText(id, btn) {
+        const text = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = "Copied!";
+            setTimeout(() => { btn.innerText = originalText; }, 1500);
+        });
+    }
+
+    function showHelp(step) {
+        let msg = "";
+        if (step === 1) {
+            msg = "About SSH Filenames:\n\nThe default filename is id_rsa (or id_ed25519 for newer algorithms), stored in ~/.ssh/, which SSH clients automatically check during authentication.\n\nYou would use different names when managing multiple identities for different servers/accounts (like id_rsa_work and id_rsa_personal), preventing key conflicts and allowing you to specify which identity to use with ssh -i or SSH config files.";
+        } else if (step === 2) {
+            msg = "The Authentication Process:\n\nDuring login, the server uses your public key to create a challenge that only your private key can solve, proving your identity without ever transmitting the private key itself.";
+        } else if (step === 3) {
+            msg = "Maintenance:\n\nRunning the deploy command multiple times adds the same key repeatedly. 'sort -u' (unique) removes those duplicates to keep the configuration clean and prevents the authorized_keys file from growing unnecessarily.";
+        }
+        alert(msg);
+    }
+
+    updateAll();
+</script>
+</body>
+</html>
