@@ -56,6 +56,7 @@ After completing this workshop, you will be able to:
 
 Hands-on related to this table - put to wget accessible format in a separate file (or copy paste to nano)
 
+```bash
 course,lab_name,hours
 CSE,linux-basics,3
 CSE,files-and-permissions,4
@@ -107,6 +108,8 @@ CLD,monitoring-and-alerting,6
 CLD,backup-strategies,4
 CLD,cost-optimization,5
 CLD,cloud-security-basics,6
+````
+
 
 newusers-command input file  
 ```bash
