@@ -16,7 +16,7 @@ You can drop this directly into your GitHub Pages site.
 The shell is a program that listens to what you type, interprets it, and decides what to run.  
 When you enter a command, the shell:
 
-- **Breaks to parts (=parses)** your input into a program name and its arguments  
+- **Breaks to parts (this is called parsing)** your input into a program name and its arguments  
 - **Searches** for that program in a list of directories defined by the `PATH` environment variable  
 - **Executes** the program if it is found  
 - **Reports an error** if it is not  
