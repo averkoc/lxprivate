@@ -160,3 +160,44 @@ ursbla:Q4mZ9FKA:1146:1146:Ursula Black <ursula.black@example.edu>:/home/ursbla:/
 valort:ZQF9m4KA:1147:1147:Valerie Ortiz <valerie.ortiz@example.edu>:/home/valort:/bin/bash
 wesnor:4ZQ9mFKA:1148:1148:Wesley Norris <wesley.norris@example.edu>:/home/wesnor:/bin/bash
 ````
+Cleanup if accidentally created  
+```bash
+#!/bin/bash
+
+INPUT_FILE="newusers.txt"
+
+if [[ ! -f "$INPUT_FILE" ]]; then
+    echo "ERROR: $INPUT_FILE not found."
+    exit 1
+fi
+
+echo "Starting cleanup using $INPUT_FILE"
+echo "----------------------------------"
+
+while IFS=: read -r username _ uid gid _ home _; do
+    # Skip empty or malformed lines
+    [[ -z "$username" || -z "$uid" ]] && continue
+
+    echo "Processing user: $username (UID=$uid, GID=$gid)"
+
+    # Remove user and home directory
+    if id "$username" &>/dev/null; then
+        userdel -r "$username"
+        echo "  User $username removed"
+    else
+        echo "  User $username does not exist"
+    fi
+
+    # Remove private group
+    if getent group "$gid" &>/dev/null; then
+        groupdel "$gid"
+        echo "  Group $gid removed"
+    else
+        echo "  Group $gid does not exist"
+    fi
+
+done < "$INPUT_FILE"
+
+echo "----------------------------------"
+echo "Cleanup complete"
+````
