@@ -1,13 +1,3 @@
-Absolutely — here is a **clean, self‑contained Markdown page** that includes:
-
-- A concise **conceptual introduction** to the shell  
-- Clear, high‑level **learning goals**  
-- No tasks, no recipes, nothing AI‑solvable  
-- A tone that fits a technical educator who values clarity and conceptual grounding  
-
-You can drop this directly into your GitHub Pages site.
-
----
 
 # 🐚 Shell Workshop 1 — Understanding the Shell & Thinking in Commands
 
