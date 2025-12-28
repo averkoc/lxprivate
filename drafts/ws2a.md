@@ -37,7 +37,8 @@ These features help you focus on solving problems rather than retyping or repeat
 Understanding these ideas is more important than memorizing commands.  
 Once you see the shell as a tool for connecting programs, everything else becomes easier.
 
----
+---  
+
 
 ## 🎯 Learning Outcomes
 
@@ -163,6 +164,9 @@ ursbla:Q4mZ9FKA:1146:1146:Ursula Black <ursula.black@example.edu>:/home/ursbla:/
 valort:ZQF9m4KA:1147:1147:Valerie Ortiz <valerie.ortiz@example.edu>:/home/valort:/bin/bash
 wesnor:4ZQ9mFKA:1148:1148:Wesley Norris <wesley.norris@example.edu>:/home/wesnor:/bin/bash
 ````
+Examples using the above data: pick emails (AI), pick account and password: `cut -d":" -f1,2 /etc/passwd |tr : " " > part1`  `paste part1 emails`
+
+-----
 Cleanup if accidentally created  
 ```bash
 #!/bin/bash
