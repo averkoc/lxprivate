@@ -54,4 +54,19 @@ After completing this workshop, you will be able to:
 
 ---
 
-If you want, I can now produce a **Workshop 2** page that continues this style seamlessly.
+Hands-on related to this table - put to wget accessible format in a separate file (or copy paste to nano)
+
+course,lab_name,hours
+CSE,linux-basics,3
+CSE,files-and-permissions,4
+CSE,process-management,5
+CSE,shell-scripting,6
+NET,network-fundamentals,3
+NET,tcp-ip-analysis,4
+NET,dns-and-dhcp,5
+NET,firewall-configuration,6
+DBA,sql-basics,3
+DBA,data-modeling,4
+DBA,joins-and-views,5
+DBA,backup-and-recovery,6
+
