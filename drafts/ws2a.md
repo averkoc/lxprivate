@@ -16,7 +16,7 @@ The power of the shell comes from combining these programs into workflows.
 
 ### How the Shell Sees a Command
 - The first word is the **program**  
-- The following words are **arguments**  
+- The following words are **options** and **arguments**, and the shell passes them to the program it runs  
 - The shell expands patterns (globs), variables, and operators before running anything  
 
 ### How the Shell Connects Programs
