@@ -109,6 +109,7 @@ CLD,cost-optimization,5
 CLD,cloud-security-basics,6
 
 newusers-command input file  
+```bash
 alismi:kA7fQ2mB:1100:1100:Alice Smith <alice.smith@example.edu>:/home/alismi:/bin/bash
 bobjon:P8dM4sQa:1101:1101:Bob Johnson <bob.johnson@example.edu>:/home/bobjon:/bin/bash
 carbro:mZ9K2HqA:1102:1102:Carol Brown <carol.brown@example.edu>:/home/carbro:/bin/bash
@@ -158,3 +159,4 @@ tomkir:FZ9Q4mKA:1145:1145:Thomas Kirk <thomas.kirk@example.edu>:/home/tomkir:/bi
 ursbla:Q4mZ9FKA:1146:1146:Ursula Black <ursula.black@example.edu>:/home/ursbla:/bin/bash
 valort:ZQF9m4KA:1147:1147:Valerie Ortiz <valerie.ortiz@example.edu>:/home/valort:/bin/bash
 wesnor:4ZQ9mFKA:1148:1148:Wesley Norris <wesley.norris@example.edu>:/home/wesnor:/bin/bash
+````
