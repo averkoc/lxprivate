@@ -57,6 +57,13 @@ After completing this workshop, you will be able to:
 
 Hands-on related to this table - put to wget accessible format in a separate file (or copy paste to nano)
 
+### access.log analysis  
+First just `grep -o "GET .*404 " /var/log/apache2/access.log`  
+`grep -o "GET .*404 " /var/log/apache2/access.log | sort | uniq > suspicious.log`  
+Submit to chatgpt to get classification (typical vulnerability scanning related)  
+
+
+### Simple grep
 ```bash
 course,lab_name,hours
 CSE,linux-basics,3
