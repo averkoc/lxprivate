@@ -208,3 +208,8 @@ done < "$INPUT_FILE"
 echo "----------------------------------"
 echo "Cleanup complete"
 ````
+
+* Filtering lines: Tools like grep, sed, and awk allow selecting or excluding lines based on patterns or conditions.
+* Transforming text: Utilities such as tr (translate characters) and sed (stream editor) modify the content of text streams in predictable ways.
+* Field or column extraction: Tools like cut extract specific fields or character ranges from each line, without performing any aggregation or summarization.
+* Summarizing and aggregating: Commands such as sort, uniq, and wc enable counting occurrences, sorting lines, or computing totals.
