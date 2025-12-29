@@ -74,9 +74,9 @@ chmod +x hello.sh
 
 | #  | Feature              | Key/Command          | What It Does / Example Use                          |
 |----|---------------------|----------------------|-----------------------------------------------------|
-| 1  | Browse history      | ↑ / ↓ (arrow keys)   | Cycle through previously entered commands           |
-| 2  | Search history      | Ctrl+ r + text        | Reverse search: find and reuse a previous command   |
+| 1  | **Browse history**      | ↑ / ↓ (arrow keys)   | Cycle through previously entered commands           |
+| 2  | **Search history**      | Ctrl+ r + text        | Reverse search: find and reuse a previous command   |
 | 3  | Repeat last command | !!                   | Executes the last command again                     |
-| 4  | Tab completion      | Tab         | Auto-complete file or command names|
+| 4  | **Tab completion**      | Tab         | Auto-complete file or command names|
  | 5  | Brace expansion  | cp {jan,feb}.csv backup/ | Expands to `cp jan.csv feb.csv backup/` before execution |
 
