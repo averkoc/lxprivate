@@ -2,7 +2,7 @@ import os
 
 # Folder to scan
 ROOT = "docs"
-OUTPUT = os.path.join(ROOT, "TOC.md")
+OUTPUT = os.path.join(ROOT, "TOC.md")  # Write directly to docs/TOC.md
 EXTENSIONS = (".md", ".html")
 
 def generate_toc():
