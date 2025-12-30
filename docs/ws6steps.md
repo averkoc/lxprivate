@@ -21,14 +21,14 @@ First, we take a look at special permissions using this slideset: <a href="https
 ### setuid bit demonstration  
 Regular users can change there passwords using the `passwd` command. The `passwd` command updates the user's password information stored in `/etc/shadow` file. 
 1. Paste into answerbox a screenshot showing the permissions and ownership information of the `passwd` command:  
-<img width="847" height="101" alt="image" src="images/4d5a9a5b41c7.png" />
+<img width="847" height="101" alt="image" src="../images/4d5a9a5b41c7.png" />
 
 2. Paste into answerbox another screenshot showing the permissions and ownership information of the `/etc/shadow` file:  
-<img width="788" height="97" alt="image" src="images/a8b6aff4ef39.png" />  
+<img width="788" height="97" alt="image" src="../images/a8b6aff4ef39.png" />  
   
 
 3. Next, modify your password and observe how you are able to change the contents of the `/etc/shadow` file even though your user account doesn not have direct permission to modify it.  
-<img width="776" height="100" alt="image" src="images/26f278a7d033.png" />
+<img width="776" height="100" alt="image" src="../images/26f278a7d033.png" />
 
 You will notice that the date and time of the /etc/shadow file have changed after you updated your password. 
 
@@ -51,31 +51,31 @@ For this and the following demonstrations, you should have the following users a
 
 
 * Create directories `/var/examples/team1files` and `/var/team2files` and set their permissions and ownerships like in the figure below:  
-<img width="980" height="58" alt="image" src="images/c38b84c98e1c.png" />  
+<img width="980" height="58" alt="image" src="../images/c38b84c98e1c.png" />  
 
 * As user `john1`, create three files — `john1a`, `john1b`, and `john1c` — in `/var/team1files`.
 * As user `john4`, create three files — `john4a`, `john4b`, and `john4c` — in `/var/team2files`.
 
 * Paste into answerbox the command `ls -lR /var/examples` output:  
-<img width="756" height="481" alt="image" src="images/415571d6a235.png" />
+<img width="756" height="481" alt="image" src="../images/415571d6a235.png" />
 
 When a directory has the **setgid bit** set, any files created within that directory automatically inherit the **group ownership** of the directory. This makes it easier for team members to manage and share files with the correct group permissions. Without the setgid bit, users must manually change the group ownership of files to achieve the same result.
 
 ### Sticky bit demonstration  
 Create directoriy `/var/examples/team3files`and set it's permissions and ownerships like in the figure below:  
-<img width="983" height="90" alt="image" src="images/496a2a607693.png" />
+<img width="983" height="90" alt="image" src="../images/496a2a607693.png" />
 
 
 
 * As user `john4`, create three files — `john4a`, `john4b`, and `john4c` — in `/var/team3files`.
 * As user `john5`, create three files — `john5a`, `john5b`, and `john5c` — in `/var/team3files`.
 * Paste the result of command line `ls -ld /var/examples/team3files/; ls -l /var/examples/team3files/` to anwserbox:
-  <img width="1322" height="255" alt="image" src="images/20c3ffaa5491.png" />
+  <img width="1322" height="255" alt="image" src="../images/20c3ffaa5491.png" />
 
 * As user `john4` try to delete john5a - paste result into answerbox
-  <img width="754" height="96" alt="image" src="images/b48b4d22f25e.png" />
+  <img width="754" height="96" alt="image" src="../images/b48b4d22f25e.png" />
 * Try to modify john5a contents and paste results to answerbox:  
-  <img width="1163" height="100" alt="image" src="images/38c98942a5a7.png" />
+  <img width="1163" height="100" alt="image" src="../images/38c98942a5a7.png" />
 * As user john try to edit john5a file using `sudo nano` - paste text **root could edit /var/examples/team4files/john5a** if it succeeded and text **root couldn't edit /var/examples/team4files/john5a** if it didn't succeed.
 
 --- 

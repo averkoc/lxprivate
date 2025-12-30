@@ -122,7 +122,7 @@ Good luck!
 The assessment script runs at 5-minute intervals and checks whether the user's key-based authentication and file-related tasks have been completed correctly.
 If everything is set up properly, you will see the following message after you first log out and then log back in — with your own username shown in place of john:
 
-<img width="601" height="114" alt="image" src="images/5380803f1abf.png" />
+<img width="601" height="114" alt="image" src="../images/5380803f1abf.png" />
 
 > If you have just completed the tasks and immediately logged out and back in, the script may not have processed your results yet. In that case, wait a few minutes and try logging in again.
 

@@ -12,7 +12,7 @@ Assume that you are the user john and you want to set up key-based authenticatio
 
  **Correct procedure:**
  
- <img width="1540" height="476" alt="image" src="images/e2728e6f19d7.png" />
+ <img width="1540" height="476" alt="image" src="../images/e2728e6f19d7.png" />
 
 
 [Keybased authentication configuration](ssh.md) 
