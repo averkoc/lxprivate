@@ -2,7 +2,7 @@ import os
 
 # Folder to scan
 ROOT = "docs"
-OUTPUT = os.path.join(ROOT, "TOC.md")  # Write directly to docs/TOC.md
+OUTPUT = os.path.join(ROOT, "toc.md")  # Write directly to docs/toc.md
 EXTENSIONS = (".md", ".html")
 
 def generate_toc():
@@ -39,8 +39,8 @@ def generate_toc():
             if not f.endswith(EXTENSIONS):
                 continue
             
-            # Skip the TOC file itself to avoid self-reference
-            if f == "TOC.md":
+            # Skip the toc file itself to avoid self-reference
+            if f == "toc.md":
                 continue
             
             # Build relative path from ROOT
@@ -74,6 +74,6 @@ if __name__ == "__main__":
     toc = generate_toc()
     with open(OUTPUT, "w", encoding="utf-8") as f:
         f.write(toc)
-    print(f"TOC generated in {OUTPUT}")
+    print(f"toc generated in {OUTPUT}")
     print(f"Generated {len(toc)} characters")
     print("First 100 chars:", toc[:100])
