@@ -9,6 +9,7 @@ layout: default
 
 - [404.html](/404.html)
 - [404original.md](/404original.md)
+- [TOC.md](/TOC.md)
 - [_exam25.md](/_exam25.md)
 - [_siteinstructions.md](/_siteinstructions.md)
 - [accesslog_suspicious.md](/accesslog_suspicious.md)
