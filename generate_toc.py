@@ -39,6 +39,10 @@ def generate_toc():
             if not f.endswith(EXTENSIONS):
                 continue
             
+            # Skip the TOC file itself to avoid self-reference
+            if f == "TOC.md":
+                continue
+            
             # Build relative path from ROOT
             filepath = os.path.join(current_dir, f).replace("\\", "/")
             
@@ -58,10 +62,6 @@ def generate_toc():
             elif link.endswith(".html"):
                 link = link[:-5]  # Remove .html extension
             
-            # Skip the TOC file itself to avoid self-reference
-            if f == "TOC.md":
-                continue
-            
             # Add leading slash for absolute path from site root
             link = "/" + link
             
@@ -75,4 +75,5 @@ if __name__ == "__main__":
     with open(OUTPUT, "w", encoding="utf-8") as f:
         f.write(toc)
     print(f"TOC generated in {OUTPUT}")
-    print(f"Front matter included: {toc[:50]}")
+    print(f"Generated {len(toc)} characters")
+    print("First 100 chars:", toc[:100])
