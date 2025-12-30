@@ -51,9 +51,16 @@ def generate_toc():
             # URL encode spaces
             link = link.replace(" ", "%20")
             
-            # For Jekyll, convert .md to .html if needed
-            # Uncomment the next line if Jekyll converts .md to .html
-            # link = link.replace(".md", ".html")
+            # For Jekyll: remove file extensions and use clean URLs
+            # Jekyll typically converts page.md to /page/ or /page.html
+            if link.endswith(".md"):
+                link = link[:-3]  # Remove .md extension
+            elif link.endswith(".html"):
+                link = link[:-5]  # Remove .html extension
+            
+            # Skip the TOC file itself to avoid self-reference
+            if f == "TOC.md":
+                continue
             
             # Add leading slash for absolute path from site root
             link = "/" + link
@@ -68,3 +75,4 @@ if __name__ == "__main__":
     with open(OUTPUT, "w", encoding="utf-8") as f:
         f.write(toc)
     print(f"TOC generated in {OUTPUT}")
+    print(f"Front matter included: {toc[:50]}")
