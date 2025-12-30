@@ -1,4 +1,4 @@
-name: Generate TOC
+name: Generate toc
 on:
     workflow_dispatch:
 jobs:
@@ -13,26 +13,26 @@ jobs:
       with:
         python-version: "3.x"
     
-    - name: Generate TOC
+    - name: Generate toc
       run: python generate_toc.py
     
-    - name: Show generated TOC
+    - name: Show generated toc
       run: |
-        echo "=== Generated TOC.md (first 40 lines) ==="
-        head -n 40 docs/TOC.md
+        echo "=== Generated toc.md (first 40 lines) ==="
+        head -n 40 docs/toc.md
         echo ""
         echo "=== File info ==="
-        ls -lh docs/TOC.md
+        ls -lh docs/toc.md
     
-    - name: Commit TOC
+    - name: Commit toc
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add docs/TOC.md
+        git add docs/toc.md
         if git diff --cached --quiet; then
           echo "No changes detected"
         else
           echo "Committing changes..."
-          git commit -m "Update TOC [skip ci]"
+          git commit -m "Update toc [skip ci]"
           git push
         fi
