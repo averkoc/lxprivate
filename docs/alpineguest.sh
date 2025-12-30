@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Just for test
 # Enable community repository (uncomment the row below if line 10 doesn't succeed
 # echo "https://dl-cdn.alpinelinux.org/alpine/v3.19/community" >> /etc/apk/repositories
 
