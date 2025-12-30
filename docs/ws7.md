@@ -64,7 +64,7 @@ gcc -o graceful graceful.c
 * interrupt it by `ctrl-c`
 * attach a screen clip
   
-<img width="724" height="239" alt="image" src="images/4759aa772dba.png" />
+<img width="724" height="239" alt="image" src="/images/4759aa772dba.png" />
 
 
 
