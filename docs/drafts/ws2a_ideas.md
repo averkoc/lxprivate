@@ -1,4 +1,7 @@
-
+---
+title: ""
+layout: default
+---
 
 # 🐚 Shell Workshop 1 — Understanding the Shell & Thinking in Commands
 
