@@ -3,8 +3,8 @@ export async function onRequest(context) {
   const authHeader = request.headers.get('Authorization');
 
   // YOUR CREDENTIALS
-  const VALID_USER = "myuser";
-  const VALID_PASS = "mypassword";
+  const VALID_USER = "centriasakari";
+  const VALID_PASS = "olikosemahdoton100";
 
   if (authHeader && authHeader.startsWith('Basic ')) {
     // Extract the base64 part
