@@ -62,7 +62,7 @@ john@debian:~$
 ---  
 
 ## What happens behind the scenes during login
-<img width="1143" height="542" alt="image" src="https://github.com/user-attachments/assets/3406f69c-1a4d-42c7-ac63-d07b97473874" />
+<img width="1143" height="542" alt="image" src="images/979c2be42ff2.png" />
 
 
 

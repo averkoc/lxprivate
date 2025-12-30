@@ -7,7 +7,7 @@ layout: default
 
 In this workshop, we focus on managing our own user processes. You’ll learn how to run programs interactively in the foreground or silently in the background. While a program is running in the foreground, you can pause it with `Ctrl+Z` and then resume it in the background using `bg`. To bring a background job back to the foreground, use `fg`. You can also stop a foreground job with `Ctrl+C`, check job status with jobs, and locate or terminate your own processes by name using `pgrep` and `pkill`.   
 
-<img width="614" height="360" alt="image" src="https://github.com/user-attachments/assets/84bc8620-bc69-4e79-a89c-d410cf878d81" />
+<img width="614" height="360" alt="image" src="images/a24812307964.png" />
 
 
 
@@ -64,7 +64,7 @@ gcc -o graceful graceful.c
 * interrupt it by `ctrl-c`
 * attach a screen clip
   
-<img width="724" height="239" alt="image" src="https://github.com/user-attachments/assets/46b1a1ec-5f97-4801-9bf9-0c188bfa976d" />
+<img width="724" height="239" alt="image" src="images/4759aa772dba.png" />
 
 
 
@@ -75,7 +75,7 @@ gcc -o graceful graceful.c
 * use `jobs` command to see your background jobs
 * attach a screen clip
   
-<img width="753" height="133" alt="image" src="https://github.com/user-attachments/assets/54339a66-dcdf-48ee-af9e-c9f61cff722e" />
+<img width="753" height="133" alt="image" src="images/9df88c11e39b.png" />
 
 
 ---  
@@ -85,7 +85,7 @@ gcc -o graceful graceful.c
 * `pkill longrun`
 * attach a screen clip
   
-<img width="767" height="144" alt="image" src="https://github.com/user-attachments/assets/8b376f00-25e6-4f96-a5f2-1d3db3549d2d" />
+<img width="767" height="144" alt="image" src="images/410406f5a821.png" />
 
 
 
@@ -103,7 +103,7 @@ An operating system can send various signals to processes (running programs). Ea
 * compare the last line listed when the program was running and the last line in data.txt file
 * take a screen clip that shows the difference - buffered data was lost due.
   
-<img width="548" height="541" alt="image" src="https://github.com/user-attachments/assets/17ea89b9-af47-470f-9a9b-c19b74cceb93" />
+<img width="548" height="541" alt="image" src="images/adad0f051713.png" />
 
 
 
@@ -115,7 +115,7 @@ An operating system can send various signals to processes (running programs). Ea
 * compare the last line listed when the program was running and the last line in data.txt file
 * take a screen clip that shows the difference - no lost data.
   
-<img width="760" height="570" alt="image" src="https://github.com/user-attachments/assets/c15d8ead-c365-4a4a-a82a-b46c470cccd1" />
+<img width="760" height="570" alt="image" src="images/31b5e67278e1.png" />
 
 
 ----

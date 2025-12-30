@@ -26,11 +26,11 @@ siege -c 50 -r 500 -d 1 http://192.168.61.5/index.html
 ````
 Below are the results after the test completed.  
 
-<img width="878" height="374" alt="image" src="https://github.com/user-attachments/assets/980f945b-e0fa-4351-8a10-e5dd79703ac5" />    
+<img width="878" height="374" alt="image" src="images/b8bc103e4e4b.png" />    
 
 The picture below is a screen clip from `htop` during my ssh-session to Debian  while the siege test was running-
 
-<img width="1412" height="629" alt="image" src="https://github.com/user-attachments/assets/c290fa2e-9e2b-49ec-911b-4d7318945fdc" />
+<img width="1412" height="629" alt="image" src="images/7d3722211a75.png" />
 
 **htop view explanations**
 

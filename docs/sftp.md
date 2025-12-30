@@ -21,7 +21,7 @@ In this demonstration, we show how to use an SFTP client with already configured
 
 Using **Desktop Linux file manager**’s integrated SFTP feature:
 
-<img width="932" height="466" alt="image" src="https://github.com/user-attachments/assets/739908d3-3e5a-4303-ad7f-abff420a5d29" />
+<img width="932" height="466" alt="image" src="images/c785fe5cb377.png" />
 
 
 *Figure 1: Connecting to remote server using integrated file manager and SFTP protocol - no password required if SSH keybased authentication is configured for user*
@@ -33,7 +33,7 @@ Using **Desktop Linux file manager**’s integrated SFTP feature:
 After connecting, you can browse the home folder on the server.
 Make sure hidden files are visible (e.g., `.ssh`, `.bashrc`, etc.).
 
-<img width="799" height="398" alt="image" src="https://github.com/user-attachments/assets/41d9c962-263d-4761-9fc1-6d9abf9ed0ea" />
+<img width="799" height="398" alt="image" src="images/f4a11b36b392.png" />
 
 
 *Figure 2: Viewing home folder in server after connection (note: show hidden files enabled).*
@@ -53,6 +53,6 @@ FileZilla client application supports cleartext FTP and encrypted SFTP file tran
 
 ### Step 1: Define connection to remote server using SFTP and keybased authentication  
 
-<img width="1312" height="964" alt="image" src="https://github.com/user-attachments/assets/ae0a4563-15c1-4797-9483-53ab2831e663" />
+<img width="1312" height="964" alt="image" src="images/1123e7c7b201.png" />
 
 After you have connected to remoter server, you can transfer files between your computer and server. You get a graphical interface that shows directory trees in server and client. You can also set file permissions in the Linux server without memorizing file permissions setting commands and their options. 

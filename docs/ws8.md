@@ -79,7 +79,7 @@ echo "   pip install <package_name>"
 * Now you and others can use [demo.html](demo.html) to view the messages that your Debian mqtt-client sends to broker.
 * After you have taken the required screen clips, exit the demo.py and deactivate the virtual environment by issuing command `deactivate`
 
-<img width="1361" height="873" alt="image" src="https://github.com/user-attachments/assets/a33975e8-189d-444d-ac67-34ee14202147" />
+<img width="1361" height="873" alt="image" src="images/3f7e16529501.png" />
 
 
   

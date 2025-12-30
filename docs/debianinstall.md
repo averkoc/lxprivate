@@ -31,11 +31,11 @@ Find [installation media](https://cdimage.debian.org/debian-cd/current/) for dif
 #### VirtualBox Settings (Windows Users)
 <mark>Remember to check "Skip Unattended Installation!"</mark>  
 
-<img src="https://github.com/user-attachments/assets/483bba8a-56c4-4a14-9148-ecd9b1ab847d" width="50%" />  
+<img src="images/0f924e5579a4.png" width="50%" />  
 <br><br>
-<img src="https://github.com/user-attachments/assets/8ce92b28-d147-41fd-8a12-a333161d2812" width="50%" />  
+<img src="images/fefbd7206fdf.png" width="50%" />  
 <br><br>
-<img src="https://github.com/user-attachments/assets/d6278e57-5c3d-45ca-80fa-f2f437f15622" width="50%" />
+<img src="images/13da26fe4676.png" width="50%" />
 <br><br>
 
 # Post-Installation Configuration
