@@ -1,4 +1,9 @@
-##  Workshop Report Policy: Partnering for Success
+---
+title: ""
+layout: default
+--- 
+
+##  Workshop Report Policy: Partnering for Success (by AI)
 
 This policy is designed to ensure a fair, efficient, and timely feedback process for **all** students. By setting clear standards, we can focus less on administrative corrections and more on your learning.  
 
