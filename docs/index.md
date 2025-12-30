@@ -4,7 +4,7 @@ layout: default
 ---
 
 
-### Linux Essentials – Pages related to workshop instruction videos  
+### Linux Essentials – Pages related to workshop instruction videos  (this is the internal version of the site)  
 
 The links to individual workshop pages are provided in the LMS. These GitHub pages are not meant to be complete instructions on their own.  
 They serve as partial outlines to accompany the videos and as a resource for you to copy code blocks or access linked files while working.  
