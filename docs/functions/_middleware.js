@@ -2,24 +2,28 @@ export async function onRequest(context) {
   const { request, next } = context;
   const authHeader = request.headers.get('Authorization');
 
-  // Change these to your desired login info
-  const USERNAME = "myuser";
-  const PASSWORD = "mypassword";
+  // YOUR CREDENTIALS
+  const VALID_USER = "myuser";
+  const VALID_PASS = "mypassword";
 
-  if (authHeader) {
-    const [scheme, encoded] = authHeader.split(' ');
-    if (scheme === 'Basic') {
-      const decoded = atob(encoded);
+  if (authHeader && authHeader.startsWith('Basic ')) {
+    // Extract the base64 part
+    const base64 = authHeader.split(' ')[1];
+    
+    try {
+      // Decode using a more robust method
+      const decoded = atob(base64);
       const [user, pass] = decoded.split(':');
 
-      if (user === USERNAME && pass === PASSWORD) {
-        return await next(); // Credentials match! Show the site.
+      if (user === VALID_USER && pass === VALID_PASS) {
+        return await next();
       }
+    } catch (e) {
+      // If decoding fails, it will fall through to the 401 response
     }
   }
 
-  // If no auth or wrong auth, trigger the browser's login popup
-  return new Response('Unauthorized', {
+  return new Response('Authentication Required', {
     status: 401,
     headers: {
       'WWW-Authenticate': 'Basic realm="Secure Area"',
