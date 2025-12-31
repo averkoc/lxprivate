@@ -33,7 +33,19 @@ layout: default
 `ls -l > filelisting.txt` # Command's output is now in the file filelisting.txt   
 
 **Pipes** You can "give" one programs output to another program's input using pipe. E.g.  
-`ls -l | wc -l` # the listing is directed to wc program that counts the number of lines in the input and prints it.  
+`ls -l | wc -l` # the listing is directed to wc program that counts the number of lines in the input and prints it.    
+
+## Features That Help You Work Efficiently
+The shell also provides features that make everyday work faster and smoother:
+
+- **Command history** (arrow keys and search) so you can reuse and refine previous commands  
+- **Customization through profile files**, allowing you to tailor your environment  
+- **Built‑in commands** for many frequently used operations, executed directly by the shell  
+
+These features help you focus on solving problems rather than retyping or repeating work.
+
+Understanding these ideas is more important than memorizing commands.  
+Once you see the shell as a tool for connecting programs, everything else becomes easier.
  
 
 
