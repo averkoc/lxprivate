@@ -3,16 +3,27 @@ title: ""
 layout: default
 ---
 
-* What the Shell is?
-    * It is a program that is defined to be started when user logs in - see `/etc/password`
-* What the prompt shows?
-    * (1) Your user account, (2) the computer's (host's) name where you are logged in, (3) the directory where you are currently. Note the special symbol `~` which is used for your home directory instead of the long /home/youraccount/ that would occupy a lot of space.
-* What happens when you write something and press enter?
-    * The shell expects that it is a program's name (= command) that you want to start and tries to find it.
-    * Where it looks for it?
-        * From the directories list in the `PATH` **environment variable**
-* What means the extra data that you can type after program (=command) name?
-    * They are options and arguments that the shells gives to the program that it starts
+# Shell Basics
+
+### What is the Shell?
+A program that starts when you log in. You can check your assigned shell in `/etc/passwd`.
+
+### What does the prompt show?
+- Your username
+- The computer’s (host) name
+- Your current directory
+
+> The `~` symbol represents your home directory, so you don’t have to see the full path.
+
+### What happens when you type a command and press Enter?
+The shell treats it as a program name and tries to run it.
+
+### Where does the shell look for the program?
+In the directories listed in the `PATH` environment variable.
+
+### What about extra data after the command?
+These are options and arguments that the shell passes to the program.  
+
 
 # 🐚 Shell Workshop 1 — Understanding the Shell & Thinking in Commands
 
