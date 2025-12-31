@@ -1,3 +1,10 @@
+---
+title: ""
+layout: default
+---
+
+
+
 You are an experienced Linux instructor and system administrator.
 
 Audience:
