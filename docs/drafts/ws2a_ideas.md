@@ -5,10 +5,9 @@ layout: default
 
 ## Shell Basics
 
-**What is the Shell?** 
-* A program that starts when you log in. You can check your assigned shell in `/etc/passwd`.
+**What is the Shell?** A program that starts when you log in. You can check your assigned shell in `/etc/passwd`.
 
-**What is it used for?**  
+**What is it used for?**   
 - **Administrators:** Manage users (create new users, modify permissions), install software packages, monitor the system, etc.  
 - **Regular users:** Manage files, develop software, perform data analysis, etc.
 
@@ -19,16 +18,15 @@ layout: default
 
 > The `~` symbol represents your home directory, so you don’t have to see the full path.
 
-**What happens when you type a command and press Enter?**  
-* The shell treats it as a program name and tries to run it.
+**What happens when you type a command and press Enter?** The shell treats it as a program name and tries to run it.  
 
-**Where does the shell look for the program?**  
-* In the directories listed in the `PATH` environment variable.
+**Where does the shell look for the program?** In the directories listed in the `PATH` environment variable.  
 
-**What about extra data after the command?**  
-* These are options and arguments that the shell passes to the program.
+**What about extra data after the command?** These are options and arguments that the shell passes to the program.
 
 --- 
+## Shell: command chaining, redirection, pipes  
+ 
 
 
 # 🐚 Shell Workshop 1 — Understanding the Shell & Thinking in Commands
