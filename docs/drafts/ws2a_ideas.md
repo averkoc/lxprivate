@@ -25,7 +25,15 @@ layout: default
 **What about extra data after the command?** These are options and arguments that the shell passes to the program.
 
 --- 
-## Shell: command chaining, redirection, pipes  
+## Shell Advanced  
+**Command chaining**  You can combine multiple commands condtionally using logical operators `&&`(AND)  `||` (OR). Eg.  
+`mkdir mydir && cd mydir` # If mydir creation succeed move to mydir -directory  
+
+**Redirection**  Instead of printing a command's output to dislay (actually stdout) you can redirect it to file. E.g.  
+`ls -l` > filelisting.txt # Command's output is now in the file filelisting.txt   
+
+**Pipes** You can "give" one programs output to another program using pipe. E.g.  
+`ls -l | wc -l` # the listing is directed to wc program that counts the number of lines in the input and prints it.  
  
 
 
