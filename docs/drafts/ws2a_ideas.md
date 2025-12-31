@@ -35,6 +35,9 @@ layout: default
 **Pipes** You can "give" one programs output to another program's input using pipe. E.g.  
 `ls -l | wc -l` # the listing is directed to wc program that counts the number of lines in the input and prints it.    
 
+## Shell scripts  
+Files that contain shell commands and programming structures like variables, `while` and `for` loops. They are designed to automate frequently needed tasks.
+
 ## Features That Help You Work Efficiently
 The shell also provides features that make everyday work faster and smoother:
 
