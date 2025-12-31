@@ -281,7 +281,7 @@ echo "Cleanup complete"
 
 <details>
   <summary>Most common commands</summary>
-  <div class="accordion-content">
-    {{ commands }}
-  </div>
+
+  {{ commands }}
+
 </details>
