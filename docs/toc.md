@@ -19,6 +19,7 @@ layout: default
 - [clipper_broken2.html](/clipper_broken2)
 - [clipper_broken3.html](/clipper_broken3)
 - [clippermac.html](/clippermac)
+- [commands.html](/commands)
 - [commands.md](/commands)
 - [cprograms.md](/cprograms)
 - [debian_installation.md](/debian_installation)
@@ -63,8 +64,10 @@ layout: default
 - [sshcopyid.html](/sshcopyid)
 - [sshsimu.html](/sshsimu)
 - [t1.md](/t1)
+- [test.md](/test)
 - [test3.html](/test3)
 - [thread.md](/thread)
+- [ws2a_ideas.md](/ws2a_ideas)
 - [ws3ex1.md](/ws3ex1)
 - [ws3ex2.md](/ws3ex2)
 - [ws4b.md](/ws4b)
@@ -91,6 +94,5 @@ layout: default
   - [picture_names.md](/drafts/picture_names)
   - [policy.md](/drafts/policy)
   - [sed.md](/drafts/sed)
-  - [ws2a_ideas.md](/drafts/ws2a_ideas)
 - **functions/**
 - **images/**
