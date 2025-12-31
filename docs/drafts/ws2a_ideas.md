@@ -30,9 +30,9 @@ layout: default
 `mkdir mydir && cd mydir` # If mydir creation succeed move to mydir -directory  
 
 **Redirection**  Instead of printing a command's output to dislay (actually stdout) you can redirect it to file. E.g.  
-`ls -l` > filelisting.txt # Command's output is now in the file filelisting.txt   
+`ls -l > filelisting.txt` # Command's output is now in the file filelisting.txt   
 
-**Pipes** You can "give" one programs output to another program using pipe. E.g.  
+**Pipes** You can "give" one programs output to another program's input using pipe. E.g.  
 `ls -l | wc -l` # the listing is directed to wc program that counts the number of lines in the input and prints it.  
  
 
