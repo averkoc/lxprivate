@@ -30,13 +30,3 @@ sed -i 's|src="images/|src="../images/|g' *.md
 
 
 ----
-
-# 🔍 Step 1: Identifying Files with Image Links
-
-Before running a batch update, it is helpful to know exactly which files will be affected. We can use the `grep` command to filter our Markdown files.
-
-### The Command
-Run this in your repository root to list every `.md` file that contains an image link pointing to the `images/` folder:
-
-```bash
-grep -l 'src="images/' *.md
