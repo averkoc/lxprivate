@@ -275,15 +275,11 @@ echo "Cleanup complete"
 * Field or column extraction: Tools like cut extract specific fields or character ranges from each line, without performing any aggregation or summarization.
 * Summarizing and aggregating: Commands such as sort, uniq, and wc enable counting occurrences, sorting lines, or computing totals.
 
-{% capture commands_raw %}
-{% include_relative commands.md %}
-{% endcapture %}
+{% include_relative commands.html as commands_content %}
 
-{% assign commands = commands_raw | markdownify %}
+{% include accordion.html
+    id="commands"
+    title="Most common commands"
+    content=commands_content
+%}
 
-<details>
-  <summary>Most common commands</summary>
-
-  {{ commands }}
-
-</details>
