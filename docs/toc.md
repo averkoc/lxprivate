@@ -95,4 +95,4 @@ layout: default
   - [policy.md](/drafts/policy)
   - [sed.md](/drafts/sed)
 - **functions/**
-- **images/**
+- - **images/**
