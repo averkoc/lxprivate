@@ -274,3 +274,14 @@ echo "Cleanup complete"
 * Transforming text: Utilities such as tr (translate characters) and sed (stream editor) modify the content of text streams in predictable ways.
 * Field or column extraction: Tools like cut extract specific fields or character ranges from each line, without performing any aggregation or summarization.
 * Summarizing and aggregating: Commands such as sort, uniq, and wc enable counting occurrences, sorting lines, or computing totals.
+
+<details>
+  <summary>Most common commands</summary>
+  <div class="accordion-content">
+    {% capture md %}
+      {% include_relative commands.md %}
+    {% endcapture %}
+    {{ md | markdownify }}
+  </div>
+</details>
+
