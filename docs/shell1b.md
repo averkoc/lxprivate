@@ -1,3 +1,9 @@
+---
+title: ""
+layout: default
+---
+
+
 # 🐧 Linux Shell Assignment: "Getting Comfortable with Bash"
 
 ## 🎯 Learning Goals
