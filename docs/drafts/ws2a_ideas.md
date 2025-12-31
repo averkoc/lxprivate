@@ -6,7 +6,7 @@ layout: default
 * What the Shell is?
     * It is a program that is defined to be started when user logs in - see /etc/password
 * What the prompt shows?
-    * (1) Your user account, (2) the computer's (host's) name where you are logged in, (3) the directory where you are currently - not the special symbol for your home directory that is used instead of /home/youraccount/ that would occupy a lot of space.
+    * (1) Your user account, (2) the computer's (host's) name where you are logged in, (3) the directory where you are currently - note the special symbol ~ for your home directory that is used instead of /home/youraccount/ that would occupy a lot of space.
 * What happens when you write something and press enter?
     * The shell expects that it is a program's name (= command) that you want to start and tries to find it.
     * Where it looks for it?
