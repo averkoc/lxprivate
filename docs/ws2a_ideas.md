@@ -278,10 +278,6 @@ echo "Cleanup complete"
 <details>
   <summary>Most common commands</summary>
   <div class="accordion-content">
-    {% capture md %}
-      {% include_relative commands.md %}
-    {% endcapture %}
-    {{ md | markdownify }}
+    {% include_relative commands.html %}
   </div>
 </details>
-
