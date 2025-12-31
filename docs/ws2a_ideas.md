@@ -9,14 +9,14 @@ layout: default
 
 **What is it used for?**   
 - **Administrators:** Manage users (create new users, modify permissions), install software packages, monitor the system, etc.  
-- **Regular users:** Manage files, develop software, perform data analysis, etc.
+- **Regular users:** Manage files, support tasks related to content management, software development, data analysis, etc.
 
-**What does the prompt show?**  
-- Your username
-- The computer’s (host) name
-- Your current directory
+**What does the prompt show? Example: `john@debian:~$`**  
+- Username `john`
+- The computer’s hostname `debian`
+- Current directory `~`
 
-> The `~` symbol represents your home directory, so you don’t have to see the full path.
+> The `~` symbol represents user's home directory, saves space compared to full path /home/john.
 
 **What happens when you type a command and press Enter?** The shell treats it as a program (=command) name and tries to find and execute it.  
 
@@ -38,7 +38,16 @@ layout: default
 ## Shell scripts  
 Files that contain shell commands and programming structures like variables, `while` and `for` loops. They are designed to automate frequently needed tasks.
 
-## Features That Help You Work Efficiently
+## Features That Help You Work Efficiently  
+
+| #  | Feature              | Key/Command          | What It Does / Example Use                          |
+|----|---------------------|----------------------|-----------------------------------------------------|
+| 1  | **Browse history**      | ↑ / ↓ (arrow keys)   | Cycle through previously entered commands           |
+| 2  | **Search history**      | Ctrl+ r + text        | Reverse search: find and reuse a previous command   |
+| 4  | **Tab completion**      | Tab         | Auto-complete file or command names|
+| 4  | Profile files      |          | User can tailor the environment e.g. by defining aliases for long commands|
+
+
 The shell also provides features that make everyday work faster and smoother:
 
 - **Command history** (arrow keys and search) so you can reuse and refine previous commands  
