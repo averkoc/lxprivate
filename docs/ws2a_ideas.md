@@ -60,8 +60,9 @@ Copy the following files that we need on hands-on activities.
 
 ```bash
 {% include wget.html file="/assets/courses.txt" %}
-
-
+````
+```bash
+{% include wget.html file="/assets/newusers.txt" %}
 ````
 
 
