@@ -31,7 +31,6 @@ layout: default
 - [hash.md](/hash)
 - [hashoriginal.html](/hashoriginal)
 - [index.md](/index)
-- [index_lx.md](/index_lx)
 - [indoor2_emqx.html](/indoor2_emqx)
 - [interfaces.md](/interfaces)
 - [journalctl.md](/journalctl)
@@ -89,7 +88,9 @@ layout: default
   - **css/**
   - **js/**
 - **drafts/**
+  - [picture_names.md](/drafts/picture_names)
   - [policy.md](/drafts/policy)
+  - [sed.md](/drafts/sed)
   - [ws2a_ideas.md](/drafts/ws2a_ideas)
 - **functions/**
 - **images/**
