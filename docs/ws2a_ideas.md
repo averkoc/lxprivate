@@ -18,7 +18,7 @@ layout: default
 
 > The `~` symbol represents your home directory, so you don’t have to see the full path.
 
-**What happens when you type a command and press Enter?** The shell treats it as a program name and tries to run it.  
+**What happens when you type a command and press Enter?** The shell treats it as a program name and tries to find and execute it.  
 
 **Where does the shell look for the program?** In the directories listed in the `PATH` environment variable.  
 
