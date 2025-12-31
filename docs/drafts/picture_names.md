@@ -1,34 +1,42 @@
-The following md-files contain links to pictures in images-folder. The image filnames are currently non-descritpive. I tried to make picture contents describing name by gemini 
-but that AI-feature was not good enough.  
-https://averkoc.github.io/lx/debian_installation  
-https://averkoc.github.io/lx/debianinstall  
-https://averkoc.github.io/lx/dem  
-https://averkoc.github.io/lx/error1  
-https://averkoc.github.io/lx/exam25  
-https://averkoc.github.io/lx/loadtest  
-https://averkoc.github.io/lx/sftp  
-https://averkoc.github.io/lx/ssh  
-https://averkoc.github.io/lx/ws4b  
-https://averkoc.github.io/lx/ws4bsteps  
-https://averkoc.github.io/lx/ws6steps  
-https://averkoc.github.io/lx/ws7  
-https://averkoc.github.io/lx/ws8  
 
-
-The image-files naming could be: page-topic|picturenumber and the conversion table could be:  
-pagefilename|linknumber|current filename|newname  
-
-
-https://averkoc.github.io/lx/debian_installation
-https://averkoc.github.io/lx/debianinstall
-https://averkoc.github.io/lx/dem
-https://averkoc.github.io/lx/error1
-https://averkoc.github.io/lx/exam25
-https://averkoc.github.io/lx/loadtest
-https://averkoc.github.io/lx/sftp
-https://averkoc.github.io/lx/ssh
-https://averkoc.github.io/lx/ws4b
-https://averkoc.github.io/lx/ws4bsteps
-https://averkoc.github.io/lx/ws6steps
-https://averkoc.github.io/lx/ws7
-https://averkoc.github.io/lx/ws8
+| Page                | Picture # | Current Image Filename                                                                                 | High-Level Description                 | Suggested New Name                      |
+| ------------------- | --------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------- | --------------------------------------- |
+| debianinstall       | 1         | `../images/0f924e5579a4.png`                                                                           | VirtualBox configuration screenshot    | `debianinstall_virtualbox_settings.png` |
+| debianinstall       | 2         | `../images/fefbd7206fdf.png`                                                                           | Debian installer step screenshot       | `debianinstall_installer_step1.png`     |
+| debianinstall       | 3         | `../images/13da26fe4676.png`                                                                           | Debian installer step screenshot       | `debianinstall_installer_step2.png`     |
+| debian_installation | 1         | `../images/e615e3f0973c.png`                                                                           | Debian installation overview image     | `debian_installation_overview.png`      |
+| dem                 | 1         | `../images/d6a43d0dfae7.png`                                                                           | Demonstration or example image         | `demonstration_example.png`             |
+| error1              | 1         | `../images/e2728e6f19d7.png`                                                                           | SSH or configuration error output      | `ssh_configuration_error.png`           |
+| exam25              | 1         | `../images/5380803f1abf.png`                                                                           | Exam or assessment result output       | `exam25_assessment_result.png`          |
+| loadtest            | 1         | `../images/b8bc103e4e4b.png`                                                                           | Load test results summary              | `loadtest_results.png`                  |
+| loadtest            | 2         | `../images/7d3722211a75.png`                                                                           | System resource usage during load test | `loadtest_system_usage.png`             |
+| server_keyboard     | 1         | `https://user-images.githubusercontent.com/8930773/215145388-417a4ec7-30e8-4712-ae0d-3a6c878e76af.png` | Server keyboard layout illustration    | `server_keyboard_layout.png`            |
+| server_keyboard     | 2         | `https://user-images.githubusercontent.com/8930773/215145246-c3968e80-01ca-4c05-9efe-db5c6fda2cc5.png` | Key combination example                | `server_keyboard_key_combo1.png`        |
+| server_keyboard     | 3         | `https://user-images.githubusercontent.com/8930773/215145680-2fa5ef80-c038-4d3c-b303-f4f72cea5a90.png` | Key combination example                | `server_keyboard_key_combo2.png`        |
+| server_keyboard     | 4         | `https://user-images.githubusercontent.com/8930773/215146035-76d91e99-5164-4eb2-8f00-f8d6fea563b3.png` | Keyboard interaction example           | `server_keyboard_interaction.png`       |
+| server_keyboard     | 5         | `https://user-images.githubusercontent.com/8930773/215146162-35e99b62-9e92-4287-92c9-057d96183509.png` | Keyboard usage example                 | `server_keyboard_usage.png`             |
+| sftp                | 1         | `../images/c785fe5cb377.png`                                                                           | SFTP client directory listing          | `sftp_client_directory_view.png`        |
+| sftp                | 2         | `../images/f4a11b36b392.png`                                                                           | SFTP server home directory             | `sftp_server_home_directory.png`        |
+| sftp                | 3         | `../images/1123e7c7b201.png`                                                                           | FileZilla SFTP connection view         | `sftp_filezilla_connection.png`         |
+| ssh                 | 1         | `../images/979c2be42ff2.png`                                                                           | SSH authentication illustration        | `ssh_authentication_overview.png`       |
+| thread              | 1         | `https://github.com/user-attachments/assets/05621c38-d383-4760-9be0-b1ec906db535`                      | Threading or concurrency illustration  | `thread_execution_example.png`          |
+| ws4b                | 1         | `../images/582fb3cd457b.png`                                                                           | Defense-in-depth security diagram      | `security_defense_in_depth.png`         |
+| ws4bsteps           | 1         | `../images/88b885da8d0a.png`                                                                           | Authentication log output              | `fail2ban_authentication_log.png`       |
+| ws4bsteps           | 2         | `../images/bb9c1a3e696c.png`                                                                           | Blocked IP address view                | `fail2ban_blocked_ip.png`               |
+| ws4bsteps           | 3         | `../images/a68f3b04ac5b.png`                                                                           | IP unban or ban removal                | `fail2ban_unban_action.png`             |
+| ws6steps            | 1         | `../images/4d5a9a5b41c7.png`                                                                           | passwd file permissions                | `permissions_passwd_file.png`           |
+| ws6steps            | 2         | `../images/a8b6aff4ef39.png`                                                                           | shadow file permissions                | `permissions_shadow_file.png`           |
+| ws6steps            | 3         | `../images/26f278a7d033.png`                                                                           | SetUID permission example              | `permissions_setuid_example.png`        |
+| ws6steps            | 4         | `../images/c38b84c98e1c.png`                                                                           | Group directory permissions            | `group_directory_permissions.png`       |
+| ws6steps            | 5         | `../images/415571d6a235.png`                                                                           | Recursive directory listing            | `recursive_directory_listing.png`       |
+| ws6steps            | 6         | `../images/496a2a607693.png`                                                                           | Sticky bit permission example          | `permissions_sticky_bit.png`            |
+| ws6steps            | 7         | `../images/20c3ffaa5491.png`                                                                           | Sticky bit delete attempt              | `sticky_bit_delete_attempt.png`         |
+| ws6steps            | 8         | `../images/b48b4d22f25e.png`                                                                           | Signal handling example                | `signal_handling_example.png`           |
+| ws6steps            | 9         | `../images/38c98942a5a7.png`                                                                           | Signal handling result                 | `signal_handling_result.png`            |
+| ws7                 | 1         | `../images/a24812307964.png`                                                                           | Job control overview                   | `job_control_overview.png`              |
+| ws7                 | 2         | `../images/4759aa772dba.png`                                                                           | Foreground/background process example  | `process_foreground_background.png`     |
+| ws7                 | 3         | `../images/9df88c11e39b.png`                                                                           | Process termination example            | `process_termination_example.png`       |
+| ws7                 | 4         | `../images/410406f5a821.png`                                                                           | Ignored signal example                 | `ignored_signal_example.png`            |
+| ws7                 | 5         | `../images/adad0f051713.png`                                                                           | Graceful shutdown handling             | `graceful_shutdown_example.png`         |
+| ws7                 | 6         | `../images/31b5e67278e1.png`                                                                           | Process cleanup example                | `process_cleanup_example.png`           |
+| ws8                 | 1         | `../images/3f7e16529501.png`                                                                           | Embedded Linux example                 | `embedded_linux_example.png`            |
