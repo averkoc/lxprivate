@@ -57,11 +57,11 @@ Files that contain shell commands and programming structures like variables, `wh
 ## Hands-on activities - see video
 
 Copy the following files that we need on hands-on activities.  
+
 ```bash
-wget [courses.txt](../assets/courses.txt)
-````
-```bash
-wget [newusers.txt](../assets/newusers.txt)
+{% include wget.html file="/assets/courses.txt" %}
+
+
 ````
 
 
