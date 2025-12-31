@@ -11,7 +11,7 @@ layout: default
     * The shell expects that it is a program's name (= command) that you want to start and tries to find it.
     * Where it looks for it?
         * From the directories list in the `PATH` **environment variable**
-* What are the extra data you can type after program (=command) name?
+* What means the extra data that you can type after program (=command) name?
     * They are options and arguments that the shells gives to the program that it starts
 
 # 🐚 Shell Workshop 1 — Understanding the Shell & Thinking in Commands
