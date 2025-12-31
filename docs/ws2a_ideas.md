@@ -3,7 +3,9 @@ title: ""
 layout: default
 ---
 
-## Shell Basics
+## Shell Basics  
+
+![shell](../images/shell.png)
 
 **What is the Shell?** A program that starts when you log in. You can check your assigned shell in `/etc/passwd`.
 
