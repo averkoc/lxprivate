@@ -1,5 +1,7 @@
-
-## Examples  
+---
+title: ""
+layout: default
+---
 
 ## 🚀 Batch Updating Image Paths with `sed`
 
