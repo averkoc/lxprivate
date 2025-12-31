@@ -66,7 +66,9 @@ First just `grep -o "GET .*404 " /var/log/apache2/access.log`
 Submit to chatgpt to get classification (typical vulnerability scanning related)  
 
 
-### Simple grep
+### Simple grep  
+`shuf data.txt > courselabs.txt ` to make random - then sort.   
+
 ```bash
 course,lab_name,hours
 CSE,linux-basics,3
