@@ -1,0 +1,617 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centria Linux Essentials</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐧</text></svg>">
+
+  <!-- Optional: mobile theme color -->
+  <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+  <main>
+    <div class="site-title">Centria Linux Essentials</div>
+    <h3 id="linux-essential-commands-for-end-users">Linux Essential Commands for End Users</h3>
+
+<h4 id="file-and-directory-management">File and Directory Management</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ls</code></td>
+      <td>List directory contents</td>
+      <td><code class="language-plaintext highlighter-rouge">ls -l</code> (detailed list)<br /><code class="language-plaintext highlighter-rouge">ls -a</code> (show hidden files)<br /><code class="language-plaintext highlighter-rouge">ls -lh</code> (human-readable sizes)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">cd</code></td>
+      <td>Change directory</td>
+      <td><code class="language-plaintext highlighter-rouge">cd /home/user</code><br /><code class="language-plaintext highlighter-rouge">cd ..</code> (go up one level)<br /><code class="language-plaintext highlighter-rouge">cd ~</code> (go to home directory)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">pwd</code></td>
+      <td>Print working directory</td>
+      <td><code class="language-plaintext highlighter-rouge">pwd</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mkdir</code></td>
+      <td>Create new directory</td>
+      <td><code class="language-plaintext highlighter-rouge">mkdir newfolder</code><br /><code class="language-plaintext highlighter-rouge">mkdir -p path/to/folder</code> (create parent dirs)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">rmdir</code></td>
+      <td>Remove empty directory</td>
+      <td><code class="language-plaintext highlighter-rouge">rmdir foldername</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">rm</code></td>
+      <td>Remove files or directories</td>
+      <td><code class="language-plaintext highlighter-rouge">rm file.txt</code><br /><code class="language-plaintext highlighter-rouge">rm -r folder</code> (recursive)<br /><code class="language-plaintext highlighter-rouge">rm -rf folder</code> (force recursive)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">cp</code></td>
+      <td>Copy files or directories</td>
+      <td><code class="language-plaintext highlighter-rouge">cp source.txt dest.txt</code><br /><code class="language-plaintext highlighter-rouge">cp -r folder1 folder2</code> (recursive)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mv</code></td>
+      <td>Move or rename files</td>
+      <td><code class="language-plaintext highlighter-rouge">mv old.txt new.txt</code> (rename)<br /><code class="language-plaintext highlighter-rouge">mv file.txt /path/to/dest/</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">touch</code></td>
+      <td>Create empty file or update timestamp</td>
+      <td><code class="language-plaintext highlighter-rouge">touch newfile.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">find</code></td>
+      <td>Search for files</td>
+      <td><code class="language-plaintext highlighter-rouge">find . -name "*.txt"</code><br /><code class="language-plaintext highlighter-rouge">find /home -type d -name docs</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">locate</code></td>
+      <td>Find files by name (faster)</td>
+      <td><code class="language-plaintext highlighter-rouge">locate filename</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="file-viewing-and-editing">File Viewing and Editing</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">cat</code></td>
+      <td>Display file contents</td>
+      <td><code class="language-plaintext highlighter-rouge">cat file.txt</code><br /><code class="language-plaintext highlighter-rouge">cat file1.txt file2.txt</code> (concatenate)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">less</code></td>
+      <td>View file contents page by page</td>
+      <td><code class="language-plaintext highlighter-rouge">less largefile.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">more</code></td>
+      <td>View file contents (simpler than less)</td>
+      <td><code class="language-plaintext highlighter-rouge">more file.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">head</code></td>
+      <td>Display first lines of file</td>
+      <td><code class="language-plaintext highlighter-rouge">head file.txt</code><br /><code class="language-plaintext highlighter-rouge">head -n 20 file.txt</code> (first 20 lines)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tail</code></td>
+      <td>Display last lines of file</td>
+      <td><code class="language-plaintext highlighter-rouge">tail file.txt</code><br /><code class="language-plaintext highlighter-rouge">tail -f logfile.log</code> (follow updates)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">nano</code></td>
+      <td>Simple text editor</td>
+      <td><code class="language-plaintext highlighter-rouge">nano file.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">vim</code></td>
+      <td>Advanced text editor</td>
+      <td><code class="language-plaintext highlighter-rouge">vim file.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">grep</code></td>
+      <td>Search text patterns</td>
+      <td><code class="language-plaintext highlighter-rouge">grep "pattern" file.txt</code><br /><code class="language-plaintext highlighter-rouge">grep -r "pattern" folder/</code> (recursive)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="file-permissions-and-ownership">File Permissions and Ownership</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">chmod</code></td>
+      <td>Change file permissions</td>
+      <td><code class="language-plaintext highlighter-rouge">chmod 755 script.sh</code><br /><code class="language-plaintext highlighter-rouge">chmod +x file</code> (make executable)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">chown</code></td>
+      <td>Change file owner</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo chown user:group file.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">chgrp</code></td>
+      <td>Change group ownership</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo chgrp groupname file.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">umask</code></td>
+      <td>Set default permissions</td>
+      <td><code class="language-plaintext highlighter-rouge">umask 022</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="system-information">System Information</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">uname</code></td>
+      <td>System information</td>
+      <td><code class="language-plaintext highlighter-rouge">uname -a</code> (all info)<br /><code class="language-plaintext highlighter-rouge">uname -r</code> (kernel version)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">whoami</code></td>
+      <td>Display current username</td>
+      <td><code class="language-plaintext highlighter-rouge">whoami</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">hostname</code></td>
+      <td>Show or set system hostname</td>
+      <td><code class="language-plaintext highlighter-rouge">hostname</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">uptime</code></td>
+      <td>Show system uptime</td>
+      <td><code class="language-plaintext highlighter-rouge">uptime</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">date</code></td>
+      <td>Display or set system date/time</td>
+      <td><code class="language-plaintext highlighter-rouge">date</code><br /><code class="language-plaintext highlighter-rouge">date +%Y-%m-%d</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">df</code></td>
+      <td>Disk space usage</td>
+      <td><code class="language-plaintext highlighter-rouge">df -h</code> (human-readable)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">du</code></td>
+      <td>Directory space usage</td>
+      <td><code class="language-plaintext highlighter-rouge">du -sh folder/</code> (summary, human-readable)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">free</code></td>
+      <td>Memory usage</td>
+      <td><code class="language-plaintext highlighter-rouge">free -h</code> (human-readable)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">top</code></td>
+      <td>Monitor processes in real-time</td>
+      <td><code class="language-plaintext highlighter-rouge">top</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">htop</code></td>
+      <td>Interactive process viewer</td>
+      <td><code class="language-plaintext highlighter-rouge">htop</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="process-management">Process Management</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ps</code></td>
+      <td>Display running processes</td>
+      <td><code class="language-plaintext highlighter-rouge">ps aux</code><br /><code class="language-plaintext highlighter-rouge">ps -ef</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">kill</code></td>
+      <td>Terminate process by PID</td>
+      <td><code class="language-plaintext highlighter-rouge">kill 1234</code><br /><code class="language-plaintext highlighter-rouge">kill -9 1234</code> (force kill)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">killall</code></td>
+      <td>Kill processes by name</td>
+      <td><code class="language-plaintext highlighter-rouge">killall firefox</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">bg</code></td>
+      <td>Send process to background</td>
+      <td><code class="language-plaintext highlighter-rouge">bg %1</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fg</code></td>
+      <td>Bring process to foreground</td>
+      <td><code class="language-plaintext highlighter-rouge">fg %1</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">jobs</code></td>
+      <td>List background jobs</td>
+      <td><code class="language-plaintext highlighter-rouge">jobs</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&amp;</code></td>
+      <td>Run command in background</td>
+      <td><code class="language-plaintext highlighter-rouge">command &amp;</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="networking">Networking</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ping</code></td>
+      <td>Test network connectivity</td>
+      <td><code class="language-plaintext highlighter-rouge">ping google.com</code><br /><code class="language-plaintext highlighter-rouge">ping -c 4 192.168.1.1</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ifconfig</code></td>
+      <td>Network interface configuration</td>
+      <td><code class="language-plaintext highlighter-rouge">ifconfig</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ip</code></td>
+      <td>Show/manipulate routing and devices</td>
+      <td><code class="language-plaintext highlighter-rouge">ip addr show</code><br /><code class="language-plaintext highlighter-rouge">ip route show</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">netstat</code></td>
+      <td>Network statistics</td>
+      <td><code class="language-plaintext highlighter-rouge">netstat -tuln</code> (listening ports)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">wget</code></td>
+      <td>Download files from web</td>
+      <td><code class="language-plaintext highlighter-rouge">wget https://example.com/file.zip</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">curl</code></td>
+      <td>Transfer data from/to server</td>
+      <td><code class="language-plaintext highlighter-rouge">curl https://example.com</code><br /><code class="language-plaintext highlighter-rouge">curl -O url</code> (save file)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ssh</code></td>
+      <td>Secure shell remote login</td>
+      <td><code class="language-plaintext highlighter-rouge">ssh user@hostname</code><br /><code class="language-plaintext highlighter-rouge">ssh -p 2222 user@host</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scp</code></td>
+      <td>Secure copy files</td>
+      <td><code class="language-plaintext highlighter-rouge">scp file.txt user@host:/path/</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="package-management-debianubuntu">Package Management (Debian/Ubuntu)</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">apt update</code></td>
+      <td>Update package lists</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo apt update</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">apt upgrade</code></td>
+      <td>Upgrade installed packages</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo apt upgrade</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">apt install</code></td>
+      <td>Install package</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo apt install package-name</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">apt remove</code></td>
+      <td>Remove package</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo apt remove package-name</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">apt search</code></td>
+      <td>Search for packages</td>
+      <td><code class="language-plaintext highlighter-rouge">apt search keyword</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="package-management-red-hatcentosfedora">Package Management (Red Hat/CentOS/Fedora)</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">yum update</code></td>
+      <td>Update packages</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo yum update</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">yum install</code></td>
+      <td>Install package</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo yum install package-name</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">yum remove</code></td>
+      <td>Remove package</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo yum remove package-name</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">dnf install</code></td>
+      <td>Install package (newer systems)</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo dnf install package-name</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="compression-and-archives">Compression and Archives</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tar</code></td>
+      <td>Archive files</td>
+      <td><code class="language-plaintext highlighter-rouge">tar -cvf archive.tar folder/</code> (create)<br /><code class="language-plaintext highlighter-rouge">tar -xvf archive.tar</code> (extract)<br /><code class="language-plaintext highlighter-rouge">tar -czvf archive.tar.gz folder/</code> (compress)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">gzip</code></td>
+      <td>Compress files</td>
+      <td><code class="language-plaintext highlighter-rouge">gzip file.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">gunzip</code></td>
+      <td>Decompress gzip files</td>
+      <td><code class="language-plaintext highlighter-rouge">gunzip file.txt.gz</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">zip</code></td>
+      <td>Create zip archive</td>
+      <td><code class="language-plaintext highlighter-rouge">zip -r archive.zip folder/</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">unzip</code></td>
+      <td>Extract zip archive</td>
+      <td><code class="language-plaintext highlighter-rouge">unzip archive.zip</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="user-management">User Management</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">sudo</code></td>
+      <td>Execute command as superuser</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo command</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">su</code></td>
+      <td>Switch user</td>
+      <td><code class="language-plaintext highlighter-rouge">su username</code><br /><code class="language-plaintext highlighter-rouge">su -</code> (switch to root)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">passwd</code></td>
+      <td>Change password</td>
+      <td><code class="language-plaintext highlighter-rouge">passwd</code><br /><code class="language-plaintext highlighter-rouge">sudo passwd username</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">useradd</code></td>
+      <td>Add new user</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo useradd username</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">usermod</code></td>
+      <td>Modify user account</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo usermod -aG groupname username</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">userdel</code></td>
+      <td>Delete user</td>
+      <td><code class="language-plaintext highlighter-rouge">sudo userdel username</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="miscellaneous-essential-commands">Miscellaneous Essential Commands</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">man</code></td>
+      <td>Display manual pages</td>
+      <td><code class="language-plaintext highlighter-rouge">man ls</code><br /><code class="language-plaintext highlighter-rouge">man -k keyword</code> (search)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">history</code></td>
+      <td>Command history</td>
+      <td><code class="language-plaintext highlighter-rouge">history</code><br /><code class="language-plaintext highlighter-rouge">history | grep command</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">clear</code></td>
+      <td>Clear terminal screen</td>
+      <td><code class="language-plaintext highlighter-rouge">clear</code> (or Ctrl+L)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">echo</code></td>
+      <td>Display text or variables</td>
+      <td><code class="language-plaintext highlighter-rouge">echo "Hello World"</code><br /><code class="language-plaintext highlighter-rouge">echo $PATH</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">alias</code></td>
+      <td>Create command shortcut</td>
+      <td><code class="language-plaintext highlighter-rouge">alias ll='ls -la'</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">which</code></td>
+      <td>Locate command</td>
+      <td><code class="language-plaintext highlighter-rouge">which python</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">wc</code></td>
+      <td>Count lines, words, characters</td>
+      <td><code class="language-plaintext highlighter-rouge">wc file.txt</code><br /><code class="language-plaintext highlighter-rouge">wc -l file.txt</code> (lines only)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">sort</code></td>
+      <td>Sort lines of text</td>
+      <td><code class="language-plaintext highlighter-rouge">sort file.txt</code><br /><code class="language-plaintext highlighter-rouge">sort -r file.txt</code> (reverse)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">diff</code></td>
+      <td>Compare files</td>
+      <td><code class="language-plaintext highlighter-rouge">diff file1.txt file2.txt</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="inputoutput-redirection">Input/Output Redirection</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&gt;</code></td>
+      <td>Redirect output to file (overwrite)</td>
+      <td><code class="language-plaintext highlighter-rouge">ls &gt; output.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&gt;&gt;</code></td>
+      <td>Redirect output to file (append)</td>
+      <td><code class="language-plaintext highlighter-rouge">echo "text" &gt;&gt; file.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&lt;</code></td>
+      <td>Redirect input from file</td>
+      <td><code class="language-plaintext highlighter-rouge">command &lt; input.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">|</code></td>
+      <td>Pipe output to another command</td>
+      <td><code class="language-plaintext highlighter-rouge">ls -l | grep ".txt"</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">2&gt;</code></td>
+      <td>Redirect error output</td>
+      <td><code class="language-plaintext highlighter-rouge">command 2&gt; errors.txt</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">&amp;&gt;</code></td>
+      <td>Redirect both output and errors</td>
+      <td><code class="language-plaintext highlighter-rouge">command &amp;&gt; output.txt</code></td>
+    </tr>
+  </tbody>
+</table>
+
+  </main>
+
+  <script src="/assets/js/copy.js"></script>
+
+  <footer>
+    <p>© 2025 SM –
+      <a href="https://github.com/averkoc/lxprivate/edit/main/docs/commands.md">
+        ✏️ Edit this page
+      </a>
+    </p>
+  </footer>
+</body>
+</html>
