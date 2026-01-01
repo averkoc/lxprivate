@@ -1,6 +1,6 @@
 ## Shell  
 
-**Shell Basics**
+**Basics**
 
 
 **What is the Shell?** The shell is a program that starts when you log in, serving as your command-line interface to the system. You can check your assigned shell in `/etc/passwd`.  
