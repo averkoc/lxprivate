@@ -43,15 +43,4 @@ Copy the following files that we need on hands-on activities.
 ````
 
 
-
-
-  
-{% capture commands_content %}
-{% include_relative commands.html %}
-{% endcapture %}
-
-{% include accordion.html
-    id="commands"
-    title="Most common commands"
-    content=commands_content
-%}
+Here is a list of [some most often used commands]({{ "/commands/" | relative_url }})
