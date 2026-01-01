@@ -13,14 +13,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the TARGET repo (the one this workflow runs in)
       - name: Checkout target repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: main
 
-      - name: Clone source repo lx
-        run: git clone https://github.com/averkoc/lx.git source
+      # Checkout the SOURCE repo (private or public)
+      - name: Checkout source repo lx
+        uses: actions/checkout@v4
+        with:
+          repository: averkoc/lx
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: source
 
+      # Safe sync using rsync
       - name: Sync docs safely
         run: |
           # Default excludes
@@ -28,7 +35,7 @@ jobs:
             "_config.yml"
           )
 
-          # Add your own excludes here
+          # Add your own excludes here if needed
           # EXCLUDES+=("private/")
           # EXCLUDES+=("dont-touch.md")
 
@@ -38,12 +45,14 @@ jobs:
             EXCLUDE_ARGS="$EXCLUDE_ARGS --exclude=$item"
           done
 
-          # -a  archive mode
+          # rsync flags:
+          # -a  archive mode (permissions, timestamps, etc.)
           # -v  verbose
-          # -u  update: skip files that are newer on the receiver
-          # NO --delete, so target-only files stay
+          # -u  update: skip files that are newer on the target
+          # NO --delete: keeps target-only files
           rsync -avu $EXCLUDE_ARGS source/docs/ docs/
 
+      # Commit only if there are changes
       - name: Commit changes
         run: |
           git config user.name "github-actions"
