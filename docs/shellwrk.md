@@ -56,7 +56,7 @@ Copy the following files that we need on hands-on activities.
 
 {% include accordion.html
     id="commands"
-    title="Most common commands"
+    title="Some common commands - you need only a very small subset during this course"
     content=commands_content
 %}
 
