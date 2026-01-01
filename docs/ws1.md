@@ -3,7 +3,7 @@ title: ""
 layout: default
 ---
 
-## Building the environment for Linux workshops   
+## Build the environment for Linux workshops   
 ### Overview
 
 If you are a Windows user, you will use VirtualBox virtualization software to build a configuration consisting of three computers: a Windows PC, a Debian Linux server virtual machine, and an Alpine Linux desktop virtual machine. I have prepared ready-to-use virtual machines that you only need to download and import to set up the configuration.
@@ -24,7 +24,17 @@ The recording contains instructions for the activities you need to do in the ser
 
 
 ### Reporting  
-You will report the workshop completion by submitting a picture from a situation where you have connected from your host-computer and Alpine Desktop Linux with browser to web-server application in the Debian server VM, see the [picture](../images/ws1browserconnections.png). If you are a Mac user you don't need to have the Alpine Desktop VM and thus you are allowed to miss the Alpine Desktop browser connection. The picture should contain: 1) browser window from host to Debian VM (Windows/Mac), 2) browser windows from Alpine to Debian server (Wndows users) 3) your host desktop background (Windows/Mac).
+You will report the completion of the workshop **by pasting a screenshot directly to LMS answerbox** that demonstrates connectivity between the required systems.
 
-> Remember to edit the index.html file in Debian VM's /var/www/html directory, so that the page shows your firstname. 
+The screenshot must show a scenario in which you have connected:
+- From your **host computer** to the **Debian server VM** using a web browser, and  
+- From the **Alpine Desktop Linux VM** to the **Debian server VM** using a web browser (Windows users only).
+- Part of your Windows/Mac desktop background must be visible in the screenshot.
+
+Refer to the example image: [ws1browserconnections](../images/ws1browserconnections.png).
+
+
+
+
+
 
