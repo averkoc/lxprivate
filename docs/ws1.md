@@ -10,7 +10,8 @@ If you are a Windows user, you will use VirtualBox virtualization software to bu
 
 If you are a Mac user, you will use UTM virtualization software to build a configuration consisting of two computers: your Mac and a Debian Linux server virtual machine. You will need to perform the Debian installation yourself with the help of my recorded instructions.
 
-Before you start read [this](virtualization.md) to get idea what can be achieved by virtualization.  
+Before you start, read [virtualization]({{ "/virtualization/" | relative_url }})
+ to get an idea what can be achieved by virtualization.  
 
 ### Configuring the server VM 
 The recording contains instructions for the activities you need to do in the server after setting up the configuration. They include etc. 
