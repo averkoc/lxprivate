@@ -1,8 +1,3 @@
----
-title: ""
-layout: default
----
-
 ### longrunning.c 
 
 ````c

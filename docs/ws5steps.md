@@ -1,8 +1,3 @@
----
-title: ""
-layout: default
----
-
 
 >  **View the related video for more detailed information and answering instructions.**
 

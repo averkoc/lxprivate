@@ -3,7 +3,6 @@ title: ""
 layout: default
 ---
 
-
 # Teaching Guide: Understanding Shell Scripts
 ## Using `createteamdir` as an Example
 

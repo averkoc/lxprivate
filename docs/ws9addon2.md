@@ -1,8 +1,3 @@
----
-title: ""
-layout: default
----
-
 
  Here's a weather-station startup script that addresses the questions about error handling, extending functionality, and basic monitoring: 
  ```bash
