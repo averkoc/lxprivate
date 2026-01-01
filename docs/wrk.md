@@ -16,8 +16,6 @@ john@debian:~$
 
 **What happens when you type a command and press Enter?** The shell treats your input as a program name and tries to find and execute it. It searches for programs in the directories listed in the `PATH` environment variable. Any extra data after the command consists of options and arguments that get passed to the program.  
 
-You're right, let me rewrite this in a more compact, flowing style:
-
 ---
 
 **Shell Advanced**
