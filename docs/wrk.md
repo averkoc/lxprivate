@@ -30,6 +30,7 @@ john@debian:~$
 
 
 
+
 ## Hands-on activities - see video
 
 Copy the following files that we need on hands-on activities.  
@@ -54,6 +55,3 @@ Copy the following files that we need on hands-on activities.
     title="Most common commands"
     content=commands_content
 %}
-
-
-
