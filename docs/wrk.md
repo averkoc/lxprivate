@@ -43,4 +43,3 @@ Copy the following files that we need on hands-on activities.
 ````
 
 
-Here is a list of [some most often used commands]({{ "/commands/" | relative_url }})
