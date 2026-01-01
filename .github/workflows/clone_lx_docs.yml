@@ -6,32 +6,44 @@ on:
     - cron: "0 6 * * *"
 
 permissions:
-  contents: write   # allow pushing commits
+  contents: write
 
 jobs:
   sync:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout lxprivate
+      - name: Checkout target repo
         uses: actions/checkout@v3
         with:
-          ref: main   # or master
+          ref: main
 
       - name: Clone source repo lx
         run: git clone https://github.com/averkoc/lx.git source
 
-      - name: Copy docs folder
+      - name: Sync docs safely (no overwrite of excluded files, no deletions)
         run: |
-          mkdir -p docs
-          cp -r source/docs/* docs/
+          # Default excludes
+          EXCLUDES=(
+            "_config.yml"
+          )
+
+          # Add your own excludes here if needed
+          # EXCLUDES+=("somefile.md")
+          # EXCLUDES+=("private/")
+
+          # Build rsync exclude args
+          EXCLUDE_ARGS=""
+          for item in "${EXCLUDES[@]}"; do
+            EXCLUDE_ARGS="$EXCLUDE_ARGS --exclude=$item"
+          done
+
+          rsync -av $EXCLUDE_ARGS source/docs/ docs/
 
       - name: Commit changes
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add docs
-          git commit -m "Sync docs folder from lx" || echo "No changes"
-
-      - name: Push changes
-        run: git push origin HEAD:main
+          git add docs/
+          git diff --cached --quiet || git commit -m "Sync docs"
+          git push
