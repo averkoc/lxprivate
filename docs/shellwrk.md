@@ -38,7 +38,7 @@ john@debian:~$
 
 ## Hands-on activities - see video
 
-Copy the following files that we need on hands-on activities.  
+Copy the following files that we need on hands-on activities.
 
 ```bash
 {% include wget.html file="/assets/courses.txt" %}
@@ -46,6 +46,8 @@ Copy the following files that we need on hands-on activities.
 ```bash
 {% include wget.html file="/assets/newusers.txt" %}
 ````
+## Results reporting 
+The related video shows the screenshots that you need to paste to LMS answerbox.  
 
 
 <br/>
