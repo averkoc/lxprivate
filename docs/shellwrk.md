@@ -8,16 +8,16 @@ layout: default
 **Basics**
 
 
-**What is the Shell?** The shell is a program that starts when you log in, serving as your command-line interface to the system. You can check your assigned shell in `/etc/passwd`.  
+**What is the Shell?** The shell is a program that starts when you log in, serving as your command-line interface to the system. You can check your assigned shell in `/etc/passwd`. We see that John's  shell is bash that is the most common shell for users. 
 ```
 john@debian:~$ grep "john" /etc/passwd
 john:x:1014:1014:,,,:/home/john:/bin/bash
 john@debian:~$ 
 ```
 
-**What is it used for?** Administrators use the shell to manage users, modify permissions, install software packages, and monitor the system. Regular users rely on it for file management, content-related tasks, software development, and data analysis.
+**What is it used for?** Administrators use the shell to manage users, modify permissions, install and configure software, and monitor the system. Regular users rely on it e.g. for file management, content-related tasks, software development, and data analysis.
 
-**What does the prompt show?** The prompt `john@debian:~$` displays your username (`john`), the computer's hostname (`debian`), and your current directory (`~`). The `~` symbol represents your home directory, which is shorthand for the full path `/home/john`.
+**What does the prompt show?** The prompt `john@debian:~$` displays your username (`john`), the computer's hostname (`debian`), and your current directory (`~`). The `~` symbol represents your home directory, which is shorthand for the full path `/home/john`. The prompt is the primary way to ensure in what computer you are issuing commands!  
 
 **What happens when you type a command and press Enter?** The shell treats your input as a program name and tries to find and execute it. It searches for programs in the directories listed in the `PATH` environment variable. Any extra data after the command consists of options and arguments that get passed to the program.  
 
@@ -36,7 +36,9 @@ john@debian:~$
 
 
 
-## Hands-on activities - see video
+## Hands-on activities - see video  
+
+These [screenshots](../images/shell1steps.png) show some of the activities we do during the session - we discuss about each of them.  
 
 Copy the following files that we need on hands-on activities.
 
