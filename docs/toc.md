@@ -55,6 +55,7 @@ layout: default
 - [shell1.md](/shell1)
 - [shell1b.md](/shell1b)
 - [shell2.md](/shell2)
+- [shellwrk.md](/shellwrk)
 - [signaldemo.md](/signaldemo)
 - [specialbits.md](/specialbits)
 - [ssh-copy-id.md](/ssh-copy-id)
@@ -67,7 +68,11 @@ layout: default
 - [test.md](/test)
 - [test3.html](/test3)
 - [thread.md](/thread)
+- [tmpl.md](/tmpl)
+- [virtualization.md](/virtualization)
+- [ws1.md](/ws1)
 - [ws2a_ideas.md](/ws2a_ideas)
+- [ws2ideas.md](/ws2ideas)
 - [ws3ex1.md](/ws3ex1)
 - [ws3ex2.md](/ws3ex2)
 - [ws4b.md](/ws4b)
@@ -84,6 +89,7 @@ layout: default
 - **_data/**
 - **_includes/**
   - [accordion.html](/_includes/accordion)
+  - [wget.html](/_includes/wget)
 - **_layouts/**
   - [default.html](/_layouts/default)
 - **assets/**
@@ -95,4 +101,4 @@ layout: default
   - [policy.md](/drafts/policy)
   - [sed.md](/drafts/sed)
 - **functions/**
-- - **images/**
+- **images/**
