@@ -70,6 +70,7 @@ layout: default
 - [thread.md](/thread)
 - [tmpl.md](/tmpl)
 - [virtualization.md](/virtualization)
+- [vmnetwork.md](/vmnetwork)
 - [ws1.md](/ws1)
 - [ws2a_ideas.md](/ws2a_ideas)
 - [ws2ideas.md](/ws2ideas)
