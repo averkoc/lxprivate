@@ -33,6 +33,6 @@ jobs:
           echo "No changes detected"
         else
           echo "Committing changes..."
-          git commit -m "Update toc [skip ci]"
+          git commit -m "Update toc"
           git push
         fi
