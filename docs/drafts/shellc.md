@@ -1,3 +1,9 @@
+---
+title: ""
+layout: default
+--- 
+
+
 # Introduction to the Linux Shell
 
 ## What is a Shell and Why Should You Care?
