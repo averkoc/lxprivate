@@ -79,3 +79,46 @@ Combining commands into reusable scripts to automate repetitive tasks.
 
 * Remote access and environments
 Working with remote systems via the shell and understanding environment variables.
+
+### A meaningful approach to learning Linux in the age of AI tools
+
+Today, AI tools can quickly provide command syntax or remind us of rarely used options. As a result, memorizing commands is no longer the main goal of learning Linux.
+
+Instead, this course focuses on developing practical understanding and transferable skills that remain essential even when AI assistance is available.
+
+What this course emphasizes
+
+* Understanding concepts, not memorizing commands  
+Learning how the Linux file system, processes, permissions, and input/output work, so commands make sense rather than being rote instructions.
+
+* Recognizing patterns and workflows  
+Understanding how commands are combined, how data flows between them, and how typical tasks are structured across different Linux environments.
+
+* Knowing what is possible  
+Being aware of what the shell can do, so you can ask the right questions—whether to documentation, colleagues, or AI tools.
+
+* Developing confidence through practice  
+Using the shell regularly to build familiarity and intuition, rather than drilling command lists for recall.
+
+* Applying skills across contexts  
+Practicing with examples that work equally well on desktops, servers, cloud systems, containers, and data analysis environments.
+
+
+Why this still matters for daily work
+
+Even with AI support:
+
+* You must understand the output of commands to know whether a result is correct.
+
+* You must judge safety and impact, especially when commands modify or delete data.
+
+* You must adapt commands to your specific environment and constraints.
+
+* You must debug problems, which requires understanding, not memorization.
+  
+
+### A concise statement for learners 
+
+You could summarize the course philosophy as:  
+
+In the age of AI tools, learning Linux is less about memorizing commands and more about understanding how systems work, practicing common workflows, and developing the ability to reason about problems using the shell.
