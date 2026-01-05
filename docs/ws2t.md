@@ -7,10 +7,12 @@ layout: default
 
 The course has the **initial motivation why learning Linux is important**. It describes the today's diverse Linux use cases. That means this topic can refer to those use cases and shell's role in them.  
 
-
+The hands-on could be: what the shell is, the prompt, the command and path, filesystem tree and current directory (my default current dir), listing, showing contents, creating, moving, deleting,  - Linux configuration relies on clear text configuration files that's one reason why different text-file related commands are useful to master. 
+HO: moving in tree, listing, creating directory, copying content (files) to directory, doing operations with the files, redirecting results to own file, 
 
 
 Why this topic matters 
+Drafts shella.md shellb.md and shellc.md in drafts-folder. 
 Although often associated with server management, the skills covered in this session are broadly applicable and highly transferable. They form a foundational competency that can be leveraged across a wide range of technical environments, not just dedicated servers.  
 
 Specifically, these skills are relevant in:  
