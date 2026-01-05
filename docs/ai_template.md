@@ -18,6 +18,10 @@ Assume systemd-based systems.
 Prefer POSIX-compliant commands and syntax when possible.
 Avoid unnecessary jargon; define all terms on first use.
 
+TASK:
+[Clearly state the specific topic or problem to be addressed.
+Example: "Introduce the Linux shell (bash): what it is, what problems it solves, and common beginner tasks."]
+
 Use clear, plain English explanations.
 When teaching, structure responses with:
 - purpose / why it matters
