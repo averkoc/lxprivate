@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop YAML Generator Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --panel-bg: white;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
+        }
+
+        body.dark-mode {
+            --bg-gradient-start: #1a202c;
+            --bg-gradient-end: #2d3748;
+            --panel-bg: #2d3748;
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e0;
+            --border-color: #4a5568;
+            --code-bg: #1a202c;
+            --code-text: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section h3 {
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            background: var(--panel-bg);
+            color: var(--text-primary);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        input.error, textarea.error, select.error {
+            border-color: #f56565;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+            font-family: monospace;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .check-item {
+            background: var(--panel-bg);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 2px solid var(--border-color);
+            cursor: move;
+            transition: all 0.2s;
+        }
+
+        .check-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .check-item.dragging {
+            opacity: 0.5;
+        }
+
+        .check-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .check-item-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .check-type-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #667eea;
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #yamlOutput {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre;
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        .search-box {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .search-box input {
+            padding-left: 35px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            color: var(--text-secondary);
+        }
+
+        .output-actions {
+            padding: 15px 20px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: #718096;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .small-text {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 3px;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .template-card {
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .template-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .template-card .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .template-card .title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .template-card .desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--panel-bg);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .history-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-icon {
+            padding: 8px 12px;
+            font-size: 16px;
+            min-width: auto;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #48bb78;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 2000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .export-format {
+            margin-bottom: 15px;
+        }
+
+        .export-format label {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .export-format input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel">
+            <div class="panel-header">
+                <span>Workshop YAML Builder Pro</span>
+                <div class="header-controls">
+                    <div class="history-controls">
+                        <button class="btn-icon theme-toggle" onclick="undo()" title="Undo (Ctrl+Z)" id="undoBtn">↶</button>
+                        <button class="btn-icon theme-toggle" onclick="redo()" title="Redo (Ctrl+Y)" id="redoBtn">↷</button>
+                    </div>
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌓</button>
+                    <button class="theme-toggle" onclick="showTemplates()" title="Load Template">📋</button>
+                    <button class="theme-toggle" onclick="showImport()" title="Import YAML">📥</button>
+                </div>
+            </div>
+            <div class="panel-content">
+                <div class="form-section">
+                    <h3>Workshop Metadata</h3>
+                    <div class="form-group">
+                        <label>Workshop ID</label>
+                        <input type="text" id="wsId" placeholder="ws3" value="ws3">
+                    </div>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="wsTitle" placeholder="Shared directories for project groups">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="wsDesc" placeholder="Verify group collaboration setup with proper permissions"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Author</label>
+                        <input type="text" id="wsAuthor" placeholder="Instructor Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Feedback Level</label>
+                        <select id="wsFeedback">
+                            <option value="brief">Brief (hide expected values)</option>
+                            <option value="detailed">Detailed (show expected values)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('users')">Users & Groups</button>
+                    <button class="tab" onclick="switchTab('directories')">Directories</button>
+                    <button class="tab" onclick="switchTab('files')">Files</button>
+                </div>
+
+                <div id="users" class="tab-content active">
+                    <div class="form-section">
+                        <h3>User Accounts Check</h3>
+                        <div class="form-group">
+                            <label>Check Name</label>
+                            <input type="text" id="userCheckName" value="workshop user accounts exist">
+                        </div>
+                        <div class="form-group">
+                            <label>Number of User Accounts (firstname1 to firstnameN)</label>
+                            <input type="number" id="userCount" value="6" min="1" max="10">
+                            <div class="small-text">Creates: {account}, {account}1, {account}2, etc.</div>
+                        </div>
+                        <button class="btn-primary" onclick="addUserCheck()">Add User Check</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Group Check</h3>
+                        <div class="form-group">
+                            <label>Check Name</label>
+                            <input type="text" id="groupCheckName" value="project groups exist">
+                        </div>
+                        <div class="form-group">
+                            <label>Groups (comma-separated)</label>
+                            <input type="text" id="groupList" placeholder="teampub, teamsec, developers">
+                        </div>
+                        <button class="btn-primary" onclick="addGroupCheck()">Add Group Check</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>User Group Membership Check</h3>
+                        <div class="form-group">
+                            <label>Check Name</label>
+                            <input type="text" id="memberCheckName" value="sudo user in collaboration groups">
+                        </div>
+                        <div class="form-group">
+                            <label>User Pattern</label>
+                            <input type="text" id="memberUser" value="{account}" placeholder="{account} or {account}1">
+                        </div>
+                        <div class="form-group">
+                            <label>Groups (comma-separated)</label>
+                            <input type="text" id="memberGroups" placeholder="teampub, teamsec">
+                        </div>
+                        <div class="form-group">
+                            <label>Mode</label>
+                            <select id="memberMode">
+                                <option value="all">All (must be in ALL groups)</option>
+                                <option value="any">Any (must be in at least ONE group)</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="addMembershipCheck()">Add Membership Check</button>
+                    </div>
+                </div>
+
+                <div id="directories" class="tab-content">
+                    <div class="form-section">
+                        <h3>Directory Check</h3>
+                        <div class="form-group">
+                            <label>Check Name</label>
+                            <input type="text" id="dirCheckName" placeholder="shared project directories">
+                        </div>
+                        <div class="form-group">
+                            <label>Path</label>
+                            <input type="text" id="dirPath" placeholder="/shared/teampub">
+                        </div>
+                        <div class="form-group">
+                            <label>Owner</label>
+                            <input type="text" id="dirOwner" value="root">
+                        </div>
+                        <div class="form-group">
+                            <label>Group</label>
+                            <input type="text" id="dirGroup" placeholder="teampub">
+                        </div>
+                        <div class="form-group">
+                            <label>Permissions</label>
+                            <input type="text" id="dirPerms" value="2775" placeholder="2775">
+                            <div class="small-text">e.g., 2775 for SGID + rwxrwxr-x</div>
+                        </div>
+                        <button class="btn-primary" onclick="addDirectoryCheck()">Add Directory Check</button>
+                    </div>
+                </div>
+
+                <div id="files" class="tab-content">
+                    <div class="form-section">
+                        <h3>File Check</h3>
+                        <div class="form-group">
+                            <label>Check Type</label>
+                            <select id="fileCheckType" onchange="toggleFileFields()">
+                                <option value="single">Single File</option>
+                                <option value="pattern">Pattern-based (Multiple Files)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Check Name</label>
+                            <input type="text" id="fileCheckName" placeholder="user project files">
+                        </div>
+                        
+                        <div id="singleFileFields">
+                            <div class="form-group">
+                                <label>File Path</label>
+                                <input type="text" id="filePath" placeholder="/shared/teampub/file1">
+                            </div>
+                        </div>
+
+                        <div id="patternFileFields" style="display:none;">
+                            <div class="form-group">
+                                <label>Base Path</label>
+                                <input type="text" id="fileBasePath" placeholder="/var/projects/teampubfiles">
+                            </div>
+                            <div class="form-group">
+                                <label>Filename Pattern</label>
+                                <input type="text" id="filePattern" value="{account}{suffix}file{letter}">
+                                <div class="small-text">Use {account}, {suffix}, {letter} as placeholders</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Suffixes (comma-separated)</label>
+                                <input type="text" id="fileSuffixes" value="1, 2, 3" placeholder="1, 2, 3">
+                            </div>
+                            <div class="form-group">
+                                <label>Letters (comma-separated)</label>
+                                <input type="text" id="fileLetters" value="a, b" placeholder="a, b">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Owner</label>
+                            <input type="text" id="fileOwner" placeholder="root or {account}1">
+                        </div>
+                        <div class="form-group">
+                            <label>Group</label>
+                            <input type="text" id="fileGroup" placeholder="teampub">
+                        </div>
+                        <div class="form-group">
+                            <label>Permissions</label>
+                            <input type="text" id="filePerms" value="0664">
+                        </div>
+                        <div class="form-group">
+                            <label>Contains (optional, comma-separated)</label>
+                            <input type="text" id="fileContains" placeholder="team collaboration, project alpha">
+                            <div class="small-text">Simple string search</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Matches (optional, comma-separated regex)</label>
+                            <input type="text" id="fileMatches" placeholder="meeting.*notes, \\d{4}-\\d{2}-\\d{2}">
+                            <div class="small-text">Regular expression patterns</div>
+                        </div>
+                        <button class="btn-primary" onclick="addFileCheck()">Add File Check</button>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Added Checks (<span id="checkCount">0</span>)</h3>
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchChecks" placeholder="Search checks..." oninput="filterChecks()">
+                    </div>
+                    <div id="checksList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">Generated YAML</div>
+            <div class="panel-content">
+                <div id="yamlOutput"># Your YAML will appear here</div>
+            </div>
+            <div class="output-actions">
+                <label style="display: inline-flex; align-items: center; margin-right: 10px; font-size: 14px;">
+                    <input type="checkbox" id="alsoEncrypt" style="margin-right: 5px;">
+                    Download encrypted version (.enc)
+                </label>
+                <button class="btn-secondary" onclick="copyYAML()">📋 Copy</button>
+                <button class="btn-primary" id="downloadBtn">💾 Download</button>
+                <button class="btn-primary" onclick="showExportOptions()">📤 Export</button>
+                <button class="btn-danger" onclick="clearAll()">🗑 Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Templates Modal -->
+    <div id="templatesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Quick Start Templates</div>
+            <div class="template-grid">
+                <div class="template-card" onclick="loadTemplate('basic')">
+                    <div class="icon">👤</div>
+                    <div class="title">Basic Users</div>
+                    <div class="desc">User accounts and groups</div>
+                </div>
+                <div class="template-card" onclick="loadTemplate('permissions')">
+                    <div class="icon">🔒</div>
+                    <div class="title">Permissions</div>
+                    <div class="desc">File/directory permissions</div>
+                </div>
+                <div class="template-card" onclick="loadTemplate('collaboration')">
+                    <div class="icon">🤝</div>
+                    <div class="title">Collaboration</div>
+                    <div class="desc">Group workspace setup</div>
+                </div>
+                <div class="template-card" onclick="loadTemplate('full')">
+                    <div class="icon">⚙️</div>
+                    <div class="title">Full Workshop</div>
+                    <div class="desc">Complete example</div>
+                </div>
+            </div>
+            <button class="btn-secondary" onclick="closeModal('templatesModal')">Close</button>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Import YAML</div>
+            <div class="form-group">
+                <label>Paste your YAML here:</label>
+                <textarea id="importYAML" style="min-height: 200px; font-family: monospace;"></textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="importYAML()">Import</button>
+                <button class="btn-secondary" onclick="closeModal('importModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Options Modal -->
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Export Options</div>
+            <div class="export-format">
+                <label><input type="radio" name="exportFormat" value="yaml" checked> YAML</label>
+                <label><input type="radio" name="exportFormat" value="json"> JSON</label>
+                <label><input type="radio" name="exportFormat" value="compact"> Compact YAML</label>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="exportFile()">Export</button>
+                <button class="btn-secondary" onclick="closeModal('exportModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Check Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">Edit Check</div>
+            <div id="editFormContent"></div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="saveEdit()">Save Changes</button>
+                <button class="btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const checks = [];
+        let history = [];
+        let historyIndex = -1;
+        let draggedItem = null;
+        let editingIndex = -1;
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', async function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 'z' && !e.shiftKey) {
+                    e.preventDefault();
+                    undo();
+                } else if (e.key === 'y' || (e.key === 'z' && e.shiftKey)) {
+                    e.preventDefault();
+                    redo();
+                } else if (e.key === 's') {
+                    e.preventDefault();
+                    const checkboxValue = document.getElementById('alsoEncrypt').checked;
+                    await downloadYAML(checkboxValue, 'keyboard-shortcut');
+                } else if (e.key === 'f') {
+                    e.preventDefault();
+                    document.getElementById('searchChecks').focus();
+                }
+            }
+        });
+
+        function saveState() {
+            const state = {
+                checks: JSON.parse(JSON.stringify(checks)),
+                metadata: {
+                    wsId: document.getElementById('wsId').value,
+                    wsTitle: document.getElementById('wsTitle').value,
+                    wsDesc: document.getElementById('wsDesc').value,
+                    wsAuthor: document.getElementById('wsAuthor').value,
+                    wsFeedback: document.getElementById('wsFeedback').value
+                }
+            };
+            
+            if (historyIndex < history.length - 1) {
+                history = history.slice(0, historyIndex + 1);
+            }
+            history.push(state);
+            historyIndex++;
+            
+            if (history.length > 50) {
+                history.shift();
+                historyIndex--;
+            }
+            
+            updateHistoryButtons();
+        }
+
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                restoreState(history[historyIndex]);
+                updateHistoryButtons();
+            }
+        }
+
+        function redo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                restoreState(history[historyIndex]);
+                updateHistoryButtons();
+            }
+        }
+
+        function restoreState(state) {
+            checks.length = 0;
+            checks.push(...state.checks);
+            document.getElementById('wsId').value = state.metadata.wsId;
+            document.getElementById('wsTitle').value = state.metadata.wsTitle;
+            document.getElementById('wsDesc').value = state.metadata.wsDesc;
+            document.getElementById('wsAuthor').value = state.metadata.wsAuthor;
+            if (state.metadata.wsFeedback) {
+                document.getElementById('wsFeedback').value = state.metadata.wsFeedback;
+            }
+            updateChecksDisplay();
+            generateYAML();
+        }
+
+        function updateHistoryButtons() {
+            document.getElementById('undoBtn').disabled = historyIndex <= 0;
+            document.getElementById('redoBtn').disabled = historyIndex >= history.length - 1;
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function showTemplates() {
+            document.getElementById('templatesModal').classList.add('active');
+        }
+
+        function showImport() {
+            document.getElementById('importModal').classList.add('active');
+        }
+
+        function showExportOptions() {
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function loadTemplate(type) {
+            const templates = {
+                basic: [
+                    { name: 'workshop users exist', type: 'user', users: ['{account}', '{account}1', '{account}2', '{account}3'] },
+                    { name: 'workshop groups exist', type: 'group', groups: ['students', 'instructors'] }
+                ],
+                permissions: [
+                    { name: 'shared directory permissions', type: 'directory', path: '/shared/projects', owner: 'root', group: 'students', perms: '2775' },
+                    { name: 'student files readable', type: 'file', path: '/home/{account}/readme.txt', group: '{account}', perms: '0644' }
+                ],
+                collaboration: [
+                    { name: 'team groups exist', type: 'group', groups: ['teama', 'teamb'] },
+                    { name: 'users in teams', type: 'user_groups', user: '{account}1', groups: ['teama'], mode: 'all' },
+                    { name: 'team workspaces', type: 'directory', path: '/projects/teama', owner: 'root', group: 'teama', perms: '2770' }
+                ],
+                full: [
+                    { name: 'workshop users exist', type: 'user', users: ['{account}', '{account}1', '{account}2'] },
+                    { name: 'project groups exist', type: 'group', groups: ['developers', 'reviewers'] },
+                    { name: 'users in groups', type: 'user_groups', user: '{account}1', groups: ['developers'], mode: 'all' },
+                    { name: 'project directory', type: 'directory', path: '/var/projects', owner: 'root', group: 'developers', perms: '2775' },
+                    { name: 'project files', type: 'file', path: '/var/projects/README.md', group: 'developers', perms: '0664' }
+                ]
+            };
+            
+            if (templates[type]) {
+                checks.push(...templates[type]);
+                saveState();
+                updateChecksDisplay();
+                generateYAML();
+                closeModal('templatesModal');
+                showNotification(`Template "${type}" loaded!`);
+            }
+        }
+
+        function importYAML() {
+            const yamlText = document.getElementById('importYAML').value;
+            try {
+                const lines = yamlText.split('\n');
+                let inChecks = false;
+                let currentCheck = null;
+                let currentArray = null;
+                
+                checks.length = 0;
+                
+                for (let line of lines) {
+                    if (line.trim().startsWith('checks:')) {
+                        inChecks = true;
+                        continue;
+                    }
+                    
+                    if (!inChecks) {
+                        if (line.includes('id:')) {
+                            document.getElementById('wsId').value = line.split(':')[1].trim().replace(/"/g, '');
+                        } else if (line.includes('title:')) {
+                            document.getElementById('wsTitle').value = line.split(':')[1].trim().replace(/"/g, '');
+                        } else if (line.includes('description:')) {
+                            document.getElementById('wsDesc').value = line.split(':')[1].trim().replace(/"/g, '');
+                        } else if (line.includes('author:')) {
+                            document.getElementById('wsAuthor').value = line.split(':')[1].trim().replace(/"/g, '');
+                        } else if (line.includes('feedback_level:')) {
+                            const feedbackValue = line.split(':')[1].trim().replace(/"/g, '');
+                            document.getElementById('wsFeedback').value = feedbackValue || 'brief';
+                        }
+                        continue;
+                    }
+                    
+                    if (line.trim().startsWith('- name:')) {
+                        if (currentCheck) checks.push(currentCheck);
+                        currentCheck = { name: line.split('name:')[1].trim().replace(/"/g, '') };
+                        currentArray = null;
+                    } else if (currentCheck) {
+                        const trimmed = line.trim();
+                        if (trimmed.startsWith('type:')) {
+                            currentCheck.type = trimmed.split(':')[1].trim();
+                        } else if (trimmed.startsWith('path:')) {
+                            currentCheck.path = trimmed.split(':')[1].trim().replace(/"/g, '');
+                        } else if (trimmed.startsWith('owner:')) {
+                            currentCheck.owner = trimmed.split(':')[1].trim().replace(/"/g, '');
+                        } else if (trimmed.startsWith('group:')) {
+                            currentCheck.group = trimmed.split(':')[1].trim().replace(/"/g, '');
+                        } else if (trimmed.startsWith('perms:')) {
+                            currentCheck.perms = trimmed.split(':')[1].trim().replace(/"/g, '');
+                        } else if (trimmed.startsWith('user:')) {
+                            currentCheck.user = trimmed.split(':')[1].trim().replace(/"/g, '');
+                        } else if (trimmed.startsWith('mode:')) {
+                            currentCheck.mode = trimmed.split(':')[1].trim().replace(/"/g, '');
+                        } else if (trimmed.startsWith('users:')) {
+                            currentCheck.users = [];
+                            currentArray = 'users';
+                        } else if (trimmed.startsWith('groups:')) {
+                            currentCheck.groups = [];
+                            currentArray = 'groups';
+                        } else if (trimmed.startsWith('- ') && currentArray) {
+                            const value = trimmed.substring(2).replace(/"/g, '').trim();
+                            currentCheck[currentArray].push(value);
+                        }
+                    }
+                }
+                
+                if (currentCheck) checks.push(currentCheck);
+                
+                saveState();
+                updateChecksDisplay();
+                generateYAML();
+                closeModal('importModal');
+                showNotification('YAML imported successfully!');
+            } catch (e) {
+                alert('Error parsing YAML: ' + e.message);
+            }
+        }
+
+        function filterChecks() {
+            const query = document.getElementById('searchChecks').value.toLowerCase();
+            const items = document.querySelectorAll('.check-item');
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        function duplicateCheck(index) {
+            const check = JSON.parse(JSON.stringify(checks[index]));
+            check.name = check.name + ' (copy)';
+            checks.splice(index + 1, 0, check);
+            saveState();
+            updateChecksDisplay();
+            generateYAML();
+            showNotification('Check duplicated!');
+        }
+
+        function editCheck(index) {
+            editingIndex = index;
+            const check = checks[index];
+            let formHTML = '';
+
+            formHTML += '<div class="form-group">';
+            formHTML += '<label>Check Name</label>';
+            formHTML += `<input type="text" id="editName" value="${check.name}">`;
+            formHTML += '</div>';
+
+            switch(check.type) {
+                case 'user':
+                    formHTML += '<div class="form-group"><label>Users (comma-separated)</label>';
+                    formHTML += `<input type="text" id="editUsers" value="${check.users.join(', ')}"></div>`;
+                    break;
+                case 'group':
+                    formHTML += '<div class="form-group"><label>Groups (comma-separated)</label>';
+                    formHTML += `<input type="text" id="editGroups" value="${check.groups.join(', ')}"></div>`;
+                    break;
+                case 'user_groups':
+                    formHTML += '<div class="form-group"><label>User Pattern</label>';
+                    formHTML += `<input type="text" id="editUser" value="${check.user}"></div>`;
+                    formHTML += '<div class="form-group"><label>Groups (comma-separated)</label>';
+                    formHTML += `<input type="text" id="editGroups" value="${check.groups.join(', ')}"></div>`;
+                    formHTML += '<div class="form-group"><label>Mode</label><select id="editMode">';
+                    formHTML += `<option value="all" ${check.mode === 'all' ? 'selected' : ''}>All</option>`;
+                    formHTML += `<option value="any" ${check.mode === 'any' ? 'selected' : ''}>Any</option></select></div>`;
+                    break;
+                case 'directory':
+                    formHTML += '<div class="form-group"><label>Path</label>';
+                    formHTML += `<input type="text" id="editPath" value="${check.path}"></div>`;
+                    formHTML += '<div class="form-group"><label>Owner</label>';
+                    formHTML += `<input type="text" id="editOwner" value="${check.owner || ''}"></div>`;
+                    formHTML += '<div class="form-group"><label>Group</label>';
+                    formHTML += `<input type="text" id="editGroup" value="${check.group}"></div>`;
+                    formHTML += '<div class="form-group"><label>Permissions</label>';
+                    formHTML += `<input type="text" id="editPerms" value="${check.perms}"></div>`;
+                    break;
+                case 'file':
+                    if (check.path) {
+                        formHTML += '<div class="form-group"><label>File Path</label>';
+                        formHTML += `<input type="text" id="editPath" value="${check.path}"></div>`;
+                        formHTML += '<div class="form-group"><label>Owner (optional)</label>';
+                        formHTML += `<input type="text" id="editOwner" value="${check.owner || ''}"></div>`;
+                    } else {
+                        formHTML += '<div class="form-group"><label>Base Path</label>';
+                        formHTML += `<input type="text" id="editBasePath" value="${check.base_path}"></div>`;
+                        formHTML += '<div class="form-group"><label>Filename Pattern</label>';
+                        formHTML += `<input type="text" id="editPattern" value="${check.filename_pattern}"></div>`;
+                        formHTML += '<div class="form-group"><label>Suffixes (comma-separated)</label>';
+                        formHTML += `<input type="text" id="editSuffixes" value="${check.suffixes.join(', ')}"></div>`;
+                        formHTML += '<div class="form-group"><label>Letters (comma-separated)</label>';
+                        formHTML += `<input type="text" id="editLetters" value="${check.letters.join(', ')}"></div>`;
+                    }
+                    formHTML += '<div class="form-group"><label>Group</label>';
+                    formHTML += `<input type="text" id="editGroup" value="${check.group}"></div>`;
+                    formHTML += '<div class="form-group"><label>Permissions</label>';
+                    formHTML += `<input type="text" id="editPerms" value="${check.perms}"></div>`;
+                    if (check.contains) {
+                        formHTML += '<div class="form-group"><label>Contains (comma-separated)</label>';
+                        formHTML += `<input type="text" id="editContains" value="${check.contains.join(', ')}"></div>`;
+                    }
+                    if (check.matches) {
+                        formHTML += '<div class="form-group"><label>Matches (comma-separated regex)</label>';
+                        formHTML += `<input type="text" id="editMatches" value="${check.matches.join(', ')}"></div>`;
+                    }
+                    break;
+            }
+
+            document.getElementById('editFormContent').innerHTML = formHTML;
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function saveEdit() {
+            if (editingIndex === -1) return;
+
+            const check = checks[editingIndex];
+            check.name = document.getElementById('editName').value;
+
+            switch(check.type) {
+                case 'user':
+                    check.users = document.getElementById('editUsers').value.split(',').map(u => u.trim()).filter(u => u);
+                    break;
+                case 'group':
+                    check.groups = document.getElementById('editGroups').value.split(',').map(g => g.trim()).filter(g => g);
+                    break;
+                case 'user_groups':
+                    check.user = document.getElementById('editUser').value;
+                    check.groups = document.getElementById('editGroups').value.split(',').map(g => g.trim()).filter(g => g);
+                    check.mode = document.getElementById('editMode').value;
+                    break;
+                case 'directory':
+                    check.path = document.getElementById('editPath').value;
+                    check.owner = document.getElementById('editOwner').value;
+                    check.group = document.getElementById('editGroup').value;
+                    check.perms = document.getElementById('editPerms').value;
+                    break;
+                case 'file':
+                    if (check.path) {
+                        check.path = document.getElementById('editPath').value;
+                        const owner = document.getElementById('editOwner').value;
+                        if (owner) check.owner = owner;
+                        else delete check.owner;
+                    } else {
+                        check.base_path = document.getElementById('editBasePath').value;
+                        check.filename_pattern = document.getElementById('editPattern').value;
+                        check.suffixes = document.getElementById('editSuffixes').value.split(',').map(s => s.trim()).filter(s => s);
+                        check.letters = document.getElementById('editLetters').value.split(',').map(l => l.trim()).filter(l => l);
+                    }
+                    check.group = document.getElementById('editGroup').value;
+                    check.perms = document.getElementById('editPerms').value;
+                    const containsEl = document.getElementById('editContains');
+                    if (containsEl) {
+                        const contains = containsEl.value.split(',').map(c => c.trim()).filter(c => c);
+                        if (contains.length > 0) check.contains = contains;
+                    }
+                    const matchesEl = document.getElementById('editMatches');
+                    if (matchesEl) {
+                        const matches = matchesEl.value.split(',').map(m => m.trim()).filter(m => m);
+                        if (matches.length > 0) check.matches = matches;
+                    }
+                    break;
+            }
+
+            saveState();
+            updateChecksDisplay();
+            generateYAML();
+            closeModal('editModal');
+            editingIndex = -1;
+            showNotification('Check updated!');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function toggleFileFields() {
+            const type = document.getElementById('fileCheckType').value;
+            document.getElementById('singleFileFields').style.display = type === 'single' ? 'block' : 'none';
+            document.getElementById('patternFileFields').style.display = type === 'pattern' ? 'block' : 'none';
+        }
+
+        function addUserCheck() {
+            const name = document.getElementById('userCheckName').value;
+            const count = parseInt(document.getElementById('userCount').value);
+            
+            if (!name) {
+                showNotification('Please enter a check name');
+                return;
+            }
+            
+            const users = ['{account}'];
+            for (let i = 1; i <= count; i++) {
+                users.push(`{account}${i}`);
+            }
+
+            checks.push({
+                name: name,
+                type: 'user',
+                users: users
+            });
+
+            saveState();
+            updateChecksDisplay();
+            generateYAML();
+            showNotification('User check added!');
+        }
+
+        function addGroupCheck() {
+            const name = document.getElementById('groupCheckName').value;
+            const groupList = document.getElementById('groupList').value;
+            const groups = groupList.split(',').map(g => g.trim()).filter(g => g);
+
+            if (!name || groups.length === 0) {
+                showNotification('Please enter check name and at least one group');
+                return;
+            }
+
+            checks.push({
+                name: name,
+                type: 'group',
+                groups: groups
+            });
+
+            saveState();
+            updateChecksDisplay();
+            generateYAML();
+            showNotification('Group check added!');
+        }
+
+        function addMembershipCheck() {
+            const name = document.getElementById('memberCheckName').value;
+            const user = document.getElementById('memberUser').value;
+            const groupList = document.getElementById('memberGroups').value;
+            const mode = document.getElementById('memberMode').value;
+            const groups = groupList.split(',').map(g => g.trim()).filter(g => g);
+
+            if (!name || !user || groups.length === 0) {
+                showNotification('Please fill in all required fields');
+                return;
+            }
+
+            checks.push({
+                name: name,
+                type: 'user_groups',
+                user: user,
+                groups: groups,
+                mode: mode
+            });
+
+            saveState();
+            updateChecksDisplay();
+            generateYAML();
+            showNotification('Membership check added!');
+        }
+
+        function addDirectoryCheck() {
+            const name = document.getElementById('dirCheckName').value;
+            const path = document.getElementById('dirPath').value;
+            const owner = document.getElementById('dirOwner').value;
+            const group = document.getElementById('dirGroup').value;
+            const perms = document.getElementById('dirPerms').value;
+
+            if (!name || !path || !group) {
+                showNotification('Please fill in check name, path and group');
+                return;
+            }
+
+            checks.push({
+                name: name,
+                type: 'directory',
+                path: path,
+                owner: owner,
+                group: group,
+                perms: perms
+            });
+
+            saveState();
+            updateChecksDisplay();
+            generateYAML();
+            showNotification('Directory check added!');
+        }
+
+        function addFileCheck() {
+            const checkType = document.getElementById('fileCheckType').value;
+            const name = document.getElementById('fileCheckName').value;
+            const owner = document.getElementById('fileOwner').value;
+            const group = document.getElementById('fileGroup').value;
+            const perms = document.getElementById('filePerms').value;
+            const contains = document.getElementById('fileContains').value;
+            const matches = document.getElementById('fileMatches').value;
+
+            const check = {
+                name: name,
+                type: 'file',
+                group: group,
+                perms: perms
+            };
+
+            if (checkType === 'single') {
+                const path = document.getElementById('filePath').value;
+                if (!path) {
+                    showNotification('Please enter file path');
+                    return;
+                }
+                check.path = path;
+                if (owner) check.owner = owner;
+            } else {
+                const basePath = document.getElementById('fileBasePath').value;
+                const pattern = document.getElementById('filePattern').value;
+                const suffixes = document.getElementById('fileSuffixes').value;
+                const letters = document.getElementById('fileLetters').value;
+
+                if (!basePath || !pattern) {
+                    showNotification('Please enter base path and pattern');
+                    return;
+                }
+
+                check.base_path = basePath;
+                check.filename_pattern = pattern;
+                check.suffixes = suffixes.split(',').map(s => s.trim()).filter(s => s);
+                check.letters = letters.split(',').map(l => l.trim()).filter(l => l);
+            }
+
+            if (contains) {
+                check.contains = contains.split(',').map(c => c.trim()).filter(c => c);
+            }
+            if (matches) {
+                check.matches = matches.split(',').map(m => m.trim()).filter(m => m);
+            }
+
+            checks.push(check);
+            saveState();
+            updateChecksDisplay();
+            generateYAML();
+            showNotification('File check added!');
+        }
+
+        function removeCheck(index) {
+            if (confirm('Remove this check?')) {
+                checks.splice(index, 1);
+                saveState();
+                updateChecksDisplay();
+                generateYAML();
+                showNotification('Check removed');
+            }
+        }
+
+        function updateChecksDisplay() {
+            const container = document.getElementById('checksList');
+            document.getElementById('checkCount').textContent = checks.length;
+            
+            if (checks.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary);">No checks added yet. Use templates or add checks above.</p>';
+                return;
+            }
+
+            container.innerHTML = checks.map((check, index) => `
+                <div class="check-item" draggable="true" ondragstart="dragStart(event, ${index})" ondragover="dragOver(event)" ondrop="drop(event, ${index})" ondragend="dragEnd(event)">
+                    <div class="check-item-header">
+                        <div>
+                            <span style="cursor: move; margin-right: 8px;">☰</span>
+                            <span class="check-type-badge">${check.type}</span>
+                            <strong style="margin-left: 10px; color: var(--text-primary);">${check.name}</strong>
+                        </div>
+                        <div class="check-item-actions">
+                            <button class="btn-primary" style="padding: 5px 10px; font-size: 12px;" onclick="editCheck(${index})" title="Edit">✏️</button>
+                            <button class="btn-primary" style="padding: 5px 10px; font-size: 12px;" onclick="duplicateCheck(${index})" title="Duplicate">📋</button>
+                            <button class="btn-danger" onclick="removeCheck(${index})">✕</button>
+                        </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); padding-left: 24px;">
+                        ${getCheckSummary(check)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function dragStart(e, index) {
+            draggedItem = index;
+            e.target.classList.add('dragging');
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function drop(e, index) {
+            e.preventDefault();
+            if (draggedItem !== null && draggedItem !== index) {
+                const item = checks.splice(draggedItem, 1)[0];
+                checks.splice(index, 0, item);
+                saveState();
+                updateChecksDisplay();
+                generateYAML();
+            }
+        }
+
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedItem = null;
+        }
+
+        function getCheckSummary(check) {
+            switch(check.type) {
+                case 'user':
+                    return `Users: ${check.users.join(', ')}`;
+                case 'group':
+                    return `Groups: ${check.groups.join(', ')}`;
+                case 'user_groups':
+                    return `User: ${check.user} | Groups: ${check.groups.join(', ')} | Mode: ${check.mode}`;
+                case 'directory':
+                    return `Path: ${check.path} | Owner: ${check.owner} | Group: ${check.group} | Perms: ${check.perms}`;
+                case 'file':
+                    if (check.path) {
+                        return `Path: ${check.path} | Group: ${check.group} | Perms: ${check.perms}`;
+                    } else {
+                        return `Pattern: ${check.filename_pattern} | Suffixes: ${check.suffixes.join(',')} | Letters: ${check.letters.join(',')}`;
+                    }
+                default:
+                    return '';
+            }
+        }
+
+        function generateYAML() {
+            const wsId = document.getElementById('wsId').value;
+            const wsTitle = document.getElementById('wsTitle').value;
+            const wsDesc = document.getElementById('wsDesc').value;
+            const wsAuthor = document.getElementById('wsAuthor').value;
+            const wsFeedback = document.getElementById('wsFeedback').value;
+
+            let yaml = '# Workshop Check Specification v1.0\n';
+            yaml += '# Linux Essentials Course - Automated Workshop Validation\n\n';
+
+            yaml += 'workshop:\n';
+            yaml += `  id: "${wsId}"\n`;
+            if (wsTitle) yaml += `  title: "${wsTitle}"\n`;
+            if (wsDesc) yaml += `  description: "${wsDesc}"\n`;
+            yaml += `  version: "1.0"\n`;
+            if (wsAuthor) yaml += `  author: "${wsAuthor}"\n`;
+            yaml += `  created: "${new Date().toISOString().split('T')[0]}"\n`;
+            yaml += `  feedback_level: "${wsFeedback}"\n\n`;
+
+            yaml += 'defaults:\n';
+            yaml += '  base_user: "{account}"\n';
+            yaml += '  file_perms: "0644"\n';
+            yaml += '  dir_perms: "0755"\n';
+            yaml += '  auto_infer_owner: true\n';
+            yaml += '  case_sensitive: true\n';
+            yaml += '  required: true\n\n';
+
+            yaml += 'checks:\n';
+
+            checks.forEach(check => {
+                yaml += `  - name: "${check.name}"\n`;
+                yaml += `    type: ${check.type}\n`;
+
+                switch(check.type) {
+                    case 'user':
+                        yaml += '    users:\n';
+                        check.users.forEach(u => yaml += `      - "${u}"\n`);
+                        break;
+
+                    case 'group':
+                        yaml += '    groups:\n';
+                        check.groups.forEach(g => yaml += `      - ${g}\n`);
+                        break;
+
+                    case 'user_groups':
+                        yaml += `    user: "${check.user}"\n`;
+                        yaml += '    groups:\n';
+                        check.groups.forEach(g => yaml += `      - ${g}\n`);
+                        yaml += `    mode: "${check.mode}"\n`;
+                        break;
+
+                    case 'directory':
+                        yaml += `    path: "${check.path}"\n`;
+                        if (check.owner) yaml += `    owner: "${check.owner}"\n`;
+                        yaml += `    group: "${check.group}"\n`;
+                        yaml += `    perms: "${check.perms}"\n`;
+                        break;
+
+                    case 'file':
+                        if (check.path) {
+                            yaml += `    path: "${check.path}"\n`;
+                            if (check.owner) yaml += `    owner: "${check.owner}"\n`;
+                        } else {
+                            yaml += `    base_path: "${check.base_path}"\n`;
+                            yaml += `    filename_pattern: "${check.filename_pattern}"\n`;
+                            yaml += '    suffixes:\n';
+                            check.suffixes.forEach(s => yaml += `      - "${s}"\n`);
+                            yaml += '    letters:\n';
+                            check.letters.forEach(l => yaml += `      - "${l}"\n`);
+                        }
+                        yaml += `    group: "${check.group}"\n`;
+                        yaml += `    perms: "${check.perms}"\n`;
+                        if (check.contains) {
+                            yaml += '    contains:\n';
+                            check.contains.forEach(c => yaml += `      - "${c}"\n`);
+                        }
+                        if (check.matches) {
+                            yaml += '    matches:\n';
+                            check.matches.forEach(m => yaml += `      - "${m}"\n`);
+                        }
+                        break;
+                }
+                yaml += '\n';
+            });
+
+            document.getElementById('yamlOutput').textContent = yaml;
+        }
+
+        function copyYAML() {
+            const yaml = document.getElementById('yamlOutput').textContent;
+            navigator.clipboard.writeText(yaml).then(() => {
+                showNotification('YAML copied to clipboard!');
+            });
+        }
+
+        async function encryptYAML(yamlText) {
+            try {
+                // Check if Web Crypto API is available
+                if (!window.crypto || !window.crypto.subtle) {
+                    throw new Error('Web Crypto API not available. Please use HTTPS or localhost.');
+                }
+                
+                // Use the same key as Python/Go implementations
+                const key = "lxcheck2025__key_for_workshops!!";
+                const keyBytes = new TextEncoder().encode(key);
+                
+                // Generate random IV (16 bytes for AES)
+                const iv = crypto.getRandomValues(new Uint8Array(16));
+                
+                // Import key for AES-CBC
+                const cryptoKey = await crypto.subtle.importKey(
+                    'raw',
+                    keyBytes,
+                    { name: 'AES-CBC' },
+                    false,
+                    ['encrypt']
+                );
+                
+                // Encrypt the YAML
+                const yamlBytes = new TextEncoder().encode(yamlText);
+                const encrypted = await crypto.subtle.encrypt(
+                    { name: 'AES-CBC', iv: iv },
+                    cryptoKey,
+                    yamlBytes
+                );
+                
+                // Combine IV and encrypted data
+                const combined = new Uint8Array(iv.length + encrypted.byteLength);
+                combined.set(iv, 0);
+                combined.set(new Uint8Array(encrypted), iv.length);
+                
+                // Convert to base64
+                const base64 = btoa(String.fromCharCode(...combined));
+                return base64;
+            } catch (err) {
+                console.error('Encryption error:', err);
+                throw err;
+            }
+        }
+
+        async function downloadYAML(alsoEncrypted = false, source = 'unknown') {
+            const yaml = document.getElementById('yamlOutput').textContent;
+            const wsId = document.getElementById('wsId').value || 'workshop';
+            
+            if (alsoEncrypted) {
+                // Download encrypted version only
+                try {
+                    const encrypted = await encryptYAML(yaml);
+                    const encBlob = new Blob([encrypted], { type: 'application/octet-stream' });
+                    const encUrl = URL.createObjectURL(encBlob);
+                    const encA = document.createElement('a');
+                    encA.href = encUrl;
+                    encA.download = `${wsId}.yml.enc`;
+                    encA.style.display = 'none';
+                    document.body.appendChild(encA);
+                    
+                    // Small delay to ensure blob URL is ready
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    encA.click();
+                    
+                    // Keep element in DOM briefly before cleanup
+                    setTimeout(() => {
+                        document.body.removeChild(encA);
+                        URL.revokeObjectURL(encUrl);
+                    }, 1000);
+                    
+                    showNotification('Encrypted YAML file downloaded!');
+                } catch (err) {
+                    console.error('Encryption failed:', err);
+                    showNotification('Encryption failed: ' + err.message);
+                }
+            } else {
+                // Download cleartext version
+                const blob = new Blob([yaml], { type: 'text/yaml' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${wsId}.yml`;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                
+                // Small delay to ensure blob URL is ready
+                await new Promise(resolve => setTimeout(resolve, 50));
+                a.click();
+                
+                // Keep element in DOM briefly before cleanup
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 1000);
+                
+                showNotification('YAML file downloaded!');
+            }
+        }
+
+        // Set up download button click handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', async function(event) {
+                    const checkboxNow = document.getElementById('alsoEncrypt');
+                    const alsoEncrypt = checkboxNow ? checkboxNow.checked : false;
+                    await downloadYAML(alsoEncrypt, 'button-click');
+                });
+            }
+        });
+
+        async function exportFile() {
+            const format = document.querySelector('input[name="exportFormat"]:checked').value;
+            const wsId = document.getElementById('wsId').value || 'workshop';
+            
+            if (format === 'json') {
+                const data = {
+                    workshop: {
+                        id: document.getElementById('wsId').value,
+                        title: document.getElementById('wsTitle').value,
+                        description: document.getElementById('wsDesc').value,
+                        version: "1.0",
+                        author: document.getElementById('wsAuthor').value,
+                        created: new Date().toISOString().split('T')[0],
+                        feedback_level: document.getElementById('wsFeedback').value
+                    },
+                    checks: checks
+                };
+                const json = JSON.stringify(data, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${wsId}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showNotification('JSON exported!');
+            } else if (format === 'compact') {
+                const yaml = document.getElementById('yamlOutput').textContent
+                    .split('\n')
+                    .filter(line => !line.trim().startsWith('#'))
+                    .join('\n');
+                const blob = new Blob([yaml], { type: 'text/yaml' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${wsId}-compact.yaml`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showNotification('Compact YAML exported!');
+            } else {
+                const alsoEncrypt = document.getElementById('alsoEncrypt').checked;
+                await downloadYAML(alsoEncrypt, 'export-modal');
+            }
+            
+            closeModal('exportModal');
+        }
+
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all checks? This cannot be undone.')) {
+                checks.length = 0;
+                saveState();
+                updateChecksDisplay();
+                generateYAML();
+                showNotification('All checks cleared');
+            }
+        }
+
+        // Initialize
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+        saveState();
+        generateYAML();
+        updateHistoryButtons();
+    </script>
+</body>
+</html>
