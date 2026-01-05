@@ -117,7 +117,7 @@ Linux uses a **hierarchical tree structure**:
 ├── home/            (user home directories)
 │   └── yourname/    (your personal space)
 ├── etc/             (system configuration files)
-├── var/             (variable data: logs, caches)
+├── var/             (variable data: system and application data that changes over time.)
 ├── usr/             (user programs and data)
 ├── tmp/             (temporary files)
 └── bin/             (essential command binaries)
