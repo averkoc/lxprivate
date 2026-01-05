@@ -5,7 +5,7 @@ layout: default
 
 ## Working with Linux shell   
 
-The course has the **initial motivation why learning Linux is important**. It describes the today's diverse Linuxuse use cases. That means that this topic can refer to those use cases and shell's role in them.  
+The course has the **initial motivation why learning Linux is important**. It describes the today's diverse Linux use cases. That means this topic can refer to those use cases and shell's role in them.  
 
 
 
