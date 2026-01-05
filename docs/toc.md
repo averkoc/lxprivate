@@ -14,6 +14,7 @@ layout: default
 - [_siteinstructions.md](/_siteinstructions)
 - [accesslog_suspicious.md](/accesslog_suspicious)
 - [ai_template.md](/ai_template)
+- [checkbuilder.html](/checkbuilder)
 - [clipper.html](/clipper)
 - [commands.html](/commands)
 - [commands.md](/commands)
@@ -97,5 +98,7 @@ layout: default
   - [picture_names.md](/drafts/picture_names)
   - [policy.md](/drafts/policy)
   - [sed.md](/drafts/sed)
+  - [shella.md](/drafts/shella)
+  - [shellb.md](/drafts/shellb)
 - **functions/**
 - **images/**
