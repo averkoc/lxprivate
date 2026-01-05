@@ -12,7 +12,7 @@ HO: moving in tree, listing, creating directory, copying content (files) to dire
 
 
 Why this topic matters 
-Drafts shella.md shellb.md and shellc.md in drafts-folder. 
+Drafts [shella.md](../drafts/shella) [../drafts/shellb.md](shellb) and [../drafts/shellc.md](./shellc) in drafts-folder. 
 Although often associated with server management, the skills covered in this session are broadly applicable and highly transferable. They form a foundational competency that can be leveraged across a wide range of technical environments, not just dedicated servers.  
 
 Specifically, these skills are relevant in:  
