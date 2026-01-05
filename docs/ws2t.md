@@ -3,7 +3,12 @@ title: ""
 layout: default
 ---
 
-## Working with Linux shell  
+## Working with Linux shell   
+
+The course has the initial motivation why learning Linux is important. It describes the today's diverse Linuxuse use cases. That means that this topic can refer to those use cases and shell's role in them.  
+
+
+
 
 Why this topic matters 
 Although often associated with server management, the skills covered in this session are broadly applicable and highly transferable. They form a foundational competency that can be leveraged across a wide range of technical environments, not just dedicated servers.  
