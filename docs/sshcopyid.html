@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Windows SSH Key Deployer</title>
+    <title>Windows "ssh-copy-id" builder</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; padding: 20px; max-width: 700px; margin: auto; background-color: #f0f2f5; }
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e1e4e8; }
@@ -40,7 +40,7 @@
 <body>
 
 <div class="card">
-    <h2>SSH Key Setup (Windows PowerShell)</h2>
+    <h2> "ssh-copy-id" builder for Windows PowerShell</h2>
     <p class="hint">Fill in your details to generate the deployment commands.</p>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
         <div>
@@ -52,7 +52,7 @@
             <input type="text" id="hostname" placeholder="e.g. server.school.edu" oninput="updateAll()">
         </div>
     </div>
-    <label for="keyfile">Public Key File</label>
+    <label for="keyfile">Give your Public Key filename</label>
     <select id="keyfile" onchange="toggleCustomInput()">
         <option value="id_ed25519.pub">id_ed25519.pub (Modern Default)</option>
         <option value="id_rsa.pub">id_rsa.pub (Classic Default)</option>
