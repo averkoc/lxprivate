@@ -71,6 +71,7 @@ layout: default
 - [ws1.md](/ws1)
 - [ws2a_ideas.md](/ws2a_ideas)
 - [ws2ideas.md](/ws2ideas)
+- [ws2t.md](/ws2t)
 - [ws3ex1.md](/ws3ex1)
 - [ws3ex2.md](/ws3ex2)
 - [ws4b.md](/ws4b)
@@ -100,5 +101,6 @@ layout: default
   - [sed.md](/drafts/sed)
   - [shella.md](/drafts/shella)
   - [shellb.md](/drafts/shellb)
+  - [shellc.md](/drafts/shellc)
 - **functions/**
 - **images/**
