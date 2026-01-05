@@ -25,7 +25,7 @@ We use Johnny here as an example user. His account name on local Windows and Lin
    ```bash 
    johnny@lxlocal:~$ssh-copy-id john@serverdnsname
    ```
-   - Example on Windows [*]({{ "/sshcopyid.html/" | relative_url }})  
+   - Example on Windows [*]({{ "/sshcopyid.html" | relative_url }})  
    ```bat
    C:\Users\johnny>type .ssh\id_ed25519.pub|ssh john@serverdnsname "umask 077;test -d .ssh  || mkdir .ssh;cat >> ~/.ssh/authorized_keys"  
    ```
