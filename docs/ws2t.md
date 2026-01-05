@@ -41,4 +41,6 @@ Containers and orchestration systems are fundamentally built on Linux kernel fea
 Linux is the default for large-scale data processing, GPU workloads, and most production AI/ML systems.
 
 * Research and high-performance computing (HPC)
+
+**Across most Linux-based environments, the shell is the most reliable and universal way to interact with the system. Even when graphical tools exist, the shell is essential for automation, remote access, and advanced control**.  
 Linux is overwhelmingly the standard operating system for clusters and scientific computing systems.
