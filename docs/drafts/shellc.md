@@ -24,11 +24,11 @@ On Debian GNU/Linux, your default shell is **bash** (Bourne Again SHell). When y
 ### The Prompt
 When you open a terminal, you see something like:
 ```bash
-sakke@debian:~$
+john@debian:~$
 ```
 
 This **prompt** tells you:
-- `sakke` - your username
+- `john` - your username
 - `debian` - the machine name (hostname)
 - `~` - your current directory (~ means your home directory)
 - `$` - you're a regular user (# means root/administrator)
@@ -42,13 +42,13 @@ pwd
 **Purpose**: Print Working Directory - shows you exactly where you are  
 **Try it**: Open a terminal and type `pwd`, then press Enter
 
-You'll see something like `/home/sakke` - this is the full path to where you are.
+You'll see something like `/home/john` - this is the full path to where you are.
 
 ### File Paths: Two Ways to Describe Location
 
 **Absolute paths** start from the root of the filesystem:
 ```bash
-/home/sakke/Documents/report.txt
+/home/john/Documents/report.txt
 /etc/apt/sources.list
 /var/log/syslog
 ```
@@ -102,11 +102,11 @@ ls -lh /var/log    # look at log files with readable sizes
 
 **What you're seeing in `ls -l`**:
 ```
--rw-r--r-- 1 sakke sakke 2048 Jan 05 10:30 notes.txt
+-rw-r--r-- 1 john john 2048 Jan 05 10:30 notes.txt
 ```
 - `-rw-r--r--` - permissions (who can read/write/execute)
 - `1` - number of links
-- `sakke sakke` - owner and group
+- `john john` - owner and group
 - `2048` - size in bytes
 - `Jan 05 10:30` - last modified
 - `notes.txt` - filename
