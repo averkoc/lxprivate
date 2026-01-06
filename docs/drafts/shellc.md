@@ -41,7 +41,7 @@ On some systems, the prompt may be minimal and may not show the path of the curr
 
 **Absolute paths** start from the root of the filesystem:
 ```bash
-/home/john/Documents/report.txt
+/home/john/bin/myscript.sh
 /etc/apt/sources.list
 /var/log/syslog
 ```
@@ -49,7 +49,7 @@ They always start with `/` and work anywhere.
 
 **Relative paths** start from your current location:
 ```bash
-Documents/report.txt    # file in subfolder
+bin/myscript.sh    # file in subfolder
 ../other_user/file.txt  # .. means "parent directory"
 ./script.sh             # . means "current directory"
 ```
