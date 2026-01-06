@@ -56,42 +56,27 @@ Documents/report.txt    # file in subfolder
 
 ## Essential Navigation Commands
 
-### Moving Around: `cd`
+### Practice moving Around: `cd`
 
 ```bash
-cd Documents        # move into Documents folder
+cd /var            # move into /var (absolute path)
+cd html            # move into html (relative path - succeeds if there is directory html under the current directory)
 cd ..              # move up one level (to parent)
 cd                 # return to your home directory
-cd /var/log        # absolute path to system logs
+cd /var/log        # absolute path to system logs directory
 cd -               # go back to previous directory
 ```
 
-**Practice sequence**:
-```bash
-pwd                 # see where you are
-cd /tmp            # jump to temporary files directory
-pwd                # confirm you moved
-cd                 # return home
-pwd                # verify you're home
-```
-
-### Seeing What's There: `ls`
+### Seeing What's There: `ls` - Practice these  
 
 ```bash
 ls                 # list files in current directory
 ls -l              # long format (permissions, size, date)
 ls -a              # show all files (including hidden ones starting with .)
 ls -lh             # human-readable sizes (KB, MB instead of bytes)
-ls /etc            # list contents of /etc instead of current directory
+ls -l /etc            # list contents of /etc instead of current directory
 ```
 
-**Try it**:
-```bash
-ls
-ls -l
-ls -la             # combine options: long format AND all files
-ls -lh /var/log    # look at log files with readable sizes
-```
 
 **What you're seeing in `ls -l`**:
 ```
