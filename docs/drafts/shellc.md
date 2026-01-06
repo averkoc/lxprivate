@@ -10,12 +10,12 @@ layout: default
 
 The **shell** is a program that accepts your typed commands and tells the operating system what to do. Think of it as a text-based conversation with your computer.
 
-**Why bother with the command line when GUIs exist?**
-- **Efficiency**: Complete in seconds what takes minutes with a mouse
-- **Automation**: Save sequences of commands to run repeatedly
-- **Power**: Access features and controls that GUIs never expose
-- **Remote work**: Manage servers over slow connections where GUIs won't work
-- **Troubleshooting**: When graphics fail, the shell still works
+**What the shell offers**
+- **Efficiency**: Process multiple files at a time.
+- **Automation**: Create scripts that contain commands and control structures (`if`, `while`, `do`, etc.) to automate repetitive tasks.
+- **Power**: Access features and controls that are not available in a GUI.
+- **Remote access**: Servers often reside in remote locations and provide only shell access via SSH for management.
+
 
 On Debian GNU/Linux, your default shell is **bash** (Bourne Again SHell). When you open a terminal, you're running bash.
 
@@ -59,7 +59,7 @@ Documents/report.txt    # file in subfolder
 ### Practice moving Around: `cd`
 
 ```bash
-cd /var            # move into /var (absolute path)
+cd /var/www        # move into /var/www (absolute path)
 cd html            # move into html (relative path - succeeds if there is directory html under the current directory)
 cd ..              # move up one level (to parent)
 cd                 # return to your home directory
