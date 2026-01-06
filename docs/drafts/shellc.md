@@ -25,24 +25,17 @@ On Debian GNU/Linux, your default shell is **bash** (Bourne Again SHell). When y
 When you open a terminal, you see something like:
 ```bash
 john@debian:~$
-```
+```  
 
 This **prompt** tells you:
 - `john` - your username
 - `debian` - the machine name (hostname)
-- `~` - your current directory (~ means your home directory)
+- `~` - your current directory (~ means your home directory that is shortcut for /home/john)
+  - if you move to other directory in place of ~ then there is the directory path of that directory.
 - `$` - you're a regular user (# means root/administrator)
+- 
+On some systems, the prompt may be minimal and may not show the path of the current directory. In that case, you need to use the `pwd` command to see your current directory
 
-### Working Directory
-The shell always runs commands from some location in the filesystem. This is your **current working directory** or **present working directory**.
-
-```bash
-pwd
-```
-**Purpose**: Print Working Directory - shows you exactly where you are  
-**Try it**: Open a terminal and type `pwd`, then press Enter
-
-You'll see something like `/home/john` - this is the full path to where you are.
 
 ### File Paths: Two Ways to Describe Location
 
