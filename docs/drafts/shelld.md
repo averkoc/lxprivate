@@ -32,7 +32,7 @@ If you work with servers, **the shell is not optional** — it is the control su
 1. **SSH (Secure Shell)** — most common
    ```bash
    ssh username@server_ip
-````
+
 
 2. **Local console**
 
