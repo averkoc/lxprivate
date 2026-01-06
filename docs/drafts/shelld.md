@@ -3,15 +3,9 @@ title: ""
 layout: default
 --- 
 
+# Introduction to the Linux Shell (Bash) 
 
-````markdown
-# Introduction to the Linux Shell (Bash) — Server Environment (No GUI)
 
-**Audience:** Absolute beginners working on servers  
-**Reference system:** Debian GNU/Linux (systemd-based)  
-**Shell used:** `bash` (default interactive shell on Debian servers)
-
-This version assumes **no graphical user interface (GUI)**.  
 All interaction happens through a **text-only terminal**, usually via **SSH** or a physical console.
 
 ---
