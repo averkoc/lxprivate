@@ -25,7 +25,7 @@ This workshop emphasizes **thinking in commands**, not memorization.
 
 ### Purpose / Why It Matters
 
-The **shell** is a text-based user interface program that lets you interact with the operating system. It is configured to start automaticallyfor you when you log on to server. 
+The **shell** is a text-based user interface program that lets you interact with the operating system. It is configured to start automatically when you log on to server. 
 
 The shell is essentially the "universal language" of Linux/Unix systems, making it one of the most portable skills in computing. Once you have basic skills with it, you can apply it across:
 
@@ -54,30 +54,18 @@ On Debian, the default interactive shell for users is **bash** (Bourne Again SHe
 
 ---
 
-### Your First Command
+### The first thing you see is the Prompt
 
-```bash
-pwd
-```
-
-**Meaning:** "print working directory"  
-It shows where you are in the filesystem.
-
-**Try this now:** Open a terminal and type `pwd`, then press Enter.
-
----
-
-### Understanding the Prompt
 
 When you open a terminal, you'll see something like:
 
 ```bash
-user@hostname:~$
+john@hostname:~$
 ```
 
 Let's decode this:
-- `user` - your username
-- `hostname` - your computer's name
+- `john` - username
+- `hostname` - computer's name
 - `~` - your current location (your home directory)
 - `$` - indicates you're a regular user (`#` would mean root/admin)
 
@@ -87,15 +75,10 @@ Let's decode this:
 
 ### Purpose / Why It Matters
 
-Everything in Linux is organized into a **single directory tree** starting at `/` (called the *root directory*).
+All files in Linux are in directories that are organized into a hierarchical **directory tree** starting at `/` (called the *root directory*). The picture below swho the top level directories that are directly under the root directory. Under them are lower level directories and so on.
 
-You must be able to move around this tree to work with files.
 
----
-
-### Core Concepts
-
-Linux uses a **hierarchical tree structure**:
+**Linux filestystem tree**
 
 ```
 /                    (root of entire filesystem)
