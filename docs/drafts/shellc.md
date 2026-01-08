@@ -54,7 +54,23 @@ bin/myscript.sh    # file in subfolder
 ./script.sh             # . means "current directory"
 ```
 
-## Essential Navigation Commands
+## Essential Navigation Commands  
+
+In Linux the files are inside directories which are organized into tree like structure. Below are the top level directories under which there are other directories and again directories under them. 
+
+```text 
+/                    (root of entire filesystem)
+├── home/            (user home directories)
+│   └── yourname/    (your personal space)
+├── etc/             (system configuration files)
+├── var/             (variable data: system and application data that changes over time.)
+├── usr/             (user programs and data)
+├── tmp/             (temporary files)
+└── bin/             (essential command binaries)
+````
+You are always in some directory and it is called current or working directory. You use `cd`command to move from current directory to another directory by giving the target directory's path either as absolute path or relative path.  
+
+
 
 ### Practice moving Around: `cd`
 
