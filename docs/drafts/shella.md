@@ -57,15 +57,15 @@ On Debian, the default interactive shell for users is **bash** (Bourne Again SHe
 ### The first thing you see is the Prompt
 
 
-When you open a terminal, you'll see something like:
+When you connect onto server the first thing you see is something like:
 
 ```bash
 john@hostname:~$
 ```
 
-Let's decode this:
-- `john` - username
-- `hostname` - computer's name
+The parts in the prompt are:
+- `john` - username 
+- `hostname` -  computer's name
 - `~` - your current location (your home directory)
 - `$` - indicates you're a regular user (`#` would mean root/admin)
 
@@ -102,7 +102,7 @@ These symbols are shortcuts you'll use constantly:
 * `/` - Root of the entire filesystem (the very top)
 * `.` - Current directory (where you are right now)
 * `..` - Parent directory (one level up)
-* `~` - Your home directory (e.g., `/home/yourname`)
+* `~` - Your home directory (shortcut for  `/home/yourname`)
 
 **Example:**
 ```bash
