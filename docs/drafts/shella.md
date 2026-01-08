@@ -6,11 +6,6 @@ title: ""
 
 # Linux Shell Workshop: Getting Started with the Command Line
 
-**Workshop Duration:** ~90 minutes  
-**Target:** Complete beginners  
-**System:** Debian GNU/Linux with Bash shell
-
----
 
 ## Workshop Goals
 
@@ -30,22 +25,9 @@ This workshop emphasizes **thinking in commands**, not memorization.
 
 ### Purpose / Why It Matters
 
-The **shell** is a program that lets you interact with the operating system using text commands.
+The **shell** is a text-based user interface program that lets you interact with the operating system. It is configured to start automaticallyfor you when you log on to server. 
 
-System administrators use the shell because it is:
-* Fast and precise
-* Scriptable and automatable
-* Available on every Linux system (including servers with no GUI)
-
-Why Regular Users Should Learn It:  
-the shell helps you what ever Linux or cloud system you are using:  
-
-* Work faster: Rename 100 files in one command instead of clicking 100 times, convert image-files to different format while you do something else.
-* Automate repetitive tasks
-* Access powerful tools: Many programs only have command-line interfaces
-* Future-proof your skills: The shell has existed for 50+ years and will outlive any GUI
-
-The shell is essentially the "universal language" of Linux/Unix systems, making it one of the most portable skills in computing. Once you learn it, you can apply it across:
+The shell is essentially the "universal language" of Linux/Unix systems, making it one of the most portable skills in computing. Once you have basic skills with it, you can apply it across:
 
 * All Linux distributions (Debian, Ubuntu, Fedora, Arch, etc.)
 * Cloud platforms (EC2 instances on AWS, Compute Engine on GCP, VMs on Azure)
@@ -58,14 +40,17 @@ The shell is essentially the "universal language" of Linux/Unix systems, making 
 
 On Debian, the default interactive shell for users is **bash** (Bourne Again SHell).
 
----
+--- 
 
 ### Core Concepts
 
+* **Shell**: A text-based program that allows users to issue commands to the operating system.
 * **Command**: a program you run (e.g., `ls`)
 * **Arguments**: inputs to a command (e.g., `ls /etc`)
 * **Options (flags)**: modify command behavior (e.g., `ls -l`)
+* **Filesystem tree**: the hierarchial directory structure where files resides
 * **Working directory**: your current location in the filesystem
+
 
 ---
 
