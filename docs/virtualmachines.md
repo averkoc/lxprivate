@@ -8,6 +8,16 @@ title: ""
 ### Networking  
 prepare OVA-file with
 * two NAT adapters (students will change after importing the latter to **Bridged**/(Hostonly is errorprone but last resort in some VPN,802.1X environments)
+* before exporting - **important run as single string of commands**:  
+```bash
+sudo truncate -s 0 /etc/machine-id && \
+sudo rm -f /var/lib/dbus/machine-id && \
+sudo rm -f /etc/ssh/ssh_host_* && \
+sudo apt-get clean && \
+history -c && \
+sudo shutdown -h now 
+````
+
 * /etc/network/interfaces -file contens:
   
 ```bash
