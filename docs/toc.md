@@ -37,6 +37,7 @@ layout: default
 - [loadtest.md](/loadtest)
 - [loadtestdemo.md](/loadtestdemo)
 - [logging.md](/logging)
+- [lxmaster.md](/lxmaster)
 - [medialinks.md](/medialinks)
 - [mermaidtest.md](/mermaidtest)
 - [motivation3.md](/motivation3)
@@ -92,7 +93,10 @@ layout: default
 - **_layouts/**
   - [default.html](/_layouts/default)
 - **assets/**
+  - [admin.md](/assets/admin)
+  - [chapters.md](/assets/chapters)
   - [pythondev.md](/assets/pythondev)
+  - [ruoka.md](/assets/ruoka)
   - **css/**
   - **js/**
 - **drafts/**
@@ -102,5 +106,6 @@ layout: default
   - [shella.md](/drafts/shella)
   - [shellb.md](/drafts/shellb)
   - [shellc.md](/drafts/shellc)
+  - [shelld.md](/drafts/shelld)
 - **functions/**
 - **images/**
