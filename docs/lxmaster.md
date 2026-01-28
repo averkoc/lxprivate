@@ -21,10 +21,10 @@ Name column formula: =Last&", "&First
 * Exam column formula: =AND(Key=Account;Files=Account)
 * Peppi column formula: =AND(WST>30;EXAM;FCE>52)
 * Marked: the value that has been put in Peppi. This way, for example, after a successful resit, you can see that the Peppi column is True but the Marked column before the marking is 0 or empty.
-* The Filter column can be used in Word to select the rows that you want to send. Use the Edit Recipients function in Word to specify which values ​​are selected.
+* The Filter column can be used in Word to select the rows that you want to send. Use the Edit Recipients function in Word to specify which values ​​are selected.  
 
 
-
+![mailing results](../images/mailing_results.png)
 
   
 
