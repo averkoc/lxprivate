@@ -29,6 +29,7 @@ layout: default
 - [faq.md](/faq)
 - [hash.md](/hash)
 - [hashoriginal.html](/hashoriginal)
+- [import.md](/import)
 - [index.md](/index)
 - [indoor2_emqx.html](/indoor2_emqx)
 - [interfaces.md](/interfaces)
