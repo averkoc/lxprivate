@@ -3,7 +3,8 @@ layout: default
 title: ""
 --- 
 
-## Debian 
+## Debian  
+There are fresh data in lx-repo (in ws1 related file - debianinstall?) about cleaning the machine-id and public key to make student vms unique.     
 
 ### Networking  
 prepare OVA-file with
