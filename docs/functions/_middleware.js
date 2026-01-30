@@ -1,4 +1,5 @@
 // Merged middleware: API Bearer token + Basic Auth for site
+// Merged middleware: API Bearer token + Basic Auth for site
 export async function onRequest(context) {
   const { request, next, env } = context;
   const url = new URL(request.url);
