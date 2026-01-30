@@ -24,7 +24,16 @@ Name column formula: =Last&", "&First
 * Marked: the value that has been put in Peppi. You can download Peppi-grades and copying the sheet and using XLOOKUP-function. Coloring passed values and passed grade it easy to see if there is some grade missing.  
 * The Filter column can be used in Word to select the rows that you want to send. Use the Edit Recipients function in Word to specify which values ​​are selected.  
 
-----
+--- 
+### Processing netacad gradebook  
+
+The FCE (Final Comprehensive Exam) column gets its values from netacad sheet that is got by downloading netacad gradebook and processing it by [process_gradebook.py](../assets/process_gradebook.py) program before adding to the master-file.   
+
+
+
+
+---- 
+### Mailing  
 The following screenshots show how word mailing feature can be used to send emails to users that are based on the excel data. It also contains some mailing function related features that may be interesting in some other situations. 
 
 ![mailing results](../images/mailing_results.png)  
