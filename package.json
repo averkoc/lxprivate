@@ -1,0 +1,22 @@
+{
+  "name": "lxcheck-cloudflare-api",
+  "version": "1.0.0",
+  "description": "Cloudflare Pages Functions API for LXCheck results reporting",
+  "scripts": {
+    "dev": "wrangler pages dev public --d1 DB=lxcheck-results",
+    "deploy": "wrangler pages deploy public --project-name=lxprivate",
+    "test": "wrangler pages dev public --local"
+  },
+  "keywords": [
+    "cloudflare",
+    "pages",
+    "d1",
+    "lxcheck"
+  ],
+  "author": "LXCheck Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240129.0",
+    "wrangler": "^4.61.1"
+  }
+}
