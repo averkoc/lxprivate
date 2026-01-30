@@ -1,5 +1,33 @@
+// Merged middleware: API Bearer token + Basic Auth for site
 export async function onRequest(context) {
-  const { request, next } = context;
+  const { request, next, env } = context;
+  const url = new URL(request.url);
+
+  // API routes (/api/*): Use Bearer token authentication
+  if (url.pathname.startsWith('/api/')) {
+    const authHeader = request.headers.get('Authorization');
+    const expectedToken = `Bearer ${env.LXCHECK_API_TOKEN}`;
+
+    if (!authHeader || authHeader !== expectedToken) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Unauthorized',
+          message: 'Invalid or missing authentication token'
+        }), 
+        {
+          status: 401,
+          headers: {
+            'Content-Type': 'application/json',
+            'WWW-Authenticate': 'Bearer realm="lxcheck"'
+          }
+        }
+      );
+    }
+    // API authenticated, continue
+    return await next();
+  }
+
+  // All other routes: Use Basic Auth (username/password)
   const authHeader = request.headers.get('Authorization');
 
   // YOUR CREDENTIALS
