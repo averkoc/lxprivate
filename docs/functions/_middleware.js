@@ -1,11 +1,17 @@
 // Merged middleware: API Bearer token + Basic Auth for site
-// Merged middleware: API Bearer token + Basic Auth for site
 export async function onRequest(context) {
   const { request, next, env } = context;
   const url = new URL(request.url);
 
   // API routes (/api/*): Use Bearer token authentication
   if (url.pathname.startsWith('/api/')) {
+    // Allow GET requests to /api/results without token (viewing results)
+    // since the page itself is already behind Basic Auth
+    if (request.method === 'GET' && url.pathname === '/api/results') {
+      return await next();
+    }
+    
+    // All other API requests require Bearer token (e.g., POST submissions)
     const authHeader = request.headers.get('Authorization');
     const expectedToken = `Bearer ${env.LXCHECK_API_TOKEN}`;
 
