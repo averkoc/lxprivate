@@ -5,9 +5,9 @@ export async function onRequest(context) {
 
   // API routes (/api/*): Use Bearer token authentication
   if (url.pathname.startsWith('/api/')) {
-    // Allow GET requests to /api/results without token (viewing results)
+    // Allow GET requests to /api/results and /api/init-db without token
     // since the page itself is already behind Basic Auth
-    if (request.method === 'GET' && url.pathname === '/api/results') {
+    if (request.method === 'GET' && (url.pathname === '/api/results' || url.pathname === '/api/init-db')) {
       return await next();
     }
     
