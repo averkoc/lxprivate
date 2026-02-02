@@ -377,13 +377,21 @@
                         <td>${result.student_account}</td>
                         <td>${result.workshop_title || result.workshop_id}</td>
                         <td>${result.group_code || 'N/A'}</td>
-                        <td>${result.hostname || '-'}</td>
+                        <td>${formatHostname(result.hostname, result.machine_id)}</td>
                         <td>${result.attempt_count || 1}</td>
                         <td><span class="pass-rate ${passClass}">${passRate}%</span></td>
                         <td>${result.passed_checks}/${result.total_checks}</td>
                     </tr>
                 `;
             }).join('');
+        }
+
+        function formatHostname(hostname, machineId) {
+            if (!hostname) return '-';
+            if (!machineId) return hostname;
+            // Extract last 4 characters from machine_id
+            const suffix = machineId.slice(-4).toUpperCase();
+            return `${hostname}-${suffix}`;
         }
 
         function updateStats(results) {
@@ -415,7 +423,7 @@
                 <p><strong>Student:</strong> ${result.student_account}</p>
                 <p><strong>Group:</strong> ${result.group_code || 'N/A'}</p>
                 <p><strong>Timestamp:</strong> ${timestamp}</p>
-                <p><strong>Hostname:</strong> ${result.hostname || 'N/A'}</p>
+                <p><strong>Hostname:</strong> ${formatHostname(result.hostname, result.machine_id)}</p>
                 <p><strong>Attempts:</strong> ${result.attempt_count || 1}</p>
                 <p><strong>Score:</strong> ${result.passed_checks}/${result.total_checks} (${passRate}%)</p>
                 <h3 style="margin-top: 20px;">Check Results</h3>
