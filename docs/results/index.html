@@ -249,6 +249,10 @@
                     <input type="text" id="workshopFilter" placeholder="Enter workshop ID">
                 </div>
                 <div class="filter-group">
+                    <label for="groupFilter">Group Code</label>
+                    <input type="text" id="groupFilter" placeholder="Enter group code">
+                </div>
+                <div class="filter-group">
                     <label for="limitFilter">Results per page</label>
                     <select id="limitFilter">
                         <option value="25">25</option>
@@ -287,14 +291,16 @@
                         <th>Timestamp</th>
                         <th>Student</th>
                         <th>Workshop</th>
+                        <th>Group</th>
                         <th>Hostname</th>
+                        <th>Attempts</th>
                         <th>Pass Rate</th>
                         <th>Score</th>
                     </tr>
                 </thead>
                 <tbody id="resultsBody">
                     <tr>
-                        <td colspan="6" class="loading">Loading results...</td>
+                        <td colspan="8" class="loading">Loading results...</td>
                     </tr>
                 </tbody>
             </table>
@@ -315,6 +321,7 @@
         async function loadResults() {
             const student = document.getElementById('studentFilter').value;
             const workshop = document.getElementById('workshopFilter').value;
+            const group = document.getElementById('groupFilter').value;
             const limit = document.getElementById('limitFilter').value;
 
             const params = new URLSearchParams({
@@ -324,10 +331,11 @@
 
             if (student) params.append('student', student);
             if (workshop) params.append('workshop', workshop);
+            if (group) params.append('group', group);
 
             try {
                 document.getElementById('resultsBody').innerHTML = 
-                    '<tr><td colspan="6" class="loading">Loading...</td></tr>';
+                    '<tr><td colspan="8" class="loading">Loading...</td></tr>';
                 document.getElementById('errorContainer').innerHTML = '';
 
                 const response = await fetch(`/api/results?${params}`);
@@ -346,7 +354,7 @@
                 document.getElementById('errorContainer').innerHTML = 
                     `<div class="error">Error loading results: ${error.message}</div>`;
                 document.getElementById('resultsBody').innerHTML = 
-                    '<tr><td colspan="6" class="loading">Failed to load results</td></tr>';
+                    '<tr><td colspan="8" class="loading">Failed to load results</td></tr>';
             }
         }
 
@@ -354,7 +362,7 @@
             const tbody = document.getElementById('resultsBody');
             
             if (results.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="loading">No results found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="loading">No results found</td></tr>';
                 return;
             }
 
@@ -368,7 +376,9 @@
                         <td class="timestamp">${timestamp}</td>
                         <td>${result.student_account}</td>
                         <td>${result.workshop_title || result.workshop_id}</td>
+                        <td>${result.group_code || 'N/A'}</td>
                         <td>${result.hostname || '-'}</td>
+                        <td>${result.attempt_count || 1}</td>
                         <td><span class="pass-rate ${passClass}">${passRate}%</span></td>
                         <td>${result.passed_checks}/${result.total_checks}</td>
                     </tr>
@@ -403,8 +413,10 @@
             content.innerHTML = `
                 <h2>${result.workshop_title || result.workshop_id}</h2>
                 <p><strong>Student:</strong> ${result.student_account}</p>
+                <p><strong>Group:</strong> ${result.group_code || 'N/A'}</p>
                 <p><strong>Timestamp:</strong> ${timestamp}</p>
                 <p><strong>Hostname:</strong> ${result.hostname || 'N/A'}</p>
+                <p><strong>Attempts:</strong> ${result.attempt_count || 1}</p>
                 <p><strong>Score:</strong> ${result.passed_checks}/${result.total_checks} (${passRate}%)</p>
                 <h3 style="margin-top: 20px;">Check Results</h3>
                 <div>

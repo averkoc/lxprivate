@@ -16,6 +16,7 @@ interface ResultPayload {
   student_account: string;
   workshop_id: string;
   workshop_title?: string;
+  group_code: string;
   timestamp: string;
   hostname?: string;
   total_checks: number;
@@ -37,11 +38,11 @@ export async function onRequestPost(context: {
     const payload: ResultPayload = await context.request.json();
 
     // Validate required fields
-    if (!payload.student_account || !payload.workshop_id) {
+    if (!payload.student_account || !payload.workshop_id || !payload.group_code) {
       return new Response(
         JSON.stringify({
           error: 'Bad Request',
-          message: 'Missing required fields: student_account and workshop_id'
+          message: 'Missing required fields: student_account, workshop_id, and group_code'
         }),
         {
           status: 400,
@@ -63,29 +64,43 @@ export async function onRequestPost(context: {
       );
     }
 
-    // Generate unique ID
-    const id = generateId();
+    // Get machine ID from hostname or generate one
+    const machineId = payload.hostname || context.request.headers.get('CF-Connecting-IP') || 'unknown';
 
-    // Get client IP address
-    const ipAddress = context.request.headers.get('CF-Connecting-IP') || 'unknown';
-
-    // Store results in D1 database
+    // Store results in D1 database using INSERT ON CONFLICT
+    // This ensures only one record per student per workshop per group
+    // Updates passed_checks only if new score is better or equal
     await context.env.DB.prepare(
       `INSERT INTO results 
-       (id, student_account, workshop_id, workshop_title, total_checks, 
-        passed_checks, results_json, timestamp, ip_address, hostname)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       (student_account, workshop_id, group_code, workshop_title, passed_checks, total_checks,
+        results_json, timestamp, attempt_count, machine_id, hostname)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+       ON CONFLICT (student_account, workshop_id, group_code) DO UPDATE SET
+         passed_checks = CASE
+           WHEN EXCLUDED.passed_checks >= results.passed_checks THEN EXCLUDED.passed_checks
+           ELSE results.passed_checks
+         END,
+         timestamp = EXCLUDED.timestamp,
+         attempt_count = results.attempt_count + 1,
+         results_json = CASE
+           WHEN EXCLUDED.passed_checks >= results.passed_checks THEN EXCLUDED.results_json
+           ELSE results.results_json
+         END,
+         workshop_title = EXCLUDED.workshop_title,
+         total_checks = EXCLUDED.total_checks,
+         machine_id = EXCLUDED.machine_id,
+         hostname = EXCLUDED.hostname`
     )
       .bind(
-        id,
         payload.student_account,
         payload.workshop_id,
+        payload.group_code,
         payload.workshop_title || null,
-        payload.total_checks,
         payload.passed_checks,
+        payload.total_checks,
         JSON.stringify(payload.results),
         payload.timestamp || new Date().toISOString(),
-        ipAddress,
+        machineId,
         payload.hostname || null
       )
       .run();
@@ -94,14 +109,12 @@ export async function onRequestPost(context: {
     return new Response(
       JSON.stringify({
         success: true,
-        id: id,
         message: 'Results submitted successfully'
       }),
       {
         status: 201,
         headers: {
-          'Content-Type': 'application/json',
-          'Location': `/api/results/${id}`
+          'Content-Type': 'application/json'
         }
       }
     );
@@ -131,6 +144,7 @@ export async function onRequestGet(context: {
     const url = new URL(context.request.url);
     const student = url.searchParams.get('student');
     const workshop = url.searchParams.get('workshop');
+    const group = url.searchParams.get('group');
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const offset = parseInt(url.searchParams.get('offset') || '0');
 
@@ -138,13 +152,18 @@ export async function onRequestGet(context: {
     const params: any[] = [];
 
     if (student) {
-      query += ' AND student_account = ?';
+      query += ' AND account = ?';
       params.push(student);
     }
 
     if (workshop) {
       query += ' AND workshop_id = ?';
       params.push(workshop);
+    }
+
+    if (group) {
+      query += ' AND group_code = ?';
+      params.push(group);
     }
 
     query += ' ORDER BY timestamp DESC LIMIT ? OFFSET ?';
