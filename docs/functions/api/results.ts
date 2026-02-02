@@ -19,6 +19,7 @@ interface ResultPayload {
   group_code: string;
   timestamp: string;
   hostname?: string;
+  machine_id?: string;
   total_checks: number;
   passed_checks: number;
   results: ResultItem[];
@@ -64,8 +65,8 @@ export async function onRequestPost(context: {
       );
     }
 
-    // Get machine ID from hostname or generate one
-    const machineId = payload.hostname || context.request.headers.get('CF-Connecting-IP') || 'unknown';
+    // Get machine ID from payload, fallback to hostname or IP
+    const machineId = payload.machine_id || payload.hostname || context.request.headers.get('CF-Connecting-IP') || 'unknown';
 
     // Store results in D1 database using INSERT ON CONFLICT
     // This ensures only one record per student per workshop per group
