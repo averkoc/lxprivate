@@ -291,6 +291,7 @@
                         <th>Timestamp</th>
                         <th>Student</th>
                         <th>Workshop</th>
+                        <th>ID</th>
                         <th>Group</th>
                         <th>Hostname</th>
                         <th>Attempts</th>
@@ -300,7 +301,7 @@
                 </thead>
                 <tbody id="resultsBody">
                     <tr>
-                        <td colspan="8" class="loading">Loading results...</td>
+                        <td colspan="9" class="loading">Loading results...</td>
                     </tr>
                 </tbody>
             </table>
@@ -362,7 +363,7 @@
             const tbody = document.getElementById('resultsBody');
             
             if (results.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="loading">No results found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="loading">No results found</td></tr>';
                 return;
             }
 
@@ -376,6 +377,7 @@
                         <td class="timestamp">${timestamp}</td>
                         <td>${result.student_account}</td>
                         <td>${result.workshop_title || result.workshop_id}</td>
+                        <td>${result.workshop_id}</td>
                         <td>${result.group_code || 'N/A'}</td>
                         <td>${formatHostname(result.hostname, result.machine_id)}</td>
                         <td>${result.attempt_count || 1}</td>

@@ -153,7 +153,7 @@ export async function onRequestGet(context: {
     const params: any[] = [];
 
     if (student) {
-      query += ' AND account = ?';
+      query += ' AND student_account = ?';
       params.push(student);
     }
 
