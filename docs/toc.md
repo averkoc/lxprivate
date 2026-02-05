@@ -64,6 +64,7 @@ layout: default
 - [sshsimu.html](/sshsimu)
 - [t1.md](/t1)
 - [test.md](/test)
+- [testing.md](/testing)
 - [thread.md](/thread)
 - [tmpl.md](/tmpl)
 - [virtualization.md](/virtualization)
