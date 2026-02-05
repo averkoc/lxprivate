@@ -19,7 +19,7 @@ wget https://averkoc.github.io/lx/assets/lxcheck
 ```
 * Move the downloaded test program to /usr/local/bin and make it executable
 ```bash
-sudo cp ~/lxcheck /usr/local/bin
+sudo mv ~/lxcheck /usr/local/bin
 sudo chmod +x /usr/local/bin/lxcheck
 ```
 
