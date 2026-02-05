@@ -57,7 +57,7 @@ For this and the following demonstrations, you should have the following users a
 * As user `john4`, create three files — `john4a`, `john4b`, and `john4c` — in `/var/team2files`.
 
 * Paste into answerbox the command `ls -lR /var/examples` output:  
-<img width="756" height="481" alt="image" src="../images/415571d6a235.png" />
+<img width="756" height="481" alt="image" src="../images/ws6list2.png" />
 
 When a directory has the **setgid bit** set, any files created within that directory automatically inherit the **group ownership** of the directory. This makes it easier for team members to manage and share files with the correct group permissions. Without the setgid bit, users must manually change the group ownership of files to achieve the same result.
 
