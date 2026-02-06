@@ -461,26 +461,35 @@
                     <h3>Workshop Metadata</h3>
                     <div class="form-group">
                         <label>Workshop ID</label>
-                        <input type="text" id="wsId" placeholder="ws3" value="ws3">
+                        <input type="text" id="wsId" placeholder="ws3" value="ws3" oninput="generateYAML()">
                     </div>
                     <div class="form-group">
                         <label>Title</label>
-                        <input type="text" id="wsTitle" placeholder="Shared directories for project groups">
+                        <input type="text" id="wsTitle" placeholder="Shared directories for project groups" oninput="generateYAML()">
                     </div>
                     <div class="form-group">
                         <label>Description</label>
-                        <textarea id="wsDesc" placeholder="Verify group collaboration setup with proper permissions"></textarea>
+                        <textarea id="wsDesc" placeholder="Verify group collaboration setup with proper permissions" oninput="generateYAML()"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Author</label>
-                        <input type="text" id="wsAuthor" placeholder="Instructor Name">
+                        <input type="text" id="wsAuthor" placeholder="Instructor Name" oninput="generateYAML()">
                     </div>
                     <div class="form-group">
                         <label>Feedback Level</label>
-                        <select id="wsFeedback">
+                        <select id="wsFeedback" onchange="generateYAML()">
                             <option value="brief">Brief (hide expected values)</option>
                             <option value="detailed">Detailed (show expected values)</option>
                         </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Preparation Commands (Optional)</h3>
+                    <div class="form-group">
+                        <label>Commands to run before checks (one per line)</label>
+                        <textarea id="prepCommands" placeholder="sudo systemctl status apache2 > /tmp/status.txt&#10;rm -f /tmp/test.log" rows="3" oninput="generateYAML()"></textarea>
+                        <div class="small-text">These commands run with sudo before checks execute</div>
                     </div>
                 </div>
 
@@ -628,12 +637,39 @@
                         <div class="form-group">
                             <label>Contains (optional, comma-separated)</label>
                             <input type="text" id="fileContains" placeholder="team collaboration, project alpha">
-                            <div class="small-text">Simple string search</div>
+                            <div class="small-text">Strings that MUST appear in file</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Not Contains (optional, comma-separated)</label>
+                            <input type="text" id="fileNotContains" placeholder="ERROR, FATAL, panic">
+                            <div class="small-text">Strings that must NOT appear in file</div>
                         </div>
                         <div class="form-group">
                             <label>Matches (optional, comma-separated regex)</label>
                             <input type="text" id="fileMatches" placeholder="meeting.*notes, \\d{4}-\\d{2}-\\d{2}">
-                            <div class="small-text">Regular expression patterns</div>
+                            <div class="small-text">Regex patterns that MUST match</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Not Matches (optional, comma-separated regex)</label>
+                            <input type="text" id="fileNotMatches" placeholder="kernel panic, segmentation fault">
+                            <div class="small-text">Regex patterns that must NOT match</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Min Size (bytes, optional)</label>
+                            <input type="number" id="fileMinSize" placeholder="100" min="0">
+                            <div class="small-text">Minimum file size in bytes</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Min Lines (optional)</label>
+                            <input type="number" id="fileMinLines" placeholder="10" min="0">
+                            <div class="small-text">Minimum number of lines</div>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: inline-flex; align-items: center;">
+                                <input type="checkbox" id="fileMustNotExist" style="width: auto; margin-right: 5px;">
+                                File must NOT exist
+                            </label>
+                            <div class="small-text">Check that file does not exist</div>
                         </div>
                         <button class="btn-primary" onclick="addFileCheck()">Add File Check</button>
                     </div>
@@ -687,6 +723,11 @@
                     <div class="icon">🤝</div>
                     <div class="title">Collaboration</div>
                     <div class="desc">Group workspace setup</div>
+                </div>
+                <div class="template-card" onclick="loadTemplate('contentchecks')">
+                    <div class="icon">📝</div>
+                    <div class="title">Content Checks</div>
+                    <div class="desc">File content validation</div>
                 </div>
                 <div class="template-card" onclick="loadTemplate('full')">
                     <div class="icon">⚙️</div>
@@ -776,7 +817,8 @@
                     wsTitle: document.getElementById('wsTitle').value,
                     wsDesc: document.getElementById('wsDesc').value,
                     wsAuthor: document.getElementById('wsAuthor').value,
-                    wsFeedback: document.getElementById('wsFeedback').value
+                    wsFeedback: document.getElementById('wsFeedback').value,
+                    prepCommands: document.getElementById('prepCommands').value
                 }
             };
             
@@ -820,6 +862,9 @@
             if (state.metadata.wsFeedback) {
                 document.getElementById('wsFeedback').value = state.metadata.wsFeedback;
             }
+            if (state.metadata.prepCommands) {
+                document.getElementById('prepCommands').value = state.metadata.prepCommands;
+            }
             updateChecksDisplay();
             generateYAML();
         }
@@ -862,7 +907,8 @@
             const templates = {
                 basic: [
                     { name: 'workshop users exist', type: 'user', users: ['{account}', '{account}1', '{account}2', '{account}3'] },
-                    { name: 'workshop groups exist', type: 'group', groups: ['students', 'instructors'] }
+                    { name: 'workshop groups exist', type: 'group', groups: ['students', 'instructors'] },
+                    { name: 'user in sudo group', type: 'user_groups', user: '{account}', groups: ['sudo'], mode: 'all' }
                 ],
                 permissions: [
                     { name: 'shared directory permissions', type: 'directory', path: '/shared/projects', owner: 'root', group: 'students', perms: '2775' },
@@ -873,17 +919,36 @@
                     { name: 'users in teams', type: 'user_groups', user: '{account}1', groups: ['teama'], mode: 'all' },
                     { name: 'team workspaces', type: 'directory', path: '/projects/teama', owner: 'root', group: 'teama', perms: '2770' }
                 ],
+                contentchecks: [
+                    { name: 'config file contains required settings', type: 'file', path: '/etc/myapp/config.conf', group: 'root', perms: '0644', 
+                      contains: ['server_port=8080', 'enable_logging=true'] },
+                    { name: 'log file has no errors', type: 'file', path: '/var/log/app.log', group: 'root', perms: '', 
+                      not_contains: ['ERROR', 'FATAL', 'CRITICAL'] },
+                    { name: 'status file matches pattern', type: 'file', path: '/tmp/status.txt', group: '', perms: '', 
+                      matches: ['^active$', '^running$'] },
+                    { name: 'report has minimum content', type: 'file', path: '/home/{account}/report.txt', group: '{account}', perms: '0644',
+                      min_lines: 10, min_size: 100 }
+                ],
                 full: [
                     { name: 'workshop users exist', type: 'user', users: ['{account}', '{account}1', '{account}2'] },
                     { name: 'project groups exist', type: 'group', groups: ['developers', 'reviewers'] },
                     { name: 'users in groups', type: 'user_groups', user: '{account}1', groups: ['developers'], mode: 'all' },
                     { name: 'project directory', type: 'directory', path: '/var/projects', owner: 'root', group: 'developers', perms: '2775' },
-                    { name: 'project files', type: 'file', path: '/var/projects/README.md', group: 'developers', perms: '0664' }
+                    { name: 'project files', type: 'file', path: '/var/projects/README.md', group: 'developers', perms: '0664', 
+                      contains: ['Project Overview', 'Installation'] },
+                    { name: 'history contains commands', type: 'file', path: '/home/{account}/.bash_history', group: '', perms: '',
+                      contains: ['sudo usermod', 'chmod 2775'] }
                 ]
             };
             
             if (templates[type]) {
                 checks.push(...templates[type]);
+                
+                // Add preparation commands for full template
+                if (type === 'full') {
+                    document.getElementById('prepCommands').value = 'sudo systemctl status apache2 > /tmp/apache_status.txt\nrm -f /tmp/errors.log';
+                }
+                
                 saveState();
                 updateChecksDisplay();
                 generateYAML();
@@ -1047,14 +1112,19 @@
                     formHTML += `<input type="text" id="editGroup" value="${check.group}"></div>`;
                     formHTML += '<div class="form-group"><label>Permissions</label>';
                     formHTML += `<input type="text" id="editPerms" value="${check.perms}"></div>`;
-                    if (check.contains) {
-                        formHTML += '<div class="form-group"><label>Contains (comma-separated)</label>';
-                        formHTML += `<input type="text" id="editContains" value="${check.contains.join(', ')}"></div>`;
-                    }
-                    if (check.matches) {
-                        formHTML += '<div class="form-group"><label>Matches (comma-separated regex)</label>';
-                        formHTML += `<input type="text" id="editMatches" value="${check.matches.join(', ')}"></div>`;
-                    }
+                    formHTML += '<div class="form-group"><label>Contains (comma-separated)</label>';
+                    formHTML += `<input type="text" id="editContains" value="${check.contains ? check.contains.join(', ') : ''}"></div>`;
+                    formHTML += '<div class="form-group"><label>Not Contains (comma-separated)</label>';
+                    formHTML += `<input type="text" id="editNotContains" value="${check.not_contains ? check.not_contains.join(', ') : ''}"></div>`;
+                    formHTML += '<div class="form-group"><label>Matches (comma-separated regex)</label>';
+                    formHTML += `<input type="text" id="editMatches" value="${check.matches ? check.matches.join(', ') : ''}"></div>`;
+                    formHTML += '<div class="form-group"><label>Not Matches (comma-separated regex)</label>';
+                    formHTML += `<input type="text" id="editNotMatches" value="${check.not_matches ? check.not_matches.join(', ') : ''}"></div>`;
+                    formHTML += '<div class="form-group"><label>Min Size (bytes)</label>';
+                    formHTML += `<input type="number" id="editMinSize" value="${check.min_size || ''}"></div>`;
+                    formHTML += '<div class="form-group"><label>Min Lines</label>';
+                    formHTML += `<input type="number" id="editMinLines" value="${check.min_lines || ''}"></div>`;
+                    formHTML += `<div class="form-group"><label><input type="checkbox" id="editMustNotExist" ${check.must_not_exist ? 'checked' : ''}> Must NOT exist</label></div>`;
                     break;
             }
 
@@ -1100,15 +1170,69 @@
                     }
                     check.group = document.getElementById('editGroup').value;
                     check.perms = document.getElementById('editPerms').value;
+                    
+                    // Handle contains
                     const containsEl = document.getElementById('editContains');
-                    if (containsEl) {
+                    if (containsEl && containsEl.value) {
                         const contains = containsEl.value.split(',').map(c => c.trim()).filter(c => c);
                         if (contains.length > 0) check.contains = contains;
+                        else delete check.contains;
+                    } else {
+                        delete check.contains;
                     }
+                    
+                    // Handle not_contains
+                    const notContainsEl = document.getElementById('editNotContains');
+                    if (notContainsEl && notContainsEl.value) {
+                        const notContains = notContainsEl.value.split(',').map(c => c.trim()).filter(c => c);
+                        if (notContains.length > 0) check.not_contains = notContains;
+                        else delete check.not_contains;
+                    } else {
+                        delete check.not_contains;
+                    }
+                    
+                    // Handle matches
                     const matchesEl = document.getElementById('editMatches');
-                    if (matchesEl) {
+                    if (matchesEl && matchesEl.value) {
                         const matches = matchesEl.value.split(',').map(m => m.trim()).filter(m => m);
                         if (matches.length > 0) check.matches = matches;
+                        else delete check.matches;
+                    } else {
+                        delete check.matches;
+                    }
+                    
+                    // Handle not_matches
+                    const notMatchesEl = document.getElementById('editNotMatches');
+                    if (notMatchesEl && notMatchesEl.value) {
+                        const notMatches = notMatchesEl.value.split(',').map(m => m.trim()).filter(m => m);
+                        if (notMatches.length > 0) check.not_matches = notMatches;
+                        else delete check.not_matches;
+                    } else {
+                        delete check.not_matches;
+                    }
+                    
+                    // Handle min_size
+                    const minSizeEl = document.getElementById('editMinSize');
+                    if (minSizeEl && minSizeEl.value) {
+                        check.min_size = parseInt(minSizeEl.value);
+                    } else {
+                        delete check.min_size;
+                    }
+                    
+                    // Handle min_lines
+                    const minLinesEl = document.getElementById('editMinLines');
+                    if (minLinesEl && minLinesEl.value) {
+                        check.min_lines = parseInt(minLinesEl.value);
+                    } else {
+                        delete check.min_lines;
+                    }
+                    
+                    // Handle must_not_exist
+                    const mustNotExistEl = document.getElementById('editMustNotExist');
+                    if (mustNotExistEl && mustNotExistEl.checked) {
+                        check.must_not_exist = true;
+                    } else {
+                        delete check.must_not_exist;
                     }
                     break;
             }
@@ -1242,7 +1366,12 @@
             const group = document.getElementById('fileGroup').value;
             const perms = document.getElementById('filePerms').value;
             const contains = document.getElementById('fileContains').value;
+            const notContains = document.getElementById('fileNotContains').value;
             const matches = document.getElementById('fileMatches').value;
+            const notMatches = document.getElementById('fileNotMatches').value;
+            const minSize = document.getElementById('fileMinSize').value;
+            const minLines = document.getElementById('fileMinLines').value;
+            const mustNotExist = document.getElementById('fileMustNotExist').checked;
 
             const check = {
                 name: name,
@@ -1279,14 +1408,39 @@
             if (contains) {
                 check.contains = contains.split(',').map(c => c.trim()).filter(c => c);
             }
+            if (notContains) {
+                check.not_contains = notContains.split(',').map(c => c.trim()).filter(c => c);
+            }
             if (matches) {
                 check.matches = matches.split(',').map(m => m.trim()).filter(m => m);
+            }
+            if (notMatches) {
+                check.not_matches = notMatches.split(',').map(m => m.trim()).filter(m => m);
+            }
+            if (minSize) {
+                check.min_size = parseInt(minSize);
+            }
+            if (minLines) {
+                check.min_lines = parseInt(minLines);
+            }
+            if (mustNotExist) {
+                check.must_not_exist = true;
             }
 
             checks.push(check);
             saveState();
             updateChecksDisplay();
             generateYAML();
+            
+            // Clear form fields
+            document.getElementById('fileContains').value = '';
+            document.getElementById('fileNotContains').value = '';
+            document.getElementById('fileMatches').value = '';
+            document.getElementById('fileNotMatches').value = '';
+            document.getElementById('fileMinSize').value = '';
+            document.getElementById('fileMinLines').value = '';
+            document.getElementById('fileMustNotExist').checked = false;
+            
             showNotification('File check added!');
         }
 
@@ -1364,13 +1518,24 @@
                 case 'user_groups':
                     return `User: ${check.user} | Groups: ${check.groups.join(', ')} | Mode: ${check.mode}`;
                 case 'directory':
-                    return `Path: ${check.path} | Owner: ${check.owner} | Group: ${check.group} | Perms: ${check.perms}`;
+                    return `Path: ${check.path} | Owner: ${check.owner || 'default'} | Group: ${check.group} | Perms: ${check.perms}`;
                 case 'file':
+                    let summary = '';
                     if (check.path) {
-                        return `Path: ${check.path} | Group: ${check.group} | Perms: ${check.perms}`;
+                        summary = `Path: ${check.path} | Group: ${check.group} | Perms: ${check.perms}`;
                     } else {
-                        return `Pattern: ${check.filename_pattern} | Suffixes: ${check.suffixes.join(',')} | Letters: ${check.letters.join(',')}`;
+                        summary = `Pattern: ${check.filename_pattern} | Suffixes: ${check.suffixes.join(',')} | Letters: ${check.letters.join(',')}`;
                     }
+                    const details = [];
+                    if (check.contains) details.push(`Contains: ${check.contains.length} items`);
+                    if (check.not_contains) details.push(`Not Contains: ${check.not_contains.length} items`);
+                    if (check.matches) details.push(`Matches: ${check.matches.length} patterns`);
+                    if (check.not_matches) details.push(`Not Matches: ${check.not_matches.length} patterns`);
+                    if (check.min_size) details.push(`MinSize: ${check.min_size}B`);
+                    if (check.min_lines) details.push(`MinLines: ${check.min_lines}`);
+                    if (check.must_not_exist) details.push('Must NOT exist');
+                    if (details.length > 0) summary += ' | ' + details.join(', ');
+                    return summary;
                 default:
                     return '';
             }
@@ -1382,6 +1547,7 @@
             const wsDesc = document.getElementById('wsDesc').value;
             const wsAuthor = document.getElementById('wsAuthor').value;
             const wsFeedback = document.getElementById('wsFeedback').value;
+            const prepCommands = document.getElementById('prepCommands').value;
 
             let yaml = '# Workshop Check Specification v1.0\n';
             yaml += '# Linux Essentials Course - Automated Workshop Validation\n\n';
@@ -1402,6 +1568,17 @@
             yaml += '  auto_infer_owner: true\n';
             yaml += '  case_sensitive: true\n';
             yaml += '  required: true\n\n';
+
+            // Add preparation commands if any
+            if (prepCommands && prepCommands.trim()) {
+                yaml += 'preparation:\n';
+                yaml += '  commands:\n';
+                const cmds = prepCommands.split('\n').filter(c => c.trim());
+                cmds.forEach(cmd => {
+                    yaml += `    - command: "${cmd.trim()}"\n`;
+                });
+                yaml += '\n';
+            }
 
             yaml += 'checks:\n';
 
@@ -1452,9 +1629,26 @@
                             yaml += '    contains:\n';
                             check.contains.forEach(c => yaml += `      - "${c}"\n`);
                         }
+                        if (check.not_contains) {
+                            yaml += '    not_contains:\n';
+                            check.not_contains.forEach(c => yaml += `      - "${c}"\n`);
+                        }
                         if (check.matches) {
                             yaml += '    matches:\n';
                             check.matches.forEach(m => yaml += `      - "${m}"\n`);
+                        }
+                        if (check.not_matches) {
+                            yaml += '    not_matches:\n';
+                            check.not_matches.forEach(m => yaml += `      - "${m}"\n`);
+                        }
+                        if (check.min_size) {
+                            yaml += `    min_size: ${check.min_size}\n`;
+                        }
+                        if (check.min_lines) {
+                            yaml += `    min_lines: ${check.min_lines}\n`;
+                        }
+                        if (check.must_not_exist) {
+                            yaml += `    must_not_exist: true\n`;
                         }
                         break;
                 }
