@@ -7,7 +7,7 @@ title: "Sheet music to expressive midi for SWAM instruments"
 2. Audio Modelling's needs   
 3. SM: potential areas where I may help either in definition, implementation or organizing - some of these can be selected.   
 3.1 converter finalizing, parameter tune up process with human resources and technical framework  
-3.2 other: e.g. plugin for Musescore   
+3.2 other: 
 4. Form of the potential co-operation
 5. Closing
   
