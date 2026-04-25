@@ -17,8 +17,8 @@ title: "Sheet music to expressive midi for SWAM instruments"
 1  
 2  
 3  
-4  
-5  
+
+4,5  SM: musicxml converter available in github AM/EP sends mapping guide, gives licenses to woodwinds etc
 
 
 references:    
