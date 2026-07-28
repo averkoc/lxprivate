@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal Chain — Suno Instrumental Prompt Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deck:#17181c;
+    --bg-panel:#1e2026;
+    --bg-panel-raised:#24262e;
+    --line:#34363f;
+    --line-soft:#292b33;
+    --text-primary:#f2ede4;
+    --text-muted:#8b8d97;
+    --text-dim:#5c5e68;
+    --amber:#e8a33d;
+    --amber-dim:#7a5b2c;
+    --teal:#49b8ac;
+    --red:#c25b52;
+    --green:#6fae6a;
+    --font-display:'Fraunces', serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg-deck);
+    color:var(--text-primary);
+    font-family:var(--font-body);
+    min-height:100vh;
+    background-image:
+      radial-gradient(circle at 20% -10%, rgba(232,163,61,0.06), transparent 40%),
+      radial-gradient(circle at 90% 10%, rgba(73,184,172,0.05), transparent 40%);
+  }
+
+  .wrap{max-width:1240px;margin:0 auto;padding:28px 20px 60px;}
+
+  /* ---------- HEADER ---------- */
+  header{margin-bottom:22px;}
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.16em;
+    color:var(--teal);
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(28px,4vw,42px);
+    margin:0 0 6px;
+    letter-spacing:-0.01em;
+  }
+  .sub{
+    color:var(--text-muted);
+    font-size:14.5px;
+    max-width:640px;
+    line-height:1.5;
+  }
+
+  /* ---------- MODE TABS ---------- */
+  .mode-tabs{
+    display:flex;
+    gap:2px;
+    margin:24px 0 18px;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:4px;
+    width:fit-content;
+  }
+  .mode-tab{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.04em;
+    padding:9px 16px;
+    border-radius:7px;
+    cursor:pointer;
+    color:var(--text-muted);
+    border:none;
+    background:transparent;
+    transition:all .15s ease;
+  }
+  .mode-tab.active{background:var(--bg-panel-raised);color:var(--amber);box-shadow:inset 0 0 0 1px var(--line);}
+  .mode-tab:hover:not(.active){color:var(--text-primary);}
+
+  /* ---------- SIGNAL CHAIN STRIP ---------- */
+  .chain-panel{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px 18px;
+    margin-bottom:22px;
+  }
+  .chain-title{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-bottom:12px;
+  }
+  .chain{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:0;
+  }
+  .plug{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    padding:6px 11px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    color:var(--text-dim);
+    white-space:nowrap;
+    transition:all .2s ease;
+    background:var(--bg-deck);
+  }
+  .plug.lit{
+    border-color:var(--amber);
+    color:var(--amber);
+    background:rgba(232,163,61,0.08);
+    box-shadow:0 0 8px rgba(232,163,61,0.15);
+  }
+  .plug.lit.vocals{border-color:var(--teal);color:var(--teal);background:rgba(73,184,172,0.08);}
+  .cable{
+    width:16px;height:1px;background:var(--line);flex-shrink:0;
+  }
+  .cable.lit{background:var(--amber-dim);}
+  .chain-note{
+    font-size:12px;
+    color:var(--text-dim);
+    margin-top:12px;
+    line-height:1.5;
+  }
+
+  /* ---------- MAIN GRID ---------- */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:900px){.grid{grid-template-columns:1fr;}}
+
+  .panel{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+  }
+  .panel h2{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+    margin:0 0 16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .panel h2::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--amber);display:inline-block;}
+
+  .group{margin-bottom:18px;}
+  .group-label{
+    font-family:var(--font-mono);
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-bottom:10px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--line-soft);
+  }
+
+  label{
+    display:block;
+    font-size:12.5px;
+    color:var(--text-muted);
+    margin-bottom:5px;
+    font-weight:500;
+  }
+  label .req{color:var(--red);margin-left:2px;}
+  .field{margin-bottom:12px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+  input[type=text], textarea, select{
+    width:100%;
+    background:var(--bg-deck);
+    border:1px solid var(--line);
+    color:var(--text-primary);
+    border-radius:8px;
+    padding:9px 11px;
+    font-family:var(--font-body);
+    font-size:13.5px;
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  input[type=text]:focus, textarea:focus, select:focus{border-color:var(--teal);}
+  textarea{resize:vertical;min-height:52px;line-height:1.4;}
+  ::placeholder{color:var(--text-dim);}
+
+  .toggle-row{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--bg-deck);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:9px 12px;
+    margin-bottom:12px;
+  }
+  .toggle-row span{font-size:13px;color:var(--text-primary);}
+  .switch{position:relative;width:38px;height:20px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider-el{position:absolute;inset:0;background:var(--line);border-radius:20px;cursor:pointer;transition:.2s;}
+  .slider-el::before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:var(--text-muted);border-radius:50%;transition:.2s;}
+  .switch input:checked + .slider-el{background:var(--amber-dim);}
+  .switch input:checked + .slider-el::before{transform:translateX(18px);background:var(--amber);}
+
+  .range-row{margin-bottom:12px;}
+  .range-row .range-val{font-family:var(--font-mono);font-size:11px;color:var(--teal);float:right;}
+  input[type=range]{width:100%;accent-color:var(--teal);margin-top:6px;}
+
+  .hint{font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.4;}
+
+  /* ---------- OUTPUT PANEL ---------- */
+  .out-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px;}
+  .out-tab{
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.03em;
+    padding:6px 10px;border-radius:6px;border:1px solid var(--line);
+    background:var(--bg-deck);color:var(--text-muted);cursor:pointer;
+  }
+  .out-tab.active{border-color:var(--teal);color:var(--teal);background:rgba(73,184,172,0.08);}
+
+  .meter-wrap{
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:10px;
+  }
+  .meter-track{
+    flex:1;height:7px;border-radius:4px;background:var(--bg-deck);
+    border:1px solid var(--line);overflow:hidden;position:relative;
+  }
+  .meter-fill{height:100%;border-radius:4px;transition:width .2s ease, background .2s ease;width:0%;background:var(--text-dim);}
+  .meter-label{font-family:var(--font-mono);font-size:10.5px;color:var(--text-dim);white-space:nowrap;}
+
+  .output-box{
+    background:var(--bg-deck);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px;
+    min-height:220px;
+    max-height:420px;
+    overflow-y:auto;
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    line-height:1.65;
+    color:var(--text-primary);
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .output-box .k{color:var(--teal);}
+  .output-box .s{color:var(--text-dim);}
+
+  .out-actions{display:flex;gap:8px;margin-top:12px;}
+  .btn{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:0.03em;
+    padding:8px 14px;
+    border-radius:7px;
+    border:1px solid var(--line);
+    background:var(--bg-panel-raised);
+    color:var(--text-primary);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .btn:hover{border-color:var(--amber);color:var(--amber);}
+  .btn.copied{border-color:var(--green);color:var(--green);}
+
+  .caution{
+    margin-top:22px;
+    padding:14px 16px;
+    border:1px solid var(--line);
+    border-left:2px solid var(--amber);
+    border-radius:8px;
+    background:var(--bg-panel);
+    font-size:12.5px;
+    color:var(--text-muted);
+    line-height:1.6;
+  }
+  .caution b{color:var(--text-primary);}
+
+  .hidden{display:none !important;}
+
+  @media (max-width:520px){
+    .field-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Prompt Console · Instrumental &amp; Cover</div>
+    <h1>Signal Chain</h1>
+    <div class="sub">Build a Suno-ready prompt from structured fields, not a paragraph you have to rewrite every time the platform changes. Fill in the console, read the output off the tape on the right.</div>
+  </header>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="new">New Instrumental</button>
+    <button class="mode-tab" data-mode="cover">Cover / Remix (Reference Audio)</button>
+  </div>
+
+  <div class="chain-panel">
+    <div class="chain-title">Signal order — earlier tags carry more weight</div>
+    <div class="chain" id="chainStrip"></div>
+    <div class="chain-note" id="chainNote"></div>
+  </div>
+
+  <div class="grid">
+
+    <!-- LEFT: FORM -->
+    <div class="panel">
+      <h2>Console</h2>
+
+      <div class="group" id="presetGroup">
+        <div class="group-label">Presets</div>
+        <div class="field">
+          <input type="text" id="presetName" placeholder="Preset name e.g. Hopeful Sax Baseline">
+        </div>
+        <div class="out-actions" style="margin:0 0 10px;">
+          <button class="btn" id="savePresetBtn">Save preset</button>
+        </div>
+        <div class="field">
+          <select id="presetSelect"><option value="">— saved presets —</option></select>
+        </div>
+        <div class="out-actions" style="margin-top:8px;">
+          <button class="btn" id="loadPresetBtn">Load</button>
+          <button class="btn" id="deletePresetBtn">Delete</button>
+        </div>
+        <div class="out-actions" style="margin-top:8px;">
+          <button class="btn" id="exportPresetsBtn">Export all (.json)</button>
+          <button class="btn" id="importPresetsBtn">Import (.json)</button>
+        </div>
+        <input type="file" id="importPresetsFile" accept="application/json" style="display:none;">
+        <div class="hint" id="presetStatus">&nbsp;</div>
+      </div>
+
+      <!-- NEW INSTRUMENTAL FIELDS -->
+      <div id="newFields">
+        <div class="group">
+          <div class="group-label">Core identity</div>
+          <div class="field">
+            <label>Genre <span class="req">*</span></label>
+            <input type="text" id="n_genre" placeholder="e.g. cinematic ambient, lo-fi jazz, orchestral score">
+          </div>
+          <div class="field">
+            <label>Mood</label>
+            <input type="text" id="n_mood" placeholder="e.g. hopeful, melancholic, tense and driving">
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Instrumentation</div>
+          <div class="field">
+            <label>Lead instrument(s)</label>
+            <input type="text" id="n_lead" placeholder="e.g. solo piano, muted trumpet, fingerpicked nylon guitar">
+          </div>
+          <div class="field">
+            <label>Supporting instruments <span style="color:var(--text-dim);font-weight:400;">(max 2–3)</span></label>
+            <input type="text" id="n_support" placeholder="e.g. warm analog synth pads, brushed drums, upright bass">
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Tempo &amp; character</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Tempo / BPM</label>
+              <input type="text" id="n_tempo" placeholder="e.g. 90 BPM, slow-burning">
+            </div>
+            <div class="field">
+              <label>Key / mode</label>
+              <input type="text" id="n_key" placeholder="e.g. D minor, pentatonic major">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Era</label>
+              <input type="text" id="n_era" placeholder="e.g. 1970s, 2020s">
+            </div>
+            <div class="field">
+              <label>Reference / influence</label>
+              <input type="text" id="n_reference" placeholder="e.g. influenced by Nils Frahm">
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Production &amp; arrangement</div>
+          <div class="field">
+            <label>Production / texture</label>
+            <input type="text" id="n_production" placeholder="e.g. spacious reverb, high-fidelity, lo-fi vinyl crackle">
+          </div>
+          <div class="field">
+            <label>Dynamics</label>
+            <input type="text" id="n_dynamics" placeholder="e.g. gradual build, intimate, dynamic arrangement">
+          </div>
+          <div class="field">
+            <label>Structure notes</label>
+            <input type="text" id="n_structure" placeholder="e.g. slow intro, mid build, restrained outro">
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Constraints</div>
+          <div class="field">
+            <label>Avoid / exclude <span style="color:var(--text-dim);font-weight:400;">(negative cues)</span></label>
+            <textarea id="n_constraints" placeholder="e.g. no drums, no sub-bass below 80Hz, no vocal humming"></textarea>
+          </div>
+        </div>
+
+        <div class="toggle-row">
+          <span>Instrumental only</span>
+          <label class="switch">
+            <input type="checkbox" id="n_instrumental" checked>
+            <span class="slider-el"></span>
+          </label>
+        </div>
+        <div class="field hidden" id="n_vocalsWrap">
+          <label>Vocal descriptor</label>
+          <input type="text" id="n_vocals" placeholder="e.g. breathy female alto, close-mic recording">
+        </div>
+        <div class="hint">Suno defaults to adding vocals if none are suppressed. When "instrumental only" is on, the renderer appends "instrumental only, no vocals, no lyrics" at the very end of the style prompt — recent testing on v5.5 suggests this trailing placement holds more reliably than leading with it.</div>
+      </div>
+
+      <!-- COVER FIELDS -->
+      <div id="coverFields" class="hidden">
+        <div class="group">
+          <div class="group-label">Source</div>
+          <div class="hint" style="margin-bottom:10px;">Suno Cover only works on audio you uploaded or a track you created — melody and (if present) lyrics carry over from the reference; you're rewriting the sound, not the song.</div>
+          <div class="field">
+            <label>What to preserve from the reference</label>
+            <input type="text" id="c_preserve" placeholder="e.g. preserve the emotional arc and melodic phrasing">
+          </div>
+        </div>
+
+        <div class="toggle-row">
+          <span>Custom Mode</span>
+          <label class="switch">
+            <input type="checkbox" id="c_custom" checked>
+            <span class="slider-el"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span>Instrumental only</span>
+          <label class="switch">
+            <input type="checkbox" id="c_instrumental" checked>
+            <span class="slider-el"></span>
+          </label>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Core identity</div>
+          <div class="field">
+            <label>Genre <span class="req">*</span></label>
+            <input type="text" id="c_genre" placeholder="e.g. cinematic instrumental, chamber folk">
+          </div>
+          <div class="field">
+            <label>Mood</label>
+            <input type="text" id="c_mood" placeholder="e.g. intimate, reflective">
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Instrumentation</div>
+          <div class="field">
+            <label>Lead instrument(s)</label>
+            <input type="text" id="c_lead" placeholder="e.g. solo piano, chamber strings">
+          </div>
+          <div class="field">
+            <label>Supporting instruments</label>
+            <input type="text" id="c_support" placeholder="e.g. soft ambient pads, restrained percussion">
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Tempo &amp; production</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Tempo</label>
+              <input type="text" id="c_tempo" placeholder="e.g. slow tempo, around 70 BPM">
+            </div>
+            <div class="field">
+              <label>Production / ambience</label>
+              <input type="text" id="c_production" placeholder="e.g. rich stereo ambience">
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Reference influence</div>
+          <div class="range-row">
+            <label>Audio influence <span class="range-val" id="c_audioInfluenceVal">50%</span></label>
+            <input type="range" id="c_audioInfluence" min="0" max="100" value="50">
+            <div class="hint">How closely the output follows the reference audio's own characteristics (timbre, phrasing), separate from the Target Style text.</div>
+          </div>
+          <div class="field">
+            <label>Style influence</label>
+            <select id="c_styleInfluence">
+              <option value="Strong">Strong — follow the Target Style precisely</option>
+              <option value="Loose">Loose — interpret freely</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-label">Constraints</div>
+          <div class="field">
+            <label>Avoid / exclude</label>
+            <textarea id="c_constraints" placeholder="e.g. no added vocals, no synthetic drums"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: OUTPUT -->
+    <div class="panel">
+      <h2>Tape Out</h2>
+
+      <div class="out-tabs" id="outTabs"></div>
+
+      <div class="mode-tabs" id="styleFormatToggle" style="margin:0 0 14px;">
+        <button class="mode-tab active" data-format="tags">Tags</button>
+        <button class="mode-tab" data-format="prose">Prose</button>
+      </div>
+
+      <div class="meter-wrap">
+        <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
+        <div class="meter-label" id="meterLabel">0 words</div>
+      </div>
+
+      <div class="output-box" id="outputBox"></div>
+
+      <div class="out-actions">
+        <button class="btn" id="copyBtn">Copy to clipboard</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="caution">
+    <b>Read before you paste.</b> Suno hasn't published a strict prompt spec, so no attribute is guaranteed to land the same way twice. Longer prompts dilute the instructions that matter most — aim for 100–300 words, front-load genre → mood → instruments, and keep the "instrumental / no vocals" cue at the end of the Style field (also drop an <span style="font-family:var(--font-mono);">[Instrumental]</span> tag into the Lyrics field, or leave it blank). If Suno's preferred style shifts, only this renderer needs updating — not your saved projects.
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const state = { mode: 'new', styleFormat: 'tags' };
+
+  const $ = id => document.getElementById(id);
+
+  document.querySelectorAll('#styleFormatToggle .mode-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#styleFormatToggle .mode-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      state.styleFormat = btn.dataset.format;
+      render();
+    });
+  });
+
+  function updateStyleFormatVisibility(){
+    $('styleFormatToggle').style.display = (activeTab === 'style' || activeTab === 'cover') ? 'flex' : 'none';
+  }
+
+  const newIds = ['n_genre','n_mood','n_lead','n_support','n_tempo','n_key','n_era','n_reference','n_production','n_dynamics','n_structure','n_constraints','n_instrumental','n_vocals'];
+  const coverIds = ['c_preserve','c_custom','c_instrumental','c_genre','c_mood','c_lead','c_support','c_tempo','c_production','c_audioInfluence','c_styleInfluence','c_constraints'];
+
+  // ---------- mode switching ----------
+  document.querySelectorAll('.mode-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      state.mode = tab.dataset.mode;
+      $('newFields').classList.toggle('hidden', state.mode!=='new');
+      $('coverFields').classList.toggle('hidden', state.mode!=='cover');
+      buildOutTabs();
+      renderChain();
+      render();
+    });
+  });
+
+  $('n_instrumental').addEventListener('change', ()=>{
+    $('n_vocalsWrap').classList.toggle('hidden', $('n_instrumental').checked);
+    renderChain(); render();
+  });
+
+  $('c_audioInfluence').addEventListener('input', ()=>{
+    $('c_audioInfluenceVal').textContent = $('c_audioInfluence').value + '%';
+    render();
+  });
+
+  [...newIds, ...coverIds].forEach(id=>{
+    const el = $(id);
+    if(!el) return;
+    el.addEventListener('input', ()=>{ renderChain(); render(); });
+    el.addEventListener('change', ()=>{ renderChain(); render(); });
+  });
+
+  // ---------- signal chain visual ----------
+  const NEW_CHAIN = [
+    {key:'Genre', field:'n_genre'},
+    {key:'Mood', field:'n_mood'},
+    {key:'Instruments', field:'n_lead'},
+    {key:'Tempo', field:'n_tempo'},
+    {key:'Era', field:'n_era'},
+    {key:'Production', field:'n_production'},
+    {key:'Dynamics', field:'n_dynamics'},
+    {key:'Structure', field:'n_structure'},
+    {key:'Reference', field:'n_reference'},
+    {key:'Constraints', field:'n_constraints'},
+    {key:'Vocals', field:'n_instrumental', vocals:true},
+  ];
+  const COVER_CHAIN = [
+    {key:'Genre', field:'c_genre'},
+    {key:'Mood', field:'c_mood'},
+    {key:'Instruments', field:'c_lead'},
+    {key:'Tempo', field:'c_tempo'},
+    {key:'Production', field:'c_production'},
+    {key:'Preserve', field:'c_preserve'},
+    {key:'Constraints', field:'c_constraints'},
+    {key:'Vocals', field:'c_instrumental', vocals:true},
+  ];
+
+  function renderChain(){
+    const chain = state.mode==='new' ? NEW_CHAIN : COVER_CHAIN;
+    const strip = $('chainStrip');
+    strip.innerHTML = '';
+    chain.forEach((item, i)=>{
+      const el = $(item.field);
+      let filled = false;
+      if(el){
+        if(el.type === 'checkbox') filled = true; // toggles are always "set"
+        else filled = el.value.trim().length > 0;
+      }
+      const plug = document.createElement('div');
+      plug.className = 'plug' + (filled ? ' lit' : '') + (item.vocals ? ' vocals' : '');
+      plug.textContent = item.key;
+      strip.appendChild(plug);
+      if(i < chain.length-1){
+        const cable = document.createElement('div');
+        cable.className = 'cable' + (filled ? ' lit' : '');
+        strip.appendChild(cable);
+      }
+    });
+    $('chainNote').textContent = state.mode==='new'
+      ? 'Genre, mood, and instruments anchor the whole generation when they lead — swap their order and the track drifts. Everything after tempo can move more freely.'
+      : 'Cover mode layers a new Target Style over melody Suno already knows from your reference — genre and mood still lead, but "Preserve" tells Suno what not to touch.';
+  }
+
+  // ---------- output tabs ----------
+  const NEW_TABS = ['style','json','markdown','short','detailed'];
+  const COVER_TABS = ['cover','json','markdown','short','detailed'];
+  const TAB_LABELS = {style:'Style Prompt', cover:'Cover Fields', json:'JSON', markdown:'Markdown', short:'Short', detailed:'Detailed'};
+  let activeTab = 'style';
+
+  function buildOutTabs(){
+    const tabs = state.mode==='new' ? NEW_TABS : COVER_TABS;
+    if(!tabs.includes(activeTab)) activeTab = tabs[0];
+    const wrap = $('outTabs');
+    wrap.innerHTML = '';
+    tabs.forEach(t=>{
+      const b = document.createElement('button');
+      b.className = 'out-tab' + (t===activeTab ? ' active':'');
+      b.textContent = TAB_LABELS[t];
+      b.addEventListener('click', ()=>{ activeTab = t; buildOutTabs(); render(); });
+      wrap.appendChild(b);
+    });
+    updateStyleFormatVisibility();
+  }
+
+  // ---------- helpers ----------
+  function v(id){ const el = $(id); return el ? el.value.trim() : ''; }
+  function joinClauses(parts, sep){
+    return parts.filter(p=>p && p.length>0).join(sep);
+  }
+
+  function collectNew(){
+    return {
+      genre: v('n_genre'), mood: v('n_mood'), lead: v('n_lead'), support: v('n_support'),
+      tempo: v('n_tempo'), key: v('n_key'), era: v('n_era'), reference: v('n_reference'),
+      production: v('n_production'), dynamics: v('n_dynamics'), structure: v('n_structure'),
+      constraints: v('n_constraints'), instrumental: $('n_instrumental').checked, vocals: v('n_vocals')
+    };
+  }
+  function collectCover(){
+    return {
+      preserve: v('c_preserve'), custom: $('c_custom').checked, instrumental: $('c_instrumental').checked,
+      genre: v('c_genre'), mood: v('c_mood'), lead: v('c_lead'), support: v('c_support'),
+      tempo: v('c_tempo'), production: v('c_production'), audioInfluence: $('c_audioInfluence').value,
+      styleInfluence: $('c_styleInfluence').value, constraints: v('c_constraints')
+    };
+  }
+
+  // core instrumentation combiner
+  function instrumentClause(lead, support){
+    return joinClauses([lead, support], ', ');
+  }
+
+  // ---------- NEW MODE renderers ----------
+  function renderNewStyle(d){
+    const instruments = instrumentClause(d.lead, d.support);
+    const tempoKey = joinClauses([d.tempo, d.key], ', ');
+    const parts = [
+      d.genre,
+      d.mood,
+      instruments,
+      tempoKey,
+      d.era,
+      d.production,
+      d.dynamics,
+      d.structure,
+      d.reference ? ('influenced by ' + d.reference.replace(/^influenced by\s*/i,'')) : '',
+      d.constraints,
+    ];
+    let sentence = joinClauses(parts, ', ');
+    const vocalsCue = d.instrumental ? 'instrumental only, no vocals, no lyrics' : (d.vocals || '');
+    if(vocalsCue) sentence = joinClauses([sentence, vocalsCue], ', ');
+    return sentence;
+  }
+
+  function cap(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+
+  function renderNewStyleProse(d){
+    const instruments = instrumentClause(d.lead, d.support);
+    const moodGenre = joinClauses([d.mood, d.genre], ' ');
+
+    // opening clause
+    let opening;
+    if(moodGenre && instruments) opening = `${cap(moodGenre)} instrumental featuring ${instruments}`;
+    else if(moodGenre) opening = `${cap(moodGenre)} instrumental`;
+    else if(instruments) opening = `Instrumental featuring ${instruments}`;
+    else opening = 'Instrumental';
+
+    // tempo/key clause
+    let tempoKey = '';
+    if(d.tempo && d.key) tempoKey = `${d.tempo} in ${d.key}`;
+    else tempoKey = joinClauses([d.tempo, d.key], ', ');
+
+    // structure/dynamics clause — link them if both present
+    let arc = '';
+    if(d.structure && d.dynamics) arc = `${cap(d.structure)}, evolving into ${d.dynamics}`;
+    else if(d.structure) arc = cap(d.structure);
+    else if(d.dynamics) arc = cap(d.dynamics);
+
+    const era = d.era ? `${d.era} production character` : '';
+    const production = d.production || '';
+    const reference = d.reference ? `inspired by ${d.reference.replace(/^influenced by\s*/i,'')}` : '';
+
+    let sentence = joinClauses([opening, tempoKey, era, arc, production, reference], ', ');
+    if(sentence && !sentence.endsWith('.')) sentence += '.';
+
+    if(d.constraints) sentence += ` Avoid ${d.constraints}.`;
+
+    const vocalsCue = d.instrumental ? 'Instrumental only, no vocals, no lyrics.' : (d.vocals ? `Vocals: ${d.vocals}.` : '');
+    if(vocalsCue) sentence = joinClauses([sentence, vocalsCue], ' ');
+
+    return sentence.trim();
+  }
+
+  function renderNewShort(d){
+    const parts = [d.genre, d.mood, d.lead, d.tempo];
+    let sentence = joinClauses(parts, ', ');
+    const vocalsCue = d.instrumental ? 'instrumental, no vocals' : (d.vocals || '');
+    if(vocalsCue) sentence = joinClauses([sentence, vocalsCue], ', ');
+    return sentence;
+  }
+
+  function renderNewDetailed(d){
+    const bits = [];
+    if(d.genre) bits.push(`A ${d.genre} track` + (d.mood ? ` with a ${d.mood} feel` : ''));
+    else if(d.mood) bits.push(`A ${d.mood} piece`);
+    const instruments = instrumentClause(d.lead, d.support);
+    if(instruments) bits.push(`Built around ${instruments}`);
+    if(d.tempo || d.key) bits.push(joinClauses([d.tempo, d.key], ', ').replace(/^./, c=>c.toUpperCase()));
+    if(d.era) bits.push(`${d.era} production era`);
+    if(d.production) bits.push(d.production.replace(/^./, c=>c.toUpperCase()));
+    if(d.dynamics) bits.push(d.dynamics.replace(/^./, c=>c.toUpperCase()));
+    if(d.structure) bits.push(`Structure: ${d.structure}`);
+    if(d.reference) bits.push(`Reference point: ${d.reference}`);
+    if(d.constraints) bits.push(`Avoid: ${d.constraints}`);
+    const vocalsCue = d.instrumental ? 'Instrumental only — no vocals, no lyrics.' : (d.vocals ? `Vocals: ${d.vocals}.` : '');
+    let out = bits.filter(Boolean).join('. ');
+    if(out && !out.endsWith('.')) out += '.';
+    if(vocalsCue) out = joinClauses([out, vocalsCue], ' ');
+    return out;
+  }
+
+  function renderNewJSON(d){
+    return JSON.stringify({
+      genre: d.genre, mood: d.mood,
+      instrumentation: { lead: d.lead, supporting: d.support },
+      tempo: d.tempo, key: d.key, era: d.era,
+      production: d.production, dynamics: d.dynamics, structure: d.structure,
+      reference: d.reference, constraints: d.constraints,
+      vocals: d.instrumental ? 'instrumental only, no vocals, no lyrics' : (d.vocals || null)
+    }, null, 2);
+  }
+
+  function renderNewMarkdown(d){
+    const rows = [
+      ['Genre', d.genre], ['Mood', d.mood],
+      ['Lead instrument', d.lead], ['Supporting instruments', d.support],
+      ['Tempo', d.tempo], ['Key / mode', d.key], ['Era', d.era],
+      ['Production', d.production], ['Dynamics', d.dynamics], ['Structure', d.structure],
+      ['Reference', d.reference], ['Constraints', d.constraints],
+      ['Vocals', d.instrumental ? 'instrumental only, no vocals, no lyrics' : (d.vocals || '—')]
+    ];
+    let md = '## Suno Prompt — Structured\n\n';
+    rows.forEach(([k,val])=>{ if(val) md += `- **${k}:** ${val}\n`; });
+    return md;
+  }
+
+  // ---------- COVER MODE renderers ----------
+  function renderCoverPrompt(d){
+    const instruments = instrumentClause(d.lead, d.support);
+    const openLine = d.genre ? `Transform the reference into ${d.genre}.` : 'Transform the reference into a new arrangement.';
+    const preserveLine = d.preserve ? d.preserve.replace(/^./, c=>c.toUpperCase()).replace(/\.?$/, '.') : '';
+    const reimagine = joinClauses([instruments, d.mood], ', ');
+    const reimagineLine = reimagine ? `Reimagine it with ${reimagine}.` : '';
+    const tempoProdLine = joinClauses([d.tempo, d.production], ', ');
+    const constraintsLine = d.constraints ? `Avoid ${d.constraints}.` : '';
+    const vocalsLine = d.instrumental ? 'No vocals.' : '';
+    return [openLine, preserveLine, reimagineLine, tempoProdLine ? tempoProdLine.replace(/^./, c=>c.toUpperCase()) + '.' : '', constraintsLine, vocalsLine].filter(Boolean).join(' ');
+  }
+
+  function renderCoverFields(d){
+    const targetStyle = joinClauses([d.genre, d.mood, instrumentClause(d.lead,d.support), d.tempo, d.production], ', ');
+    let out = '';
+    out += `Custom Mode: ${d.custom ? 'On' : 'Off'}\n`;
+    out += `Instrumental Only: ${d.instrumental ? 'On' : 'Off'}\n\n`;
+    out += `Target Style${d.custom ? ' (required)' : ''}:\n${targetStyle || '—'}\n\n`;
+    out += `Cover Prompt${(!d.custom || !d.instrumental) ? ' (required)' : ' (optional)'}:\n${renderCoverPrompt(d)}\n\n`;
+    out += `Style Influence: ${d.styleInfluence}\n`;
+    out += `Audio Influence: ${d.audioInfluence}%\n`;
+    if(d.constraints) out += `\nAvoid: ${d.constraints}\n`;
+    return out;
+  }
+
+  function renderCoverShort(d){
+    const parts = [d.genre, d.mood, d.lead, d.tempo];
+    let sentence = joinClauses(parts, ', ');
+    if(d.instrumental) sentence = joinClauses([sentence, 'no vocals'], ', ');
+    return sentence;
+  }
+
+  function renderCoverDetailed(d){
+    return renderCoverPrompt(d) + (d.styleInfluence ? ` (${d.styleInfluence.toLowerCase()} style influence, ${d.audioInfluence}% audio influence)` : '');
+  }
+
+  function renderCoverJSON(d){
+    return JSON.stringify({
+      customMode: d.custom, instrumentalOnly: d.instrumental,
+      targetStyle: { genre: d.genre, mood: d.mood, instrumentation: {lead:d.lead, supporting:d.support}, tempo:d.tempo, production:d.production },
+      coverPrompt: renderCoverPrompt(d),
+      preserve: d.preserve,
+      styleInfluence: d.styleInfluence, audioInfluence: Number(d.audioInfluence),
+      constraints: d.constraints
+    }, null, 2);
+  }
+
+  function renderCoverMarkdown(d){
+    const rows = [
+      ['Custom Mode', d.custom ? 'On':'Off'], ['Instrumental Only', d.instrumental ? 'On':'Off'],
+      ['Genre', d.genre], ['Mood', d.mood], ['Lead instrument', d.lead], ['Supporting instruments', d.support],
+      ['Tempo', d.tempo], ['Production', d.production], ['Preserve', d.preserve],
+      ['Style Influence', d.styleInfluence], ['Audio Influence', d.audioInfluence + '%'],
+      ['Constraints', d.constraints]
+    ];
+    let md = '## Suno Cover — Structured\n\n';
+    rows.forEach(([k,val])=>{ if(val) md += `- **${k}:** ${val}\n`; });
+    md += `\n### Cover Prompt\n${renderCoverPrompt(d)}\n`;
+    return md;
+  }
+
+  // ---------- render dispatch ----------
+  function currentText(){
+    if(state.mode==='new'){
+      const d = collectNew();
+      switch(activeTab){
+        case 'style': return state.styleFormat === 'prose' ? renderNewStyleProse(d) : renderNewStyle(d);
+        case 'json': return renderNewJSON(d);
+        case 'markdown': return renderNewMarkdown(d);
+        case 'short': return renderNewShort(d);
+        case 'detailed': return renderNewDetailed(d);
+      }
+    } else {
+      const d = collectCover();
+      switch(activeTab){
+        case 'cover': return state.styleFormat === 'prose' ? renderCoverDetailed(d) : renderCoverFields(d);
+        case 'json': return renderCoverJSON(d);
+        case 'markdown': return renderCoverMarkdown(d);
+        case 'short': return renderCoverShort(d);
+        case 'detailed': return renderCoverDetailed(d);
+      }
+    }
+    return '';
+  }
+
+  function wordCount(text){
+    const t = text.trim();
+    if(!t) return 0;
+    return t.split(/\s+/).filter(Boolean).length;
+  }
+
+  function render(){
+    const text = currentText();
+    $('outputBox').textContent = text || '— fill in the console to see output —';
+
+    const wc = wordCount(text);
+    const cc = text.length;
+    $('meterLabel').textContent = `${wc} words · ${cc} chars`;
+    $('meterLabel').style.color = cc > 1000 ? 'var(--red)' : (cc > 200 ? 'var(--amber)' : 'var(--text-dim)');
+    const fill = $('meterFill');
+    let pct = Math.min(100, (wc/300)*100);
+    fill.style.width = pct + '%';
+    if(wc === 0){ fill.style.background = 'var(--text-dim)'; }
+    else if(wc < 100){ fill.style.background = 'var(--teal)'; }
+    else if(wc <= 300){ fill.style.background = 'var(--green)'; }
+    else { fill.style.background = 'var(--red)'; }
+  }
+
+  $('copyBtn').addEventListener('click', ()=>{
+    const text = currentText();
+    navigator.clipboard.writeText(text).then(()=>{
+      const btn = $('copyBtn');
+      btn.classList.add('copied');
+      btn.textContent = 'Copied ✓';
+      setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent = 'Copy to clipboard'; }, 1400);
+    });
+  });
+
+  // ---------- presets ----------
+  const PRESET_KEY = 'suno-presets';
+  let presets = {};
+
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function renderPresetSelect(){
+    const sel = $('presetSelect');
+    const names = Object.keys(presets).sort();
+    sel.innerHTML = '<option value="">— saved presets —</option>' +
+      names.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+  }
+
+  async function loadPresetsFromStorage(){
+    try{
+      if(window.storage && typeof window.storage.get === 'function'){
+        const res = await window.storage.get(PRESET_KEY, false);
+        presets = (res && res.value) ? JSON.parse(res.value) : {};
+        renderPresetSelect();
+        return;
+      }
+    }catch(e){ /* fall through to localStorage */ }
+    try{
+      const raw = localStorage.getItem(PRESET_KEY);
+      presets = raw ? JSON.parse(raw) : {};
+    }catch(e){
+      presets = {};
+    }
+    renderPresetSelect();
+  }
+
+  async function savePresetsToStorage(){
+    try{
+      if(window.storage && typeof window.storage.set === 'function'){
+        await window.storage.set(PRESET_KEY, JSON.stringify(presets), false);
+        return true;
+      }
+    }catch(e){ /* fall through to localStorage */ }
+    try{
+      localStorage.setItem(PRESET_KEY, JSON.stringify(presets));
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function setStatus(text, color){
+    const el = $('presetStatus');
+    el.textContent = text;
+    el.style.color = color;
+  }
+
+  function applyFieldValues(mode, data){
+    if(mode === 'new'){
+      $('n_genre').value = data.genre || '';
+      $('n_mood').value = data.mood || '';
+      $('n_lead').value = data.lead || '';
+      $('n_support').value = data.support || '';
+      $('n_tempo').value = data.tempo || '';
+      $('n_key').value = data.key || '';
+      $('n_era').value = data.era || '';
+      $('n_reference').value = data.reference || '';
+      $('n_production').value = data.production || '';
+      $('n_dynamics').value = data.dynamics || '';
+      $('n_structure').value = data.structure || '';
+      $('n_constraints').value = data.constraints || '';
+      $('n_instrumental').checked = !!data.instrumental;
+      $('n_vocalsWrap').classList.toggle('hidden', $('n_instrumental').checked);
+      $('n_vocals').value = data.vocals || '';
+    } else {
+      $('c_preserve').value = data.preserve || '';
+      $('c_custom').checked = !!data.custom;
+      $('c_instrumental').checked = !!data.instrumental;
+      $('c_genre').value = data.genre || '';
+      $('c_mood').value = data.mood || '';
+      $('c_lead').value = data.lead || '';
+      $('c_support').value = data.support || '';
+      $('c_tempo').value = data.tempo || '';
+      $('c_production').value = data.production || '';
+      $('c_audioInfluence').value = data.audioInfluence || 50;
+      $('c_audioInfluenceVal').textContent = $('c_audioInfluence').value + '%';
+      $('c_styleInfluence').value = data.styleInfluence || 'Strong';
+      $('c_constraints').value = data.constraints || '';
+    }
+  }
+
+  $('savePresetBtn').addEventListener('click', async ()=>{
+    const name = $('presetName').value.trim();
+    if(!name){ setStatus('Give the preset a name first.', 'var(--red)'); return; }
+    const data = state.mode === 'new' ? collectNew() : collectCover();
+    presets[name] = { mode: state.mode, data };
+    const ok = await savePresetsToStorage();
+    renderPresetSelect();
+    $('presetSelect').value = name;
+    setStatus(ok ? `Saved "${name}".` : `Saved "${name}" for this session. Click "Export all" to keep it after you close this tab.`, ok ? 'var(--green)' : 'var(--amber)');
+  });
+
+  $('exportPresetsBtn').addEventListener('click', ()=>{
+    if(Object.keys(presets).length === 0){ setStatus('No presets to export yet.', 'var(--red)'); return; }
+    const blob = new Blob([JSON.stringify(presets, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'suno-presets.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setStatus(`Exported ${Object.keys(presets).length} preset(s) to suno-presets.json.`, 'var(--green)');
+  });
+
+  $('importPresetsBtn').addEventListener('click', ()=>{ $('importPresetsFile').click(); });
+
+  $('importPresetsFile').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async ()=>{
+      try{
+        const incoming = JSON.parse(reader.result);
+        const importedNames = Object.keys(incoming);
+        if(importedNames.length === 0){ setStatus('That file had no presets in it.', 'var(--red)'); return; }
+        presets = Object.assign({}, presets, incoming);
+        renderPresetSelect();
+        const ok = await savePresetsToStorage();
+        const nameToLoad = importedNames[importedNames.length - 1];
+        loadPresetByName(nameToLoad);
+        setStatus(`Imported ${importedNames.length} preset(s) — loaded "${nameToLoad}".${ok ? '' : ' (Session-only — export again to keep them.)'}`, 'var(--green)');
+      }catch(err){
+        setStatus('That file doesn\u2019t look like a valid presets export.', 'var(--red)');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  function loadPresetByName(name){
+    if(!name || !presets[name]) return false;
+    const preset = presets[name];
+    document.querySelectorAll('.mode-tab').forEach(t=>t.classList.toggle('active', t.dataset.mode===preset.mode));
+    state.mode = preset.mode;
+    $('newFields').classList.toggle('hidden', state.mode!=='new');
+    $('coverFields').classList.toggle('hidden', state.mode!=='cover');
+    applyFieldValues(preset.mode, preset.data);
+    buildOutTabs();
+    renderChain();
+    render();
+    $('presetName').value = name;
+    $('presetSelect').value = name;
+    return true;
+  }
+
+  $('loadPresetBtn').addEventListener('click', ()=>{
+    const name = $('presetSelect').value;
+    if(loadPresetByName(name)){
+      setStatus(`Loaded "${name}".`, 'var(--teal)');
+    } else {
+      setStatus('Pick a preset to load.', 'var(--red)');
+    }
+  });
+
+  $('deletePresetBtn').addEventListener('click', async ()=>{
+    const name = $('presetSelect').value;
+    if(!name || !presets[name]){ setStatus('Pick a preset to delete.', 'var(--red)'); return; }
+    delete presets[name];
+    const ok = await savePresetsToStorage();
+    renderPresetSelect();
+    setStatus(ok ? `Deleted "${name}".` : 'Could not delete — storage isn\u2019t available in this view.', ok ? 'var(--green)' : 'var(--red)');
+  });
+
+  // ---------- init ----------
+  buildOutTabs();
+  renderChain();
+  render();
+  loadPresetsFromStorage();
+})();
+</script>
+</body>
+</html>
