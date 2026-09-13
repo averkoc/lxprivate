@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Score Follower</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231b4d3a'/%3E%3Cpath d='M42 13v29.5a10 10 0 1 1-4-8V24l-17 5v19.5a10 10 0 1 1-4-8V22l25-9Z' fill='%23d4af37'/%3E%3C/svg%3E">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#14170f;
+    --panel:#1c2117;
+    --panel-2:#252b1e;
+    --paper:#ece7da;
+    --paper-dim:#a9ae9c;
+    --hair:#38402f;
+    --amber:#d4af37;
+    --amber-dim:#7a662a;
+    --green:#1b4d3a;
+    --green-dim:#0f2e22;
+    --rec:#c1453a;
+    --rec-dim:#5c2620;
+    --ok:#7fae6e;
+    --stage:#0e0d0a;
+  }
+  :root[data-theme="light"]{
+    --ink:#f5f1e7;
+    --panel:#ffffff;
+    --panel-2:#f0ece2;
+    --paper:#20251a;
+    --paper-dim:#5b6255;
+    --hair:#c7cdbf;
+    --amber:#8a6800;
+    --amber-dim:#a89043;
+    --green:#2e7055;
+    --green-dim:#b9d4c7;
+    --rec:#aa3c32;
+    --rec-dim:#cf938d;
+    --ok:#477e41;
+    --stage:#e6e2d8;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter',system-ui,sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-height:100vh;
+    padding:32px 20px 60px;
+  }
+  .wrap{width:100%;max-width:980px;}
+
+  header{position:relative;margin-bottom:28px;border-top:3px solid var(--green);padding-top:20px;}
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:2rem;
+    margin:0 0 6px;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    margin:0;
+    color:var(--paper-dim);
+    font-size:0.95rem;
+    max-width:60ch;
+    line-height:1.5;
+  }
+  .theme-control{
+    position:absolute;
+    top:20px;
+    right:0;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:var(--paper-dim);
+    font-size:0.78rem;
+    cursor:pointer;
+  }
+  .theme-control input{accent-color:var(--amber);}
+  @media (max-width:640px){.theme-control{position:static;margin-top:14px;width:max-content;}}
+
+  .rack{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:16px;
+  }
+  @media (max-width:640px){ .rack{grid-template-columns:1fr;} }
+
+  .slot{
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:4px;
+    padding:14px 16px;
+  }
+  .slot label{
+    display:block;
+    font-size:0.78rem;
+    color:var(--paper-dim);
+    margin-bottom:8px;
+  }
+  .filebtn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--panel-2);
+    border:1px solid var(--hair);
+    color:var(--paper);
+    font-size:0.85rem;
+    padding:7px 12px;
+    border-radius:3px;
+    cursor:pointer;
+  }
+  .filebtn:hover{border-color:var(--amber-dim);}
+  .filename{
+    margin-left:10px;
+    font-size:0.8rem;
+    color:var(--paper-dim);
+    word-break:break-all;
+  }
+  input[type=file]{display:none;}
+
+  .transport{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:4px;
+    padding:14px 16px;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+  }
+  button.tbtn{
+    font-family:inherit;
+    font-size:0.85rem;
+    font-weight:500;
+    padding:9px 16px;
+    border-radius:3px;
+    border:1px solid var(--hair);
+    background:var(--panel-2);
+    color:var(--paper);
+    cursor:pointer;
+  }
+  button.tbtn:disabled{opacity:0.35;cursor:not-allowed;}
+  button.tbtn:hover:not(:disabled){border-color:var(--amber-dim);}
+  button.record{border-color:var(--rec-dim);}
+  button.record.active{background:var(--rec);border-color:var(--rec);color:#fff;}
+  button.primary{border-color:var(--amber-dim);}
+  button.primary:hover:not(:disabled){border-color:var(--amber);}
+
+  .time{
+    font-variant-numeric:tabular-nums;
+    font-size:0.85rem;
+    color:var(--paper-dim);
+    margin-left:auto;
+  }
+  .status{
+    width:100%;
+    font-size:0.8rem;
+    color:var(--amber);
+    min-height:1.2em;
+    margin-top:2px;
+  }
+
+  .progress{
+    height:3px;
+    width:100%;
+    background:var(--hair);
+    border-radius:2px;
+    overflow:hidden;
+    margin-top:10px;
+  }
+  .progress > div{
+    height:100%;
+    width:0%;
+    background:var(--amber);
+  }
+
+  .smooth-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    width:100%;
+    margin-top:4px;
+  }
+  .smooth-row label{
+    font-size:0.78rem;
+    color:var(--paper-dim);
+    white-space:nowrap;
+  }
+  .smooth-row input[type=range]{
+    flex:1;
+    max-width:220px;
+    accent-color:var(--amber);
+  }
+  .smooth-hint{
+    font-size:0.72rem;
+    color:var(--paper-dim);
+    white-space:nowrap;
+  }
+
+  .stage{
+    border:1px solid var(--hair);
+    border-radius:4px;
+    background:var(--stage);
+    overflow:auto;
+    max-height:70vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+  }
+  .stage.empty{
+    min-height:280px;
+    align-items:center;
+    color:var(--paper-dim);
+    font-size:0.9rem;
+  }
+  canvas{
+    display:block;
+    max-width:100%;
+    height:auto;
+    cursor:crosshair;
+  }
+
+  .export-row{
+    display:flex;
+    gap:10px;
+    margin-top:16px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .hint{
+    font-size:0.78rem;
+    color:var(--paper-dim);
+    line-height:1.5;
+  }
+  .command-block{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:10px 12px;
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:4px;
+  }
+  .command-block code{
+    flex:1;
+    min-width:0;
+    color:var(--paper);
+    font-size:0.78rem;
+    line-height:1.5;
+    overflow-wrap:anywhere;
+  }
+  .command-block button{flex:0 0 auto;padding:6px 10px;}
+  @media (max-width:640px){.command-block{flex-direction:column;}.command-block button{align-self:flex-end;}}
+  a.download{
+    font-size:0.85rem;
+    color:var(--amber);
+    text-decoration:none;
+    border-bottom:1px solid var(--amber-dim);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Score Follower</h1>
+    <p>Load your score image and the Suno audio. Hit Record, then move your mouse over the score in time with the music — the highlight follows your cursor. Preview it, redo it if needed, then export a video.</p>
+    <label class="theme-control" title="Use light theme">
+      <input type="checkbox" id="themeToggle">
+      Light theme
+    </label>
+  </header>
+
+  <div class="rack">
+    <div class="slot">
+      <label>Score image (PNG/JPG)</label>
+      <label class="filebtn" id="imgBtnLabel">Choose image<input type="file" id="imgInput" accept="image/*"></label>
+      <span class="filename" id="imgName">No file selected</span>
+    </div>
+    <div class="slot">
+      <label>Audio (from Suno)</label>
+      <label class="filebtn" id="audioBtnLabel">Choose audio<input type="file" id="audioInput" accept="audio/*"></label>
+      <span class="filename" id="audioName">No file selected</span>
+    </div>
+  </div>
+
+  <div class="transport">
+    <button class="tbtn record" id="recordBtn" disabled>● Record</button>
+    <button class="tbtn" id="stopBtn" disabled>Stop</button>
+    <button class="tbtn" id="previewBtn" disabled>▶ Preview</button>
+    <button class="tbtn" id="clearBtn" disabled>Clear path</button>
+    <span class="time" id="timeLabel">0:00 / 0:00</span>
+    <div class="status" id="status"></div>
+    <div class="progress"><div id="progressBar"></div></div>
+    <div class="smooth-row">
+      <label for="smoothRange">Smoothing</label>
+      <input type="range" id="smoothRange" min="0.04" max="0.5" step="0.01" value="0.16">
+      <span class="smooth-hint">snappier ← → glidier</span>
+    </div>
+  </div>
+
+  <div class="stage empty" id="stageWrap">
+    <span>Load a score image to begin</span>
+  </div>
+
+  <div class="export-row">
+    <button class="tbtn primary" id="exportMp4Btn" disabled>Export MP4</button>
+    <button class="tbtn" id="exportVideoBtn" disabled>Export raw .webm (advanced)</button>
+    <button class="tbtn" id="exportJsonBtn" disabled>Export path (.json)</button>
+    <span id="downloadArea"></span>
+  </div>
+  <p class="hint" id="mp4Hint">Export MP4 does everything for you: it records the visuals, mixes in your original audio file untouched, and encodes a ready-to-upload .mp4 — right in your browser, nothing leaves your computer. The first time you use it in a session it downloads a one-time ~30&nbsp;MB converter; after that, exports are quick.</p>
+  <p class="hint">Prefer to do it yourself? "Export raw .webm" gives you the silent, frame-synced video only — combine it with your original audio using:</p>
+  <div class="command-block">
+    <code id="ffmpegCommand">ffmpeg -i score-follower-video-only.webm -i "your-audio-file.wav" -map 0:v -map 1:a -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -crf 20 -pix_fmt yuv420p -c:a aac -b:a 192k -shortest outputfile.mp4</code>
+    <button class="tbtn" id="copyFfmpegBtn" type="button">Copy</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const imgInput = document.getElementById('imgInput');
+  const audioInput = document.getElementById('audioInput');
+  const imgName = document.getElementById('imgName');
+  const audioName = document.getElementById('audioName');
+  const stageWrap = document.getElementById('stageWrap');
+  const recordBtn = document.getElementById('recordBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const previewBtn = document.getElementById('previewBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const exportVideoBtn = document.getElementById('exportVideoBtn');
+  const exportMp4Btn = document.getElementById('exportMp4Btn');
+  const exportJsonBtn = document.getElementById('exportJsonBtn');
+  const timeLabel = document.getElementById('timeLabel');
+  const statusEl = document.getElementById('status');
+  const progressBar = document.getElementById('progressBar');
+  const downloadArea = document.getElementById('downloadArea');
+  const themeToggle = document.getElementById('themeToggle');
+  const ffmpegCommand = document.getElementById('ffmpegCommand');
+  const copyFfmpegBtn = document.getElementById('copyFfmpegBtn');
+
+  function setTheme(theme, save){
+    const isLight = theme === 'light';
+    document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
+    themeToggle.checked = isLight;
+    if(save){
+      try { localStorage.setItem('scoreFollowerTheme', isLight ? 'light' : 'dark'); } catch(_) {}
+    }
+  }
+  try { setTheme(localStorage.getItem('scoreFollowerTheme') || 'dark', false); } catch(_) { setTheme('dark', false); }
+  themeToggle.addEventListener('change', () => setTheme(themeToggle.checked ? 'light' : 'dark', true));
+
+  copyFfmpegBtn.addEventListener('click', async () => {
+    const command = ffmpegCommand.textContent;
+    try {
+      await navigator.clipboard.writeText(command);
+    } catch(_) {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(ffmpegCommand);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+      selection.removeAllRanges();
+    }
+    copyFfmpegBtn.textContent = 'Copied';
+    setTimeout(() => { copyFfmpegBtn.textContent = 'Copy'; }, 1600);
+  });
+
+  const MAX_DIM = 1800; // cap canvas resolution for performance
+
+  let img = null, imgURL = null;
+  let audioURL = null;
+  let audioFileName = null;
+  let liveAudio = null; // used for recording + preview
+  let canvas = null, ctx = null;
+  let cw = 0, ch = 0; // canvas backing size
+
+  let pointerX = 0.5, pointerY = 0.5; // normalized 0-1
+  let havePointer = false;
+  let smoothX = 0.5, smoothY = 0.5;
+  let smoothing = 0.16;
+  const smoothRange = document.getElementById('smoothRange');
+  smoothRange.addEventListener('input', () => { smoothing = parseFloat(smoothRange.value); });
+
+  let keyframes = []; // {t, x, y} normalized
+  let mode = 'idle'; // idle | recording | previewing | exporting
+  let rafId = null;
+
+  function setStatus(msg){ statusEl.textContent = msg || ''; }
+  function fmtTime(s){
+    if(!isFinite(s)) return '0:00';
+    const m = Math.floor(s/60), sec = Math.floor(s%60);
+    return m + ':' + String(sec).padStart(2,'0');
+  }
+
+  function updateButtons(){
+    const ready = !!img && !!audioURL;
+    recordBtn.disabled = !ready || mode !== 'idle';
+    stopBtn.disabled = mode === 'idle';
+    previewBtn.disabled = !ready || keyframes.length < 2 || mode !== 'idle';
+    clearBtn.disabled = keyframes.length === 0 || mode !== 'idle';
+    exportVideoBtn.disabled = keyframes.length < 2 || mode !== 'idle';
+    exportMp4Btn.disabled = keyframes.length < 2 || mode !== 'idle';
+    exportJsonBtn.disabled = keyframes.length < 2;
+  }
+
+  // ---------- image loading ----------
+  imgInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    imgName.textContent = file.name;
+    if(imgURL) URL.revokeObjectURL(imgURL);
+    imgURL = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      img = image;
+      let w = image.naturalWidth, h = image.naturalHeight;
+      const scale = Math.min(1, MAX_DIM / Math.max(w,h));
+      cw = Math.round(w*scale);
+      ch = Math.round(h*scale);
+      buildCanvas();
+      drawFrame(null);
+      keyframes = [];
+      updateButtons();
+      setStatus('Score loaded.');
+    };
+    image.src = imgURL;
+  });
+
+  function buildCanvas(){
+    stageWrap.classList.remove('empty');
+    stageWrap.innerHTML = '';
+    canvas = document.createElement('canvas');
+    canvas.width = cw;
+    canvas.height = ch;
+    ctx = canvas.getContext('2d');
+    stageWrap.appendChild(canvas);
+
+    canvas.addEventListener('mousemove', onPointerMove);
+    canvas.addEventListener('touchmove', onPointerMove, {passive:false});
+    canvas.addEventListener('touchstart', onPointerMove, {passive:false});
+  }
+
+  function onPointerMove(e){
+    if(mode !== 'recording'){ /* still allow hovering when idle, harmless */ }
+    const rect = canvas.getBoundingClientRect();
+    let clientX, clientY;
+    if(e.touches && e.touches.length){
+      e.preventDefault();
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    pointerX = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    pointerY = Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
+    havePointer = true;
+  }
+
+  // ---------- audio loading ----------
+  audioInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    audioName.textContent = file.name;
+    audioFileName = file.name;
+    if(audioURL) URL.revokeObjectURL(audioURL);
+    audioURL = URL.createObjectURL(file);
+    if(liveAudio){ liveAudio.pause(); }
+    liveAudio = new Audio(audioURL);
+    liveAudio.preload = 'auto';
+    liveAudio.addEventListener('loadedmetadata', () => {
+      timeLabel.textContent = '0:00 / ' + fmtTime(liveAudio.duration);
+      updateButtons();
+    });
+    liveAudio.addEventListener('ended', () => {
+      if(mode === 'recording') stopRecording();
+      if(mode === 'previewing') stopPreview();
+    });
+    setStatus('Audio loaded.');
+  });
+
+  // ---------- drawing ----------
+  function drawFrame(pos){
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.drawImage(img, 0, 0, cw, ch);
+    if(pos){
+      const x = pos.x * cw, y = pos.y * ch;
+      const r = cw * 0.055;
+      const grad = ctx.createRadialGradient(x,y,0, x,y,r);
+      grad.addColorStop(0, 'rgba(219,181,64,0.4)');
+      grad.addColorStop(0.55, 'rgba(27,77,58,0.24)');
+      grad.addColorStop(1, 'rgba(27,77,58,0)');
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(x,y,r,0,Math.PI*2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(219,181,64,0.55)';
+      ctx.lineWidth = Math.max(1, cw * 0.0018);
+      ctx.beginPath();
+      ctx.arc(x,y,r*0.82,0,Math.PI*2);
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'source-over';
+    }
+  }
+
+  function interpAt(t){
+    if(keyframes.length === 0) return null;
+    if(t <= keyframes[0].t) return keyframes[0];
+    if(t >= keyframes[keyframes.length-1].t) return keyframes[keyframes.length-1];
+    // binary search
+    let lo = 0, hi = keyframes.length - 1;
+    while(hi - lo > 1){
+      const mid = (lo+hi) >> 1;
+      if(keyframes[mid].t <= t) lo = mid; else hi = mid;
+    }
+    const a = keyframes[lo], b = keyframes[hi];
+    const span = b.t - a.t;
+    const f = span > 0 ? (t - a.t) / span : 0;
+    return { x: a.x + (b.x - a.x)*f, y: a.y + (b.y - a.y)*f };
+  }
+
+  // ---------- recording ----------
+  recordBtn.addEventListener('click', () => {
+    keyframes = [];
+    liveAudio.currentTime = 0;
+    if(havePointer){ smoothX = pointerX; smoothY = pointerY; }
+    mode = 'recording';
+    recordBtn.classList.add('active');
+    setStatus('Recording — move your mouse over the score in time with the music.');
+    updateButtons();
+    liveAudio.play();
+    loopRecord();
+  });
+
+  function loopRecord(){
+    if(mode !== 'recording') return;
+    const t = liveAudio.currentTime;
+    if(havePointer){
+      smoothX += (pointerX - smoothX) * smoothing;
+      smoothY += (pointerY - smoothY) * smoothing;
+      keyframes.push({ t, x: smoothX, y: smoothY });
+      drawFrame({x:smoothX, y:smoothY});
+    }
+    timeLabel.textContent = fmtTime(t) + ' / ' + fmtTime(liveAudio.duration);
+    progressBar.style.width = (100 * t / liveAudio.duration) + '%';
+    rafId = requestAnimationFrame(loopRecord);
+  }
+
+  stopBtn.addEventListener('click', () => {
+    if(mode === 'recording') stopRecording();
+    if(mode === 'previewing') stopPreview();
+  });
+
+  function stopRecording(){
+    mode = 'idle';
+    recordBtn.classList.remove('active');
+    cancelAnimationFrame(rafId);
+    liveAudio.pause();
+    setStatus(keyframes.length > 1 ? 'Path recorded (' + keyframes.length + ' points). Preview it or export.' : 'Not enough movement captured — try again.');
+    updateButtons();
+  }
+
+  // ---------- preview ----------
+  previewBtn.addEventListener('click', () => {
+    mode = 'previewing';
+    liveAudio.currentTime = 0;
+    setStatus('Previewing recorded path…');
+    updateButtons();
+    liveAudio.play();
+    loopPreview();
+  });
+
+  function loopPreview(){
+    if(mode !== 'previewing') return;
+    const t = liveAudio.currentTime;
+    const pos = interpAt(t);
+    drawFrame(pos);
+    timeLabel.textContent = fmtTime(t) + ' / ' + fmtTime(liveAudio.duration);
+    progressBar.style.width = (100 * t / liveAudio.duration) + '%';
+    rafId = requestAnimationFrame(loopPreview);
+  }
+
+  function stopPreview(){
+    mode = 'idle';
+    cancelAnimationFrame(rafId);
+    liveAudio.pause();
+    setStatus('Preview stopped.');
+    updateButtons();
+  }
+
+  // ---------- clear ----------
+  clearBtn.addEventListener('click', () => {
+    keyframes = [];
+    drawFrame(null);
+    progressBar.style.width = '0%';
+    setStatus('Path cleared.');
+    updateButtons();
+  });
+
+  // ---------- export JSON ----------
+  exportJsonBtn.addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(keyframes, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'score-follower-path.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  });
+
+  // ---------- shared: record the visuals as a silent .webm ----------
+  // Deliberately does NOT route audio into the MediaRecorder. The
+  // recording is video-only, so your original audio file (WAV from
+  // Suno, etc.) never gets forced through a lossy Opus re-encode.
+  // The audio element is only used to (a) drive the score-follow
+  // animation off its real playback clock, and (b) let you hear
+  // progress — it plays through the normal audio output, it isn't
+  // captured into the recording.
+  async function recordSilentWebm(){
+    if(!('captureStream' in canvas)){
+      throw new Error('This browser does not support canvas.captureStream — try Chrome, Edge, or Firefox.');
+    }
+
+    const exportAudio = new Audio(audioURL);
+    exportAudio.preload = 'auto';
+    await new Promise(res => {
+      if(exportAudio.readyState >= 1) res();
+      else exportAudio.addEventListener('loadedmetadata', res, {once:true});
+    });
+
+    const videoStream = canvas.captureStream(30);
+
+    let mimeType = 'video/webm;codecs=vp9';
+    if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp8';
+    if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+
+    const recorder = new MediaRecorder(videoStream, {mimeType});
+    const chunks = [];
+    recorder.ondataavailable = ev => { if(ev.data.size > 0) chunks.push(ev.data); };
+
+    const donePromise = new Promise(resolve => {
+      recorder.onstop = () => resolve(new Blob(chunks, {type:'video/webm'}));
+    });
+
+    function loopExport(){
+      if(exportAudio.paused && exportAudio.currentTime > 0 && exportAudio.ended){
+        recorder.stop();
+        return;
+      }
+      const t = exportAudio.currentTime;
+      const pos = interpAt(t);
+      drawFrame(pos);
+      timeLabel.textContent = fmtTime(t) + ' / ' + fmtTime(exportAudio.duration);
+      progressBar.style.width = (100 * t / exportAudio.duration) + '%';
+      rafId = requestAnimationFrame(loopExport);
+    }
+
+    exportAudio.addEventListener('ended', () => {
+      cancelAnimationFrame(rafId);
+      recorder.stop();
+    }, {once:true});
+
+    // Start recording on the 'playing' event (fires once audio output
+    // actually begins) rather than around the play() call, so the first
+    // captured video frame lines up as tightly as possible with sample
+    // zero of the audio — this keeps the recording in sync with your
+    // original audio file when you mux them back together.
+    exportAudio.addEventListener('playing', () => {
+      recorder.start();
+      loopExport();
+    }, {once:true});
+
+    exportAudio.currentTime = 0;
+    await exportAudio.play();
+
+    return donePromise;
+  }
+
+  function downloadBlob(blob, filename){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.className = 'download';
+    a.download = filename;
+    a.textContent = 'Download ' + filename;
+    downloadArea.innerHTML = '';
+    downloadArea.appendChild(a);
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+
+  // ---------- shared: lazy-load ffmpeg.wasm (single-thread core, no
+  // COOP/COEP headers required) the first time it's actually needed.
+  // Uses dynamic import() so a CDN hiccup here can only ever break the
+  // "Export MP4" button — it can't take down the rest of the app, since
+  // nothing else depends on this code path loading successfully.
+  // Built at runtime (not typed literally) so text like "ffmpeg@0.12.15"
+  // never sits verbatim in the served HTML — some CDN/security proxies
+  // (e.g. Cloudflare's "Email Address Obfuscation") scan raw HTML for
+  // anything shaped like name@version and mangle it as if it were an
+  // email address, which breaks these CDN URLs otherwise.
+  const AT = String.fromCharCode(64);
+  function cdnUrl(host, pkg, ver, path){
+    return host + '/' + pkg + AT + ver + path;
+  }
+
+  let ffmpegLibsPromise = null;
+  function loadFFmpegLibs(){
+    if(!ffmpegLibsPromise){
+      ffmpegLibsPromise = Promise.all([
+        import(cdnUrl('https://cdn.jsdelivr.net/npm', '@ffmpeg/ffmpeg', '0.12.15', '/dist/esm/index.js')),
+        import(cdnUrl('https://cdn.jsdelivr.net/npm', '@ffmpeg/util', '0.12.1', '/dist/esm/index.js'))
+      ]).then(([ffmpegMod, utilMod]) => ({
+        FFmpeg: ffmpegMod.FFmpeg,
+        toBlobURL: utilMod.toBlobURL,
+        fetchFile: utilMod.fetchFile
+      }));
+    }
+    return ffmpegLibsPromise;
+  }
+
+  let ffmpegPromise = null;
+  function getFFmpeg(){
+    if(!ffmpegPromise){
+      ffmpegPromise = (async () => {
+        const { FFmpeg, toBlobURL } = await loadFFmpegLibs();
+        const ffmpeg = new FFmpeg();
+        const baseURL = cdnUrl('https://unpkg.com', '@ffmpeg/core', '0.12.10', '/dist/umd');
+        await ffmpeg.load({
+          coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+          wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+        });
+        return ffmpeg;
+      })();
+    }
+    return ffmpegPromise;
+  }
+
+  function audioExt(){
+    if(audioFileName && audioFileName.includes('.')){
+      return audioFileName.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g,'') || 'audio';
+    }
+    return 'audio';
+  }
+
+  // ---------- export raw silent .webm (advanced / manual ffmpeg) ----------
+  exportVideoBtn.addEventListener('click', async () => {
+    mode = 'exporting';
+    updateButtons();
+    setStatus('Exporting video…');
+    downloadArea.innerHTML = '';
+    try{
+      const webmBlob = await recordSilentWebm();
+      downloadBlob(webmBlob, 'score-follower-video-only.webm');
+      const audioNote = audioFileName ? ` with your original "${audioFileName}"` : ' with your original audio file';
+      setStatus('Video (silent) exported — combine it' + audioNote + ' using the ffmpeg command below to get your final .mp4.');
+    }catch(err){
+      setStatus(err.message || 'Export failed.');
+    }finally{
+      mode = 'idle';
+      updateButtons();
+    }
+  });
+
+  // ---------- export MP4 (records + converts, all in-browser) ----------
+  exportMp4Btn.addEventListener('click', async () => {
+    mode = 'exporting';
+    updateButtons();
+    downloadArea.innerHTML = '';
+    try{
+      setStatus('Exporting video…');
+      const webmBlob = await recordSilentWebm();
+
+      setStatus('Loading converter (one-time download, ~30 MB)…');
+      const [ffmpeg, { fetchFile }] = await Promise.all([getFFmpeg(), loadFFmpegLibs()]);
+
+      const onProgress = ({progress}) => {
+        const pct = Math.max(0, Math.min(100, Math.round(progress * 100)));
+        setStatus('Converting to MP4… ' + pct + '%');
+        progressBar.style.width = pct + '%';
+      };
+      if(typeof ffmpeg.off === 'function') ffmpeg.off('progress', onProgress);
+      ffmpeg.on('progress', onProgress);
+
+      const ext = audioExt();
+      await ffmpeg.writeFile('video.webm', await fetchFile(webmBlob));
+      await ffmpeg.writeFile('audio.' + ext, await fetchFile(audioURL));
+
+      await ffmpeg.exec([
+        '-i', 'video.webm',
+        '-i', 'audio.' + ext,
+        '-map', '0:v', '-map', '1:a',
+        '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
+        '-c:v', 'libx264', '-crf', '20', '-pix_fmt', 'yuv420p',
+        '-c:a', 'aac', '-b:a', '192k',
+        '-shortest',
+        'output.mp4'
+      ]);
+
+      const data = await ffmpeg.readFile('output.mp4');
+      const mp4Blob = new Blob([data], {type:'video/mp4'});
+      downloadBlob(mp4Blob, 'score-follower.mp4');
+      setStatus('MP4 export complete — saved to your Downloads folder.');
+
+      // free up memory in the virtual FS for next time
+      await ffmpeg.deleteFile('video.webm');
+      await ffmpeg.deleteFile('audio.' + ext);
+      await ffmpeg.deleteFile('output.mp4');
+    }catch(err){
+      console.error(err);
+      setStatus((err && err.message ? err.message : 'MP4 export failed') + ' — you can still use "Export raw .webm" and convert manually.');
+    }finally{
+      mode = 'idle';
+      updateButtons();
+    }
+  });
+
+  updateButtons();
+})();
+</script>
+</body>
+</html>
