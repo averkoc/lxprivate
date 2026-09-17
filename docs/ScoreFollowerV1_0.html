@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Score Follower</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231b4d3a'/%3E%3Cpath d='M42 13v29.5a10 10 0 1 1-4-8V24l-17 5v19.5a10 10 0 1 1-4-8V22l25-9Z' fill='%23d4af37'/%3E%3C/svg%3E">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#14170f;
+    --panel:#1c2117;
+    --panel-2:#252b1e;
+    --paper:#ece7da;
+    --paper-dim:#a9ae9c;
+    --hair:#38402f;
+    --amber:#d4af37;
+    --amber-dim:#7a662a;
+    --green:#1b4d3a;
+    --green-dim:#0f2e22;
+    --rec:#c1453a;
+    --rec-dim:#5c2620;
+    --ok:#7fae6e;
+    --stage:#0e0d0a;
+  }
+  :root[data-theme="light"]{
+    --ink:#f5f1e7;
+    --panel:#ffffff;
+    --panel-2:#f0ece2;
+    --paper:#222222;
+    --paper-dim:#3a3a3a;
+    --hair:#c7cdbf;
+    --amber:#6b5000;
+    --amber-dim:#a89043;
+    --green:#2e7055;
+    --green-dim:#b9d4c7;
+    --rec:#aa3c32;
+    --rec-dim:#cf938d;
+    --ok:#477e41;
+    --stage:#e6e2d8;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter',system-ui,sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-height:100vh;
+    padding:18px 20px 32px;
+  }
+  .wrap{width:100%;max-width:none;}
+
+  .layout{display:flex;align-items:flex-start;gap:28px;}
+  .sidebar{flex:0 0 380px;max-width:380px;position:sticky;top:16px;}
+  .stage-col{flex:1;min-width:0;}
+  @media (max-width:900px){
+    .layout{flex-direction:column;}
+    .sidebar{position:static;max-width:none;flex:1 1 auto;width:100%;}
+  }
+
+  header{position:relative;margin-bottom:14px;border-top:3px solid var(--green);padding-top:12px;}
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:1.4rem;
+    margin:0 0 4px;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    margin:0;
+    color:var(--paper-dim);
+    font-size:0.85rem;
+    max-width:60ch;
+    line-height:1.4;
+  }
+  .theme-control{
+    position:absolute;
+    top:12px;
+    right:0;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:var(--paper-dim);
+    font-size:0.78rem;
+    cursor:pointer;
+  }
+  .theme-control input{accent-color:var(--amber);}
+  @media (max-width:640px){.theme-control{position:static;margin-top:14px;width:max-content;}}
+
+  .rack{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  /* Sidebar is narrow at all times except when it stacks full-width on small screens. */
+  @media (max-width:900px) and (min-width:520px){ .rack{grid-template-columns:1fr 1fr;} }
+
+  .workflow-section{margin-bottom:10px;}
+  .step-heading{display:flex;align-items:center;gap:9px;margin:0 0 4px;font-size:0.85rem;font-weight:600;}
+  .step-number{display:grid;place-items:center;width:20px;height:20px;border:1px solid var(--amber-dim);border-radius:50%;color:var(--amber);font-size:0.72rem;font-variant-numeric:tabular-nums;}
+  .step-note{margin:0 0 6px;color:var(--paper-dim);font-size:0.78rem;}
+  /* Locked steps are cued by the muted step-number badge only — dimming the
+     whole section via opacity would crush text/button contrast below WCAG AA. */
+  .is-locked .step-number{border-color:var(--hair);color:var(--paper-dim);}
+
+  .slot{
+    background:var(--panel);
+    border:1px dashed var(--hair);
+    border-radius:4px;
+    padding:16px;
+    min-height:76px;
+    transition:border-color 140ms ease,background 140ms ease;
+  }
+  .slot.is-dragging,.stage.is-dragging{border-color:var(--amber);background:var(--panel-2);}
+  .slot label{
+    display:block;
+    font-size:0.78rem;
+    color:var(--paper-dim);
+    margin-bottom:6px;
+  }
+  .filebtn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--panel-2);
+    border:1px solid var(--hair);
+    color:var(--paper);
+    font-size:0.85rem;
+    padding:7px 12px;
+    border-radius:3px;
+    cursor:pointer;
+  }
+  .filebtn:hover{border-color:var(--amber-dim);}
+  .filename{
+    margin-left:10px;
+    font-size:0.8rem;
+    color:var(--paper-dim);
+    word-break:break-all;
+  }
+  input[type=file]{display:none;}
+
+  .transport{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:4px;
+    padding:16px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  button.tbtn{
+    font-family:inherit;
+    font-size:0.85rem;
+    font-weight:500;
+    padding:9px 16px;
+    border-radius:3px;
+    border:1px solid var(--hair);
+    background:var(--panel-2);
+    color:var(--paper);
+    cursor:pointer;
+  }
+  button.tbtn:disabled{cursor:not-allowed;color:var(--paper-dim);background:var(--panel-2);border:1px solid var(--hair);}
+  button.tbtn:hover:not(:disabled){border-color:var(--amber-dim);}
+  button.record{border-color:var(--rec-dim);}
+  button.record.active{background:var(--rec);border-color:var(--rec);color:#fff;}
+  button.primary{border-color:var(--amber-dim);}
+  button.primary:hover:not(:disabled){border-color:var(--amber);}
+  button.primary:disabled{background:var(--panel-2);border:1px solid var(--paper-dim);color:var(--paper-dim);}
+
+  .time{
+    font-variant-numeric:tabular-nums;
+    font-size:0.85rem;
+    color:var(--paper-dim);
+    margin-left:auto;
+  }
+  .status{
+    width:100%;
+    font-size:0.8rem;
+    color:var(--amber);
+    min-height:1.2em;
+    margin-top:2px;
+  }
+
+  .progress{
+    height:3px;
+    width:100%;
+    background:var(--hair);
+    border-radius:2px;
+    overflow:hidden;
+    margin-top:10px;
+  }
+  .progress > div{
+    height:100%;
+    width:0%;
+    background:var(--amber);
+  }
+
+  .smooth-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    width:100%;
+    margin-top:4px;
+  }
+  .smooth-row label{
+    font-size:0.78rem;
+    color:var(--paper-dim);
+    white-space:nowrap;
+  }
+  .smooth-row input[type=range]{
+    flex:1;
+    max-width:220px;
+    accent-color:var(--amber);
+  }
+  .smooth-hint{
+    font-size:0.72rem;
+    color:var(--paper-dim);
+    white-space:nowrap;
+  }
+
+  .stage{
+    position:relative;
+    border:1px solid var(--hair);
+    border-radius:4px;
+    background:var(--stage);
+    overflow:auto;
+    height:auto;
+    max-height:calc(100vh - 40px);
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+  }
+  @media (max-width:900px){ .stage{max-height:70vh;} }
+  .stage.empty{
+    min-height:280px;
+    height:auto;
+    align-items:center;
+    color:var(--paper-dim);
+    font-size:0.9rem;
+    border-style:dashed;
+    cursor:pointer;
+  }
+  .stage.empty span{text-align:center;line-height:1.65;}
+  .stage.empty span::before{content:'+';display:grid;place-items:center;width:34px;height:34px;margin:0 auto 9px;border:1px solid var(--amber-dim);border-radius:50%;color:var(--amber);font-size:1.35rem;}
+  .dock-cue{position:absolute;top:16px;left:16px;width:42px;height:42px;border:2px solid var(--amber);border-radius:50%;box-shadow:0 0 0 6px rgba(212,175,55,0.18);pointer-events:none;z-index:1;animation:dock-pulse 1.1s ease-in-out infinite;}
+  .dock-cue::before,.dock-cue::after{content:'';position:absolute;background:var(--amber);}
+  .dock-cue::before{width:14px;height:2px;left:12px;top:18px;}
+  .dock-cue::after{width:2px;height:14px;left:18px;top:12px;}
+  @keyframes dock-pulse{50%{transform:scale(1.12);opacity:0.65;}}
+  .count-in{position:absolute;inset:0;display:grid;place-items:center;background:rgba(14,13,10,0.38);color:#fff;font-family:'Fraunces',serif;font-size:4.5rem;font-weight:600;text-shadow:0 2px 16px rgba(0,0,0,0.75);pointer-events:none;z-index:2;}
+  .count-in.recording{font-family:inherit;font-size:1.25rem;letter-spacing:0;}
+
+  #stageStep{position:relative;}
+  .zoom-bar{
+    position:absolute;
+    top:10px;
+    right:10px;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 8px;
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:6px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.25);
+  }
+  .zoom-bar button{padding:5px 12px;font-size:0.85rem;}
+  .zoom-label{font-size:0.78rem;color:var(--paper-dim);min-width:3.5em;}
+  details.advanced{margin-top:12px;color:var(--paper-dim);font-size:0.8rem;}
+  details.advanced summary{cursor:pointer;color:var(--paper);}
+  details.advanced .hint{margin:8px 0;}
+  details.advanced .command-block{margin-top:8px;}
+  @media (prefers-reduced-motion:reduce){.dock-cue{animation:none;}}
+  canvas{
+    display:block;
+    max-width:100%;
+    height:auto;
+    cursor:crosshair;
+  }
+
+  .export-row{
+    display:flex;
+    gap:10px;
+    margin-top:6px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .hint{
+    font-size:0.78rem;
+    color:var(--paper-dim);
+    line-height:1.5;
+  }
+  .command-block{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:16px;
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:4px;
+  }
+  .command-block code{
+    flex:1;
+    min-width:0;
+    color:var(--paper);
+    font-size:0.78rem;
+    line-height:1.5;
+    overflow-wrap:anywhere;
+  }
+  .command-block button{flex:0 0 auto;padding:6px 10px;}
+  @media (max-width:640px){.command-block{flex-direction:column;}.command-block button{align-self:flex-end;}}
+  a.download{
+    font-size:0.85rem;
+    color:var(--amber);
+    text-decoration:none;
+    border-bottom:1px solid var(--amber-dim);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Score Follower</h1>
+    <label class="theme-control" title="Use light theme">
+      <input type="checkbox" id="themeToggle">
+      Light theme
+    </label>
+  </header>
+
+  <div class="layout">
+  <div class="sidebar">
+  <section class="workflow-section" id="loadStep">
+    <h2 class="step-heading"><span class="step-number">1</span> Load files</h2>
+    <p class="step-note">Drop a score image and audio file, or choose them from your device.</p>
+  <div class="rack">
+    <div class="slot" id="imageSlot">
+      <label>Score image (PNG/JPG)</label>
+      <label class="filebtn" id="imgBtnLabel">Choose image<input type="file" id="imgInput" accept="image/*"></label>
+      <span class="filename" id="imgName">No file selected</span>
+    </div>
+    <div class="slot" id="audioSlot">
+      <label>Audio (from Suno)</label>
+      <label class="filebtn" id="audioBtnLabel">Choose audio<input type="file" id="audioInput" accept="audio/*"></label>
+      <span class="filename" id="audioName">No file selected</span>
+    </div>
+  </div>
+  </section>
+
+  <section class="workflow-section is-locked" id="recordStep">
+    <h2 class="step-heading"><span class="step-number">2</span> Record mouse path</h2>
+    <p class="step-note" id="recordNote">Load both files to enable recording.</p>
+  <div class="transport">
+    <button class="tbtn record" id="recordBtn" disabled title="Record path (R)">● Record</button>
+    <button class="tbtn" id="stopBtn" disabled title="Stop (Esc)">Stop</button>
+    <span class="time" id="timeLabel">0:00 / 0:00</span>
+    <div class="status" id="status"></div>
+    <div class="progress"><div id="progressBar"></div></div>
+    <div class="smooth-row">
+      <label for="smoothRange">Smoothing</label>
+      <input type="range" id="smoothRange" min="0.04" max="0.5" step="0.01" value="0.16">
+      <span class="smooth-hint">snappier ← → glidier</span>
+    </div>
+    <p class="hint" id="shortcutHint">Shortcuts: R record · Space preview · Esc stop</p>
+  </div>
+  </section>
+
+  <section class="workflow-section is-locked" id="exportStep">
+    <h2 class="step-heading"><span class="step-number">3</span> Preview &amp; export</h2>
+    <p class="step-note" id="exportNote">Record a path to enable export.</p>
+  <div class="export-row">
+    <button class="tbtn primary" id="exportVideoBtn" disabled>Export video (.webm)</button>
+  </div>
+  <p class="hint">Video export creates a WebM file — YouTube accepts it directly, or combine it with your original audio as an MP4 using the command below (it already has your exact file names filled in — just copy, paste, and run).</p>
+  <details class="advanced">
+    <summary>Advanced: Create an MP4 with original audio</summary>
+    <p class="hint">This command uses your exact file names. Copy it and paste it into a terminal in the folder with your video and audio — no arguments to type, no scripts to download or unblock.</p>
+  <div class="command-block">
+    <code id="ffmpegCommand">ffmpeg -i score-follower.webm -i suno-original.wav -map 0:v:0 -map 1:a:0 -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -crf 18 -preset medium -pix_fmt yuv420p -c:a aac -b:a 192k -movflags +faststart score-follower.mp4</code>
+    <button class="tbtn" id="copyFfmpegBtn" type="button">Copy</button>
+  </div>
+  </details>
+  </section>
+  </div>
+
+  <!-- The score column is deliberately separate from the sidebar's controls: on -->
+  <!-- wide screens they sit side by side so the (typically portrait) score gets -->
+  <!-- the full vertical space instead of being squeezed by stacked controls. -->
+  <div class="stage-col">
+  <section class="workflow-section is-locked" id="stageStep">
+    <div class="zoom-bar">
+      <button class="tbtn" id="zoomOutBtn" type="button" title="Zoom out" disabled>−</button>
+      <button class="tbtn" id="zoomResetBtn" type="button" title="Reset zoom" disabled>Fit</button>
+      <button class="tbtn" id="zoomInBtn" type="button" title="Zoom in" disabled>+</button>
+      <span class="zoom-label" id="zoomLabel">100%</span>
+    </div>
+    <div class="stage empty" id="stageWrap">
+      <span>Drop a score image here<br>or choose one above</span>
+    </div>
+  </section>
+  </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const imgInput = document.getElementById('imgInput');
+  const audioInput = document.getElementById('audioInput');
+  const imgName = document.getElementById('imgName');
+  const audioName = document.getElementById('audioName');
+  const stageWrap = document.getElementById('stageWrap');
+  const stageStep = document.getElementById('stageStep');
+  const zoomOutBtn = document.getElementById('zoomOutBtn');
+  const zoomInBtn = document.getElementById('zoomInBtn');
+  const zoomResetBtn = document.getElementById('zoomResetBtn');
+  const zoomLabel = document.getElementById('zoomLabel');
+  const imageSlot = document.getElementById('imageSlot');
+  const audioSlot = document.getElementById('audioSlot');
+  const recordStep = document.getElementById('recordStep');
+  const exportStep = document.getElementById('exportStep');
+  const recordNote = document.getElementById('recordNote');
+  const exportNote = document.getElementById('exportNote');
+  const recordBtn = document.getElementById('recordBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const exportVideoBtn = document.getElementById('exportVideoBtn');
+  const timeLabel = document.getElementById('timeLabel');
+  const statusEl = document.getElementById('status');
+  const progressBar = document.getElementById('progressBar');
+  const themeToggle = document.getElementById('themeToggle');
+  const ffmpegCommand = document.getElementById('ffmpegCommand');
+  const copyFfmpegBtn = document.getElementById('copyFfmpegBtn');
+
+  function setTheme(theme, save){
+    const isLight = theme === 'light';
+    document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
+    themeToggle.checked = isLight;
+    if(save){
+      try { localStorage.setItem('scoreFollowerTheme', isLight ? 'light' : 'dark'); } catch(_) {}
+    }
+  }
+  try { setTheme(localStorage.getItem('scoreFollowerTheme') || 'dark', false); } catch(_) { setTheme('dark', false); }
+  themeToggle.addEventListener('change', () => setTheme(themeToggle.checked ? 'light' : 'dark', true));
+
+  copyFfmpegBtn.addEventListener('click', async () => {
+    const command = ffmpegCommand.textContent;
+    try {
+      await navigator.clipboard.writeText(command);
+    } catch(_) {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(ffmpegCommand);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+      selection.removeAllRanges();
+    }
+    copyFfmpegBtn.textContent = 'Copied';
+    setTimeout(() => { copyFfmpegBtn.textContent = 'Copy'; }, 1600);
+  });
+
+  const MAX_DIM = 1800; // cap canvas resolution for performance
+
+  let img = null, imgURL = null, imgFile = null;
+  let audioURL = null;
+  let audioFile = null;
+  let liveAudio = null; // used for recording + preview
+
+  // Base name shared by the exported video, MP4 output, and the ffmpeg command preview.
+  function baseFileName(){
+    return imgFile ? imgFile.name.replace(/\.[^./\\]+$/, '') : 'score-follower';
+  }
+  function updateCommandPreview(){
+    const base = baseFileName();
+    const audioName2 = audioFile ? audioFile.name : 'suno-original.wav';
+    ffmpegCommand.textContent = 'ffmpeg -i ' + base + '.webm -i ' + audioName2 + ' -map 0:v:0 -map 1:a:0 -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -crf 18 -preset medium -pix_fmt yuv420p -c:a aac -b:a 192k -movflags +faststart ' + base + '.mp4';
+  }
+  let canvas = null, ctx = null;
+  let cw = 0, ch = 0; // canvas backing size
+
+  // Zoom uses a CSS transform, not width/height, so the canvas's layout box (and
+  // therefore the .stage viewport size) never changes — only the painted pixels
+  // scale. This keeps pointer normalization (rect-based) and export (backing
+  // resolution cw/ch) unaffected, and stops the viewport from collapsing when zoomed out.
+  let zoom = 1;
+  const ZOOM_MIN = 0.2, ZOOM_MAX = 3, ZOOM_STEP = 0.2;
+  function applyZoom(){
+    if(!canvas) return;
+    canvas.style.transformOrigin = 'top center';
+    canvas.style.transform = zoom === 1 ? '' : 'scale(' + zoom + ')';
+    zoomLabel.textContent = Math.round(zoom * 100) + '%';
+  }
+  zoomInBtn.addEventListener('click', () => { zoom = Math.min(ZOOM_MAX, +(zoom + ZOOM_STEP).toFixed(2)); applyZoom(); });
+  zoomOutBtn.addEventListener('click', () => { zoom = Math.max(ZOOM_MIN, +(zoom - ZOOM_STEP).toFixed(2)); applyZoom(); });
+  zoomResetBtn.addEventListener('click', () => { zoom = 1; applyZoom(); });
+
+  let pointerX = 0.5, pointerY = 0.5; // normalized 0-1
+  let havePointer = false;
+  let smoothX = 0.5, smoothY = 0.5;
+  let smoothing = 0.16;
+  const smoothRange = document.getElementById('smoothRange');
+  smoothRange.addEventListener('input', () => { smoothing = parseFloat(smoothRange.value); });
+
+  let keyframes = []; // {t, x, y} normalized
+  let mode = 'idle'; // idle | countdown | recording | previewing | exporting
+  let rafId = null;
+  let countInTimer = null;
+
+  function setStatus(msg){ statusEl.textContent = msg || ''; }
+  function fmtTime(s){
+    if(!isFinite(s)) return '0:00';
+    const m = Math.floor(s/60), sec = Math.floor(s%60);
+    return m + ':' + String(sec).padStart(2,'0');
+  }
+
+  function updateButtons(){
+    const ready = !!img && !!audioURL;
+    recordBtn.disabled = !ready || mode !== 'idle';
+    stopBtn.disabled = mode === 'idle';
+    exportVideoBtn.disabled = keyframes.length < 2 || mode !== 'idle';
+    zoomOutBtn.disabled = !img;
+    zoomInBtn.disabled = !img;
+    zoomResetBtn.disabled = !img;
+    recordStep.classList.toggle('is-locked', !ready);
+    exportStep.classList.toggle('is-locked', keyframes.length < 2);
+    stageStep.classList.toggle('is-locked', !ready);
+    recordNote.textContent = ready ? 'Press Record, then follow the music across the score.' : 'Load both files to enable recording.';
+    exportNote.textContent = keyframes.length < 2 ? 'Record a path to enable export.' : 'Review the path (Space to preview), then export a video.';
+  }
+
+  // ---------- image loading ----------
+  imgInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    loadImageFile(file);
+  });
+  function loadImageFile(file){
+    if(!file || !file.type.startsWith('image/')) return;
+    imgFile = file;
+    imgName.textContent = file.name;
+    if(imgURL) URL.revokeObjectURL(imgURL);
+    imgURL = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      img = image;
+      let w = image.naturalWidth, h = image.naturalHeight;
+      const scale = Math.min(1, MAX_DIM / Math.max(w,h));
+      cw = Math.round(w*scale);
+      ch = Math.round(h*scale);
+      buildCanvas();
+      drawFrame(null);
+      keyframes = [];
+      zoom = 1;
+      applyZoom();
+      updateButtons();
+      updateCommandPreview();
+      setStatus('Score loaded.');
+    };
+    image.src = imgURL;
+  }
+
+  function buildCanvas(){
+    stageWrap.classList.remove('empty');
+    stageWrap.innerHTML = '';
+    canvas = document.createElement('canvas');
+    canvas.width = cw;
+    canvas.height = ch;
+    ctx = canvas.getContext('2d');
+    stageWrap.appendChild(canvas);
+    const dockCue = document.createElement('div');
+    dockCue.className = 'dock-cue';
+    dockCue.hidden = true;
+    stageWrap.appendChild(dockCue);
+    const countIn = document.createElement('div');
+    countIn.className = 'count-in';
+    countIn.hidden = true;
+    stageWrap.appendChild(countIn);
+
+    canvas.addEventListener('mousemove', onPointerMove);
+    canvas.addEventListener('touchmove', onPointerMove, {passive:false});
+    canvas.addEventListener('touchstart', onPointerMove, {passive:false});
+  }
+
+  function onPointerMove(e){
+    if(mode !== 'recording'){ /* still allow hovering when idle, harmless */ }
+    const rect = canvas.getBoundingClientRect();
+    let clientX, clientY;
+    if(e.touches && e.touches.length){
+      e.preventDefault();
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    pointerX = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    pointerY = Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
+    havePointer = true;
+    const dockCue = stageWrap.querySelector('.dock-cue');
+    if(dockCue) dockCue.hidden = true;
+  }
+
+  // ---------- audio loading ----------
+  audioInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    loadAudioFile(file);
+  });
+  function loadAudioFile(file){
+    if(!file || !file.type.startsWith('audio/')) return;
+    audioFile = file;
+    audioName.textContent = file.name;
+    if(audioURL) URL.revokeObjectURL(audioURL);
+    audioURL = URL.createObjectURL(file);
+    if(liveAudio){ liveAudio.pause(); }
+    liveAudio = new Audio(audioURL);
+    liveAudio.preload = 'auto';
+    liveAudio.addEventListener('loadedmetadata', () => {
+      timeLabel.textContent = '0:00 / ' + fmtTime(liveAudio.duration);
+      updateButtons();
+    });
+    liveAudio.addEventListener('ended', () => {
+      if(mode === 'recording') stopRecording();
+      if(mode === 'previewing') stopPreview();
+    });
+    updateCommandPreview();
+    setStatus('Audio loaded.');
+  }
+
+  function makeDropTarget(target, type, load){
+    ['dragenter', 'dragover'].forEach(eventName => target.addEventListener(eventName, event => {
+      event.preventDefault();
+      target.classList.add('is-dragging');
+    }));
+    ['dragleave', 'drop'].forEach(eventName => target.addEventListener(eventName, event => {
+      event.preventDefault();
+      target.classList.remove('is-dragging');
+    }));
+    target.addEventListener('drop', event => {
+      const file = event.dataTransfer.files[0];
+      if(file && file.type.startsWith(type + '/')) load(file);
+      else setStatus('Please drop a ' + type + ' file.');
+    });
+  }
+  makeDropTarget(imageSlot, 'image', loadImageFile);
+  makeDropTarget(audioSlot, 'audio', loadAudioFile);
+  makeDropTarget(stageWrap, 'image', loadImageFile);
+  stageWrap.addEventListener('click', () => { if(!img) imgInput.click(); });
+
+  // ---------- drawing ----------
+  function drawFrame(pos){
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.drawImage(img, 0, 0, cw, ch);
+    if(pos){
+      const x = pos.x * cw, y = pos.y * ch;
+      const r = cw * 0.055;
+      const grad = ctx.createRadialGradient(x,y,0, x,y,r);
+      grad.addColorStop(0, 'rgba(219,181,64,0.4)');
+      grad.addColorStop(0.55, 'rgba(27,77,58,0.24)');
+      grad.addColorStop(1, 'rgba(27,77,58,0)');
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(x,y,r,0,Math.PI*2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(219,181,64,0.55)';
+      ctx.lineWidth = Math.max(1, cw * 0.0018);
+      ctx.beginPath();
+      ctx.arc(x,y,r*0.82,0,Math.PI*2);
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'source-over';
+    }
+  }
+
+  function interpAt(t){
+    if(keyframes.length === 0) return null;
+    if(t <= keyframes[0].t) return keyframes[0];
+    if(t >= keyframes[keyframes.length-1].t) return keyframes[keyframes.length-1];
+    // binary search
+    let lo = 0, hi = keyframes.length - 1;
+    while(hi - lo > 1){
+      const mid = (lo+hi) >> 1;
+      if(keyframes[mid].t <= t) lo = mid; else hi = mid;
+    }
+    const a = keyframes[lo], b = keyframes[hi];
+    const span = b.t - a.t;
+    const f = span > 0 ? (t - a.t) / span : 0;
+    return { x: a.x + (b.x - a.x)*f, y: a.y + (b.y - a.y)*f };
+  }
+
+  // ---------- recording ----------
+  recordBtn.addEventListener('click', () => {
+    keyframes = [];
+    liveAudio.currentTime = 0;
+    if(havePointer){ smoothX = pointerX; smoothY = pointerY; }
+    mode = 'countdown';
+    liveAudio.muted = true;
+    setStatus('Get your cursor over the score. 3...');
+    showCountIn('3');
+    updateButtons();
+    liveAudio.play().then(startCountIn).catch(() => {
+      mode = 'idle';
+      liveAudio.muted = false;
+      setStatus('Audio could not start. Click Record again.');
+      updateButtons();
+    });
+  });
+
+  function startCountIn(){
+    let remaining = 3;
+    countInTimer = setInterval(() => {
+      remaining -= 1;
+      if(remaining > 0){
+        setStatus('Get your cursor over the score. ' + remaining + '...');
+        showCountIn(String(remaining));
+        return;
+      }
+      clearInterval(countInTimer);
+      countInTimer = null;
+      liveAudio.currentTime = 0;
+      liveAudio.muted = false;
+      mode = 'recording';
+      recordBtn.classList.add('active');
+      const dockCue = stageWrap.querySelector('.dock-cue');
+      if(dockCue) dockCue.hidden = havePointer;
+      showCountIn('Record!', true);
+      setTimeout(hideCountIn, 650);
+      setStatus('Recording. Move your cursor with the music.');
+      updateButtons();
+      loopRecord();
+    }, 1000);
+  }
+
+  function showCountIn(text, recording){
+    const countIn = stageWrap.querySelector('.count-in');
+    if(!countIn) return;
+    countIn.textContent = text;
+    countIn.classList.toggle('recording', !!recording);
+    countIn.hidden = false;
+  }
+
+  function hideCountIn(){
+    const countIn = stageWrap.querySelector('.count-in');
+    if(countIn) countIn.hidden = true;
+  }
+
+  function loopRecord(){
+    if(mode !== 'recording') return;
+    const t = liveAudio.currentTime;
+    if(havePointer){
+      smoothX += (pointerX - smoothX) * smoothing;
+      smoothY += (pointerY - smoothY) * smoothing;
+      keyframes.push({ t, x: smoothX, y: smoothY });
+      drawFrame({x:smoothX, y:smoothY});
+    }
+    timeLabel.textContent = fmtTime(t) + ' / ' + fmtTime(liveAudio.duration);
+    progressBar.style.width = (100 * t / liveAudio.duration) + '%';
+    rafId = requestAnimationFrame(loopRecord);
+  }
+
+  stopBtn.addEventListener('click', () => {
+    if(mode === 'countdown'){
+      clearInterval(countInTimer);
+      countInTimer = null;
+      liveAudio.pause();
+      liveAudio.muted = false;
+      mode = 'idle';
+      hideCountIn();
+      setStatus('Count-in cancelled.');
+      updateButtons();
+      return;
+    }
+    if(mode === 'recording') stopRecording();
+    if(mode === 'previewing') stopPreview();
+  });
+
+  function stopRecording(){
+    mode = 'idle';
+    recordBtn.classList.remove('active');
+    cancelAnimationFrame(rafId);
+    liveAudio.pause();
+    liveAudio.muted = false;
+    setStatus(keyframes.length > 1 ? 'Path recorded (' + keyframes.length + ' points). Preview it or export.' : 'Not enough movement captured — try again.');
+    updateButtons();
+  }
+
+  // ---------- preview ----------
+  function startPreview(){
+    if(!img || !audioURL || keyframes.length < 2 || mode !== 'idle') return;
+    mode = 'previewing';
+    liveAudio.currentTime = 0;
+    setStatus('Previewing recorded path…');
+    updateButtons();
+    liveAudio.play();
+    loopPreview();
+  }
+
+  function loopPreview(){
+    if(mode !== 'previewing') return;
+    const t = liveAudio.currentTime;
+    const pos = interpAt(t);
+    drawFrame(pos);
+    timeLabel.textContent = fmtTime(t) + ' / ' + fmtTime(liveAudio.duration);
+    progressBar.style.width = (100 * t / liveAudio.duration) + '%';
+    rafId = requestAnimationFrame(loopPreview);
+  }
+
+  function stopPreview(){
+    mode = 'idle';
+    cancelAnimationFrame(rafId);
+    liveAudio.pause();
+    setStatus('Preview stopped.');
+    updateButtons();
+  }
+
+  document.addEventListener('keydown', event => {
+    if(event.ctrlKey || event.metaKey || event.altKey || event.target.matches('input, textarea, select, button')) return;
+    if(event.code === 'Space'){ event.preventDefault(); startPreview(); }
+    if(event.key.toLowerCase() === 'r' && !recordBtn.disabled){ event.preventDefault(); recordBtn.click(); }
+    if(event.key === 'Escape' && !stopBtn.disabled){ event.preventDefault(); stopBtn.click(); }
+  });
+
+  // ---------- export video ----------
+  exportVideoBtn.addEventListener('click', async () => {
+    if(!('captureStream' in canvas)){
+      setStatus('This browser does not support canvas.captureStream — try Chrome, Edge, or Firefox.');
+      return;
+    }
+    mode = 'exporting';
+    updateButtons();
+    setStatus('Exporting video…');
+
+    const exportAudio = new Audio(audioURL);
+    exportAudio.preload = 'auto';
+    await new Promise(res => {
+      if(exportAudio.readyState >= 1) res();
+      else exportAudio.addEventListener('loadedmetadata', res, {once:true});
+    });
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaElementSource(exportAudio);
+    const dest = audioCtx.createMediaStreamDestination();
+    source.connect(dest);
+    // also let it play audibly during export so you can hear progress
+    source.connect(audioCtx.destination);
+
+    const videoStream = canvas.captureStream(30);
+    const combined = new MediaStream([
+      ...videoStream.getVideoTracks(),
+      ...dest.stream.getAudioTracks()
+    ]);
+
+    let mimeType = 'video/webm;codecs=vp8,opus';
+    if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp9,opus';
+    if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+
+    const recorder = new MediaRecorder(combined, {mimeType});
+    const chunks = [];
+    let exportStopped = false;
+    const videoName = baseFileName() + '.webm';
+    recorder.ondataavailable = ev => { if(ev.data.size > 0) chunks.push(ev.data); };
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, {type:'video/webm'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = videoName;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      setStatus('Export complete. ' + videoName + ' was saved to your Downloads folder. Copy the command below to make the MP4.');
+      mode = 'idle';
+      updateButtons();
+      audioCtx.close();
+    };
+
+    function stopExport(){
+      if(exportStopped) return;
+      exportStopped = true;
+      cancelAnimationFrame(rafId);
+      if(recorder.state !== 'inactive') recorder.stop();
+    }
+
+    function loopExport(){
+      if(exportAudio.paused && exportAudio.currentTime > 0 && exportAudio.ended){
+        stopExport();
+        return;
+      }
+      const t = exportAudio.currentTime;
+      const pos = interpAt(t);
+      drawFrame(pos);
+      timeLabel.textContent = fmtTime(t) + ' / ' + fmtTime(exportAudio.duration);
+      progressBar.style.width = (100 * t / exportAudio.duration) + '%';
+      rafId = requestAnimationFrame(loopExport);
+    }
+
+    exportAudio.addEventListener('ended', () => {
+      stopExport();
+    }, {once:true});
+
+    recorder.start();
+    exportAudio.currentTime = 0;
+    await exportAudio.play();
+    loopExport();
+  });
+
+  updateButtons();
+})();
+</script>
+</body>
+</html>
